@@ -3,7 +3,7 @@ import { Element } from './element';
 import { Vector2 } from 'three';
 
 export class KDTreeNode {
-  //Parent node
+  // Parent node
   parent?: KDTreeNode;
   bounds: Bounds;
 
@@ -16,7 +16,7 @@ export class KDTreeNode {
   // Axis of split
   axis: number;
 
-  //Coordinate of the split
+  // Coordinate of the split
   splitCoordinate?: number;
 
   // Contains element in tree
@@ -47,7 +47,16 @@ export class KDTreeNode {
     return this.splitCoordinate >= 0;
   }
 
+  /**
+   * Inserts element to KD Tree node and performs respective splits.
+   * @param element the element to be inserted.
+   * @returns true if element
+   */
   insertElement(element: Element): boolean {
+    if (element === undefined || element === null) {
+      return;
+    }
+
     // Check depth to determine on which dimension/axis to split
     this.axis = this.depth % this.dimension;
 

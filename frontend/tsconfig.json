@@ -11,6 +11,9 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
+    "types": [
+      "jest"
+    ],
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -20,6 +23,7 @@
     ]
   },
   "angularCompilerOptions": {
+    "disableTypeScriptVersionCheck": true,
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
   }
