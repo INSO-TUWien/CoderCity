@@ -3,6 +3,20 @@ import { Element } from './element';
 import { Vector2 } from 'three';
 
 export class KDTreeNode {
+
+  constructor(
+    position: THREE.Vector2,
+    bounds: Bounds,
+    depth: number = 0,
+    dimension: number,
+    element?: Element
+  ) {
+    this.position = position;
+    this.bounds = bounds;
+    this.depth = depth;
+    this.dimension = dimension;
+    this.element = element;
+  }
   // Parent node
   parent?: KDTreeNode;
   bounds: Bounds;
@@ -25,18 +39,21 @@ export class KDTreeNode {
   depth: number;
   dimension: number;
 
-  constructor(
-    position: THREE.Vector2,
-    bounds: Bounds,
-    depth: number = 0,
-    dimension: number,
-    element?: Element
-  ) {
-    this.position = position;
-    this.bounds = bounds;
-    this.depth = depth;
-    this.dimension = dimension;
-    this.element = element;
+  /**
+   * Executes the given function on each traversed node in pre order traversal manner.
+   * @param node the current node
+   * @param fn the function to be executed on node
+   */
+  static executeWhileTraversingPreOrder(node: KDTreeNode, fn: (node: KDTreeNode) => void) {
+    if (node === null || node === undefined) {
+      return;
+    }
+
+    KDTreeNode.executeWhileTraversingPreOrder(node.left, fn);
+
+    fn(node);
+
+    KDTreeNode.executeWhileTraversingPreOrder(node.right, fn);
   }
 
   isEmpty(): boolean {
@@ -45,6 +62,14 @@ export class KDTreeNode {
 
   isSplitted(): boolean {
     return this.splitCoordinate >= 0;
+  }
+
+  isLeaf(): boolean {
+    return (this.left == null && this.right == null);
+  }
+
+  hasElement(): boolean {
+    return (this.element !== null && this.element !== undefined);
   }
 
   /**

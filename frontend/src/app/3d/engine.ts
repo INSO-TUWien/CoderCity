@@ -4,6 +4,7 @@ import { EarthControls } from './controls/EarthControls';
 import { EventBus } from './eventbus';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { Cube } from './entities/Cube';
+import { District } from './entities/District';
 
 export class Engine {
     private scene: THREE.Scene;
@@ -23,19 +24,19 @@ export class Engine {
     constructor() {
         this.eventBus = EventBus.getInstance();
         const canvasElement: HTMLCanvasElement = document.querySelector('#canvas');
-        this.renderer = new THREE.WebGLRenderer({ 
-            canvas: canvasElement, 
+        this.renderer = new THREE.WebGLRenderer({
+            canvas: canvasElement,
             logarithmicDepthBuffer: true
         });
 
-        //Set canvas size to whole viewport
+        // Set canvas size to whole viewport
         const height = window.innerHeight;
         const width = window.innerWidth;
         this.setCanvasSize(width, height);
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.set( 0, 0, 3);
+        this.camera.position.set( 0, 10, 0);
 
         this.light = new THREE.HemisphereLight( 0x0000ff, 0x000000, 0.6 );
         this.light.position.set( 0, 50, 50);
@@ -54,10 +55,13 @@ export class Engine {
     }
 
     private init() {
-        document.body.appendChild( this.stats.dom );
-        let cube = new Cube(1,1,1);
-        this.addEntity(cube);
-        cube.setPosition(-1,0,0);
+        document.body.appendChild( this.stats.dom);
+        this.setupScene();
+    }
+
+    private setupScene() {
+        const district = new District();
+        this.addEntity(district);
     }
 
     addEntity(entity: Entity): void {
@@ -70,7 +74,7 @@ export class Engine {
         entity.destroy();
         this.entities.splice(this.entities.indexOf(entity), 1);
     }
- 
+
     private render(): void {
         requestAnimationFrame( () => this.render());
 

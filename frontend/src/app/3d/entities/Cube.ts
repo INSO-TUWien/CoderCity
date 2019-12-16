@@ -11,14 +11,14 @@ export class Cube extends Entity {
         super();
         this.geometry = new BoxGeometry(width, height, depth);
         this.material = new MeshBasicMaterial({color: color ? color : 'red'});
+        this.mesh = new THREE.Mesh(this.geometry, this.material);
     }
 
     init() {
-        this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.object.add(this.mesh);
     }
 
     setPosition(x: number, y: number, z: number) {
-        this.mesh.position.set(x,y,z);
+        this.mesh.position.set(x, y, z);
     }
 }

@@ -55,7 +55,7 @@ export class Bounds {
 
         let splittedBounds: Bounds[] = [];
         splittedBounds.push(new Bounds(x, this.y));
-        splittedBounds.push(new Bounds(this.x - x, this.y));
+        splittedBounds.push(new Bounds(this.x - x,  this.y));
 
         return splittedBounds;
     }
