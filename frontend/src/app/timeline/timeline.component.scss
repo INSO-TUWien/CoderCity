@@ -1,0 +1,18 @@
+:host {
+    position: fixed;
+    height: 180px;
+    width: 800px;
+    left: 20px;
+    bottom: 20px;
+    background-color: white;
+    z-index: 400;
+    padding: 16px;
+    border-radius: 4px;
+    box-shadow: 4px 4px 4px 0 rgba(226,226,226,0.50);
+}
+
+h3 {
+    font-size: 12pt;
+    font-weight: bold;
+    color: rgb(92, 92, 92);
+}

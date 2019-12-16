@@ -72,6 +72,8 @@ export class KDTreeNode {
     return (this.element !== null && this.element !== undefined);
   }
 
+  //coveredArea()
+
   /**
    * Inserts element to KD Tree node and performs respective splits.
    * @param element the element to be inserted.
