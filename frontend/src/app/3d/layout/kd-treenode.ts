@@ -72,44 +72,60 @@ export class KDTreeNode {
     return (this.element !== null && this.element !== undefined);
   }
 
-  //coveredArea()
+  getEmptyLeafNodes(result: KDTreeNode[], node: KDTreeNode): KDTreeNode[] {
+    if (node == null) {
+      return;
+    }
+
+    if (node.isLeaf() && node.isEmpty()) {
+      result.push(node);
+    } else {
+      node.getEmptyLeafNodes(result, node.left);
+      node.getEmptyLeafNodes(result, node.right);
+    }
+    return result;
+  }
 
   /**
    * Inserts element to KD Tree node and performs respective splits.
    * @param element the element to be inserted.
    * @returns true if element
    */
-  insertElement(element: Element): boolean {
-    if (element === undefined || element === null) {
+  insertElement(node: KDTreeNode, element: Element): boolean {
+    if (node == null || element === undefined || element === null) {
       return;
     }
 
+    if (element.bounds.x <= 0 || element.bounds.y <= 0) {
+      throw new Error('Invalid values: Element bounds is smaller or equal 0.');
+    }
+
     // Check depth to determine on which dimension/axis to split
-    this.axis = this.depth % this.dimension;
+    node.axis = node.depth % node.dimension;
 
     // Check if current node is of exact matching size and not occupied
     // If so put element into this node
-    if (this.bounds.equals(element.bounds) && this.isEmpty()) {
+    if (node.bounds.equals(element.bounds) && this.isEmpty()) {
       this.element = element;
       return true;
     }
 
-    if (!this.bounds.fits(element.bounds) || !this.isEmpty()) {
+    if (!node.bounds.fits(element.bounds) || !this.isEmpty()) {
       return false;
     }
 
-    if (this.axis === 0) {
-      if (!this.isSplitted()) {
-        //If the node is not splitted, then create child nodes
+    if (node.axis === 0) {
+      if (!node.isSplitted()) {
+        // If the node is not splitted, then create child nodes
 
-        //Split on x axis
-        this.splitCoordinate = element.bounds.x;
+        // Split on x axis
+        node.splitCoordinate = element.bounds.x;
 
         // Create boundaries of new nodes after the split
-        let bounds = this.bounds.splitAtAxisX(element.bounds.x);
+        let bounds = node.bounds.splitAtAxisX(element.bounds.x);
 
         // Create left node
-        this.left = new KDTreeNode(
+        node.left = new KDTreeNode(
           this.position,
           bounds[0],
           this.depth + 1,
@@ -117,51 +133,51 @@ export class KDTreeNode {
         );
 
         // Create right node
-        this.right = new KDTreeNode(
-          this.position.clone().add(new Vector2(element.bounds.x, 0)),
+        node.right = new KDTreeNode(
+          node.position.clone().add(new Vector2(element.bounds.x, 0)),
           bounds[1],
-          this.depth + 1,
-          this.dimension
+          node.depth + 1,
+          node.dimension
         );
       }
 
       // Try to put element in left child node, if not successful try with right one.
-      if (this.left.insertElement(element)) {
+      if (node.left.insertElement(node.left, element)) {
         return true;
       } else {
-        if (this.right.insertElement(element)) {
+        if (this.right.insertElement(node.right, element)) {
           return true;
         }
       }
     } else {
-      if (!this.isSplitted()) {
+      if (!node.isSplitted()) {
         // Split on y axis
-        this.splitCoordinate = element.bounds.y;
+        node.splitCoordinate = element.bounds.y;
 
         // Create boundaries of new nodes after the split
-        let bounds = this.bounds.splitAtAxisY(element.bounds.y);
+        let bounds = node.bounds.splitAtAxisY(element.bounds.y);
 
         // Create left node
-        this.left = new KDTreeNode(
-          this.position,
+        node.left = new KDTreeNode(
+          node.position,
           bounds[0],
-          this.depth + 1,
-          this.dimension
+          node.depth + 1,
+          node.dimension
         );
 
         // Create right node
-        this.right = new KDTreeNode(
-          this.position.clone().add(new Vector2(0, element.bounds.y)),
+        node.right = new KDTreeNode(
+          node.position.clone().add(new Vector2(0, element.bounds.y)),
           bounds[1],
-          this.depth + 1,
-          this.dimension
+          node.depth + 1,
+          node.dimension
         );
       }
 
-      if (this.left.insertElement(element)) {
+      if (node.left.insertElement(node.left, element)) {
         return true;
       } else {
-        if (this.right.insertElement(element)) {
+        if (node.right.insertElement(node.right, element)) {
           return true;
         }
       }

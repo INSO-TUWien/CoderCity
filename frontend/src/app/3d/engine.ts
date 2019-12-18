@@ -36,13 +36,13 @@ export class Engine {
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.set( 0, 10, 0);
+        this.camera.position.set( 0, 50, 0);
 
         this.light = new THREE.HemisphereLight( 0x0000ff, 0x000000, 0.6 );
         this.light.position.set( 0, 50, 50);
 
         this.axesHelper = new THREE.AxesHelper(3);
-        this.gridHelper = new THREE.GridHelper(10, 10);
+        this.gridHelper = new THREE.GridHelper(100, 100);
 
         this.scene.add(this.gridHelper);
         this.scene.add(this.axesHelper);

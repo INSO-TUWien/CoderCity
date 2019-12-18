@@ -17,8 +17,12 @@ export class KDTree {
         this.rootNode = new KDTreeNode(position, bounds, 0, KDTree.DIMENSION, null);
     }
 
+    getEmptyLeafNodes(): KDTreeNode[] {
+        return this.rootNode.getEmptyLeafNodes([], this.rootNode);
+    }
+
     addElement(element: Element): boolean {
-        return this.rootNode.insertElement(element);
+        return this.rootNode.insertElement(this.rootNode, element);
     }
 
     executeWhileTraversingPreOrder(fn: (node: KDTreeNode) => void) {

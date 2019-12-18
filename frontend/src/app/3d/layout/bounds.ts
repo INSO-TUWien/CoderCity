@@ -43,6 +43,16 @@ export class Bounds {
     }
 
     /**
+     * Returns the remainder area of current node if a given bounds is placed in it.
+     * @param bounds 
+     */
+    calculateRemainingArea(bounds: Bounds): number {
+        const area = this.x * this.y;
+        const areaToSubtract = bounds.x * bounds.y;
+        return area - areaToSubtract;
+    }
+
+    /**
      * Splits boundary into two boundaries at a given x value .
      * @param x the x value
      * @returns an array of the splitted boundaries with the first entry beeing the left splitted boundary and the second array the right splitted boundary
