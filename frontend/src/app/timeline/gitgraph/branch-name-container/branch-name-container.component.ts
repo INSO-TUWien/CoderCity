@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BranchNameContainerComponent implements OnInit {
 
+  branches: String[] = ['master', 'dev', 'feature/12321' ];
+
   constructor() { }
 
   ngOnInit() {

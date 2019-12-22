@@ -8,6 +8,8 @@ import { TimelineComponent } from './timeline/timeline.component';
 import { GitgraphComponent } from './timeline/gitgraph/gitgraph.component';
 import { BranchNameLabelComponent } from './timeline/gitgraph/branch-name-container/branch-name-label/branch-name-label.component';
 import { BranchNameContainerComponent } from './timeline/gitgraph/branch-name-container/branch-name-container.component';
+import { CommitMessageContainerComponent } from './timeline/gitgraph/commit-message-container/commit-message-container.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -16,11 +18,13 @@ import { BranchNameContainerComponent } from './timeline/gitgraph/branch-name-co
     TimelineComponent,
     GitgraphComponent,
     BranchNameLabelComponent,
-    BranchNameContainerComponent
+    BranchNameContainerComponent,
+    CommitMessageContainerComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

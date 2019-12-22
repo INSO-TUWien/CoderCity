@@ -1,1 +1,7 @@
-<p>branch-name-container works!</p>
+<div class="d-flex flex-column branch-label-container">
+    <cc-branch-name-label 
+        *ngFor="let branch of branches" 
+        [title]="branch"
+        >
+    </cc-branch-name-label>
+</div>

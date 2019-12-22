@@ -10,6 +10,9 @@ export class BranchNameLabelComponent implements OnInit {
   @Input('title')
   title = 'Master';
 
+  @Input('color')
+  color = '#0AB6B9';
+
   constructor() { }
 
   ngOnInit() {
