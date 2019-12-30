@@ -15,10 +15,12 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
+            "program": "${workspaceFolder}/backend/src/main.ts",
+            "preLaunchTask": "tsc: watch - backend/tsconfig.build.json",
+            "outFiles": ["${workspaceFolder}/backend/dist/**/*.js"],
             "skipFiles": [
                 "<node_internals>/**"
-            ],
-            "program": "${file}"
+            ], 
         },
         {
             "name": "vscode-jest-tests",

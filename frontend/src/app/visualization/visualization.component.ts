@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Engine } from '../3d/engine';
+import { SocketService } from '../shared/socket.service';
 
 @Component({
   selector: 'cc-visualization',
@@ -9,11 +10,13 @@ import { Engine } from '../3d/engine';
 export class VisualizationComponent implements OnInit {
 
   engine: Engine;
-  constructor() { }
+
+  constructor(private socketService: SocketService) { }
 
   ngOnInit() {
     //this.engine = new Engine();
     //this.engine.start();
+    //this.socketService.sendMessage();
   }
 
 
