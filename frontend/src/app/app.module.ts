@@ -13,6 +13,11 @@ import { CommitMessageContainerComponent } from './timeline/gitgraph/commit-mess
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
+import { GitEffects } from './shared/git/git.effects';
+import { EffectsModule } from '@ngrx/effects';
+import { BranchSimpleNamePipe } from './pipes/branch-simple-name.pipe';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -24,14 +29,23 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     GitgraphComponent,
     BranchNameLabelComponent,
     BranchNameContainerComponent,
-    CommitMessageContainerComponent
+    CommitMessageContainerComponent,
+    BranchSimpleNamePipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FontAwesomeModule,
     HttpClientModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    EffectsModule.forRoot([GitEffects]),
+    StoreModule.forRoot(reducers, {
+      metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true
+      }
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

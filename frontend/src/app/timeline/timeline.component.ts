@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { GitService } from '../shared/git/git.service';
 import { Branch } from '../shared/git/branch.model';
 import { Commit } from '../shared/git/commit.model';
+import { Store } from '@ngrx/store';
 @Component({
   selector: 'cc-timeline',
   templateUrl: './timeline.component.html',
@@ -11,16 +12,8 @@ export class TimelineComponent implements OnInit {
 
   commits: Commit[];
 
-  constructor(private gitService: GitService) { }
+  constructor() { }
 
   ngOnInit() {
-  }
-
-  onCommitsClick() {
-    this.gitService.getGitCommits().subscribe(
-      (result) => {
-        console.log(`${JSON.stringify(result)}`);
-      }
-    )
   }
 }

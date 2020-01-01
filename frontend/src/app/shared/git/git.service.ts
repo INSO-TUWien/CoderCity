@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Commit } from './commit.model';
-import { Branch } from 'src/app/timeline/gitgraph/datastructure/branch';
+import { Branch } from 'src/app/timeline/gitgraph/datastructure/branch.model';
 
 @Injectable({
   providedIn: 'root'

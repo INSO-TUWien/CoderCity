@@ -1,5 +1,5 @@
-import { Branch } from 'src/model/branch';
-import { Commit } from '../model/commit';
+import { Branch } from './branch.model';
+import { Commit } from './commit.model';
 
 export class GitModel {
     // Array of all commits

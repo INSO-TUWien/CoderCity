@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Branch } from '../datastructure/branch.model';
+import { Store, select,  } from '@ngrx/store';
+import { State } from 'src/app/reducers';
 
 @Component({
   selector: 'cc-branch-name-container',
@@ -7,9 +11,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BranchNameContainerComponent implements OnInit {
 
-  branches: String[] = ['master', 'dev', 'feature/12321' ];
+  branches: string[] = ['master', 'dev', 'feature/12321' ];
+  branches$: Observable<Branch[]>;
 
-  constructor() { }
+  constructor(private store: Store<State>) {
+    this.branches$ = this.store.pipe(select(store => store.git.branches));
+  }
 
   ngOnInit() {
   }

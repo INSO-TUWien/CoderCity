@@ -1,7 +1,27 @@
 .commit-message-container {
-    margin-left: 120px;
     margin-bottom: 8px;
-    padding-top: 40px;
+    margin-left: 20px;
+    padding-left: 10px;
+    padding-top: 80px;
+}
+
+.left-pane {
+    min-width: 88px;
+    width: 88px;
+    margin-bottom: 4px;
+}
+
+.ci-status-label {
+    height: 20px;
+    width: 68px;
+    background: #BCBCBC;
+    border-radius: 4px;
+    color: white;
+    font-size: 11px;
+} 
+
+.commit-message-container::-webkit-scrollbar {
+    display: none;
 }
 
 .commit-message {

@@ -1,6 +1,14 @@
-<div class="commit-message-container">
-    <div class="commit-message" *ngFor="let commit of commits">
-        <span class="branch-indicator"></span>
-        <span class="commit-message-text">{{commit}}</span>
+<div class="d-flex flex-row">
+    <div class="left-pane d-flex flex-column justify-content-between">
+        <button class="btn btn-primary" (click)="onCommitsClick()">Commits</button>
+        <div class="ci-status-label d-flex align-items-center justify-content-center">
+            CI Status
+        </div>
+    </div>
+    <div class="commit-message-container overflow-auto" style="white-space: nowrap">
+        <div class="commit-message" *ngFor="let commit of commits$ | async">
+            <span class="branch-indicator"></span>
+            <span class="commit-message-text">{{commit.message}}</span>
+        </div>
     </div>
 </div>
