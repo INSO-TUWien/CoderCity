@@ -77,7 +77,7 @@ export class GitIndexer {
             commit.sha(),
             commit.author().name(),
             commit.author().email(),
-            commit.date().toISOString(),
+            commit.date(),
             commit.message(),
             (await commit.getParents(null)).map((commit) => commit.sha()),
         );

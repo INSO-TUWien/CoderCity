@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Commit } from 'src/app/shared/git/commit.model';
-import { Branch } from './datastructure/branch.model';
+import { Branch } from 'src/app/shared/git/branch.model';
 
 export enum GitActionTypes {
   FETCH_COMMITS = '[Git] Fetch Commits',

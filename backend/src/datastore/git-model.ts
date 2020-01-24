@@ -56,7 +56,7 @@ export class GitModel {
     /**
      * Rebuilds the dag by setting parent commit objects using the parent commit id string array.
      */
-    rebuild() {
+    rebuild(): void {
         // Traverse all branches until all nodes are connected.
         this.branches.forEach(branch => {
             const branchHeadCommit = branch.commit;

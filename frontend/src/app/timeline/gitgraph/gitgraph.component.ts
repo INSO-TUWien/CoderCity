@@ -1,5 +1,14 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Svg, SVG } from '@svgdotjs/svg.js';
+import { Store, select } from '@ngrx/store';
+import { Observable, combineLatest } from 'rxjs';
+import { Commit } from 'src/app/shared/git/commit.model';
+import { State } from 'src/app/reducers';
+import { tap, take, withLatestFrom, map } from 'rxjs/operators';
+import { GitModel } from '../../shared/git/git-model';
+import { Branch } from 'src/app/shared/git/branch.model';
+import { cloneDeep } from 'lodash-es';
+import { COMMIT_CIRCLE_DISTANCE } from '../gitgraph/rendering/renderer';
 
 @Component({
   selector: 'cc-gitgraph',
@@ -12,27 +21,79 @@ export class GitgraphComponent implements OnInit {
   graphElement: ElementRef;
 
   STROKE_WIDTH = 3;
+  SVG_WIDTH = 800;
+  SVG_HEIGHT = 400;
 
-  constructor() { }
+  branches$: Observable<Branch[]>;
+  commits$: Observable<Commit[]>;
 
-  ngOnInit() {
-    this.createGitVisualization();
+  constructor(private store: Store<State>) {
+    this.commits$ = this.store
+    .pipe(
+      select(store => store.git.commits),
+      map(val => [...val])
+    );
+
+    this.branches$ = this.store
+    .pipe(
+      select(store => store.git.branches),
+      map(val => [...val])
+    );
+
+    combineLatest([this.branches$, this.commits$]).subscribe(
+      (val) => {
+        // Create deep copy of branches and commits
+        const branches = cloneDeep(val[0]);
+        const commits = cloneDeep(val[1]);
+
+        if (branches.length > 0 && commits.length > 0) {
+          this.drawGraph(branches, commits);
+        }
+      }
+    );
   }
 
+  ngOnInit() {
+    //this.renderGitVisualization([]);
+  }
 
-  private createGitVisualization() {
-    let drawing = SVG().addTo(this.graphElement.nativeElement).size(400, 400);
+  private drawGraph(branches: Branch[], commits: Commit[]) {
+    const gitModel = new GitModel(branches, commits);
+    gitModel.rebuild();
+
+    gitModel.commits.forEach((commit) => {
+      let drawing = SVG().addTo(this.graphElement.nativeElement).size(this.SVG_WIDTH, this.SVG_HEIGHT);
+      drawing.line(0, 0, 200, 0).stroke({ width: this.STROKE_WIDTH, color: '#3BC4C7', linecap: 'round'}).move(15, 20);
+
+      for (let i = 0; i < commits.length; i++) {
+        this.addCommitCircle(drawing, 10 + i * COMMIT_CIRCLE_DISTANCE, 10);
+      }
+    });
+  }
+
+  private renderGitVisualization(commits: Commit[]) {
+    if (!Array.isArray(commits) || commits.length <= 0) {
+      return;
+    }
+
+    const COMMIT_CIRCLE_DISTANCE = 38;
+
+    let drawing = SVG().addTo(this.graphElement.nativeElement).size(this.SVG_WIDTH, this.SVG_HEIGHT);
     drawing.line(0, 0, 200, 0).stroke({ width: this.STROKE_WIDTH, color: '#3BC4C7', linecap: 'round'}).move(15, 20);
-    this.addCommitCircle(drawing, 10, 10);
-    this.addCommitCircle(drawing, 50, 10);
-    this.addBranchOut(drawing, 90, 20, 120, 50);
-    this.addCommitCircle(drawing, 90, 10);
 
-    this.addBranchIn(drawing, 120, 50, 165, 20);
-    this.addMergeCircle(drawing, 160, 10);
+    for (let i = 0; i < commits.length; i++) {
+      this.addCommitCircle(drawing, 10 + i * COMMIT_CIRCLE_DISTANCE, 10);
+    }
+    // this.addCommitCircle(drawing, 10, 10);
+    // this.addCommitCircle(drawing, 50, 10);
+    // this.addBranchOut(drawing, 90, 20, 120, 50);
+    // this.addCommitCircle(drawing, 90, 10);
 
-    this.addCommitCircle(drawing, 200, 10);
-    this.addCommitCircle(drawing, 120, 40, '#4D7CE8');
+    // this.addBranchIn(drawing, 120, 50, 165, 20);
+    // this.addMergeCircle(drawing, 160, 10);
+
+    // this.addCommitCircle(drawing, 200, 10);
+    // this.addCommitCircle(drawing, 120, 40, '#4D7CE8');
   }
 
   private addCommitCircle(svg: Svg, x: number, y: number, color: string = '#0AB6B9', style: CommitCircleStyle = CommitCircleStyle.Circle) {
@@ -63,7 +124,7 @@ export class GitgraphComponent implements OnInit {
     }
   }
 
-  private addMergeCircle(svg:Svg, x: number, y: number) {
+  private addMergeCircle(svg: Svg, x: number, y: number) {
     const MERGE_CIRCLE_WIDTH = 10;
     const CIRCLE_COLOR = '#0AB6B9';
     svg.circle(MERGE_CIRCLE_WIDTH).fill(CIRCLE_COLOR).move(x, y + MERGE_CIRCLE_WIDTH / 2);
@@ -97,7 +158,7 @@ export class GitgraphComponent implements OnInit {
       ).stroke({ width: this.STROKE_WIDTH, color: '#4D7CE8' }).fill('transparent');
   }
 
-  private addBranchIn(svg: Svg, startX: number, startY: number, endX: number, endY: number) {
+  private addBranchIn(svg: Svg, startX: number, startY: number, endX: number, endY: number): void {
     // tslint:disable-next-line: jsdoc-format
     /**
      * Example for svg path representing inverted L shaped arc.

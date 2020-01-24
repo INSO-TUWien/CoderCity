@@ -2,6 +2,15 @@ import { Branch } from './branch.model';
 import { Commit } from './commit.model';
 
 export class GitModel {
+
+    constructor(branches: Branch[], commits: Commit[]) {
+        if (branches == null || commits == null) {
+            throw new Error('Invalid Arguments: branches or commits are null or undefined');
+        }
+        this.addCommits(commits);
+        this.addBranches(branches);
+    }
+
     // Array of all commits
     commits: Map<string, Commit> = new Map();
 
@@ -60,6 +69,9 @@ export class GitModel {
         // Traverse all branches until all nodes are connected.
         this.branches.forEach(branch => {
             const branchHeadCommit = branch.commit;
+            if (branchHeadCommit == null) {
+                throw new Error('Branch Head commmit is null');
+            }
             this.fetchAndAssignParentCommit(branchHeadCommit);
         });
     }
@@ -74,9 +86,14 @@ export class GitModel {
             if (this.commitExists(commitID)) {
                 const parentCommit = this.getCommit(commitID);
                 // Assign parent commit node as a parent commit in current commit node.
-                commit.parentCommits.push(parentCommit);
+                if (!commit.parentCommits.includes(parentCommit)) {
+                    commit.parentCommits.push(parentCommit);
+                }
+
                 // Assign current commit node as a child of the parent commit node.
-                parentCommit.childCommits.push(commit);
+                if (!parentCommit.childCommits.includes(commit)) {
+                    parentCommit.childCommits.push(commit);
+                }
 
                 this.fetchAndAssignParentCommit(parentCommit);
             } else {

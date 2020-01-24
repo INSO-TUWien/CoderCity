@@ -1,7 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import * as GitActions from './git.action';
-import { Commit } from './datastructure/commit.model';
-import { Branch } from './datastructure/branch.model';
+import { Commit } from 'src/app/shared/git/commit.model';
+import { Branch } from 'src/app/shared/git/branch.model';
 
 export interface State {
   commits: Commit[];
@@ -17,7 +17,7 @@ const exampleCommit = new Commit(
     '123',
     'Author',
     'mail@mail.com',
-    new Date().toISOString(),
+    new Date(),
     'Commit 1',
     []
 );

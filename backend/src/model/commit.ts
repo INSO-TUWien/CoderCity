@@ -2,18 +2,19 @@ export class Commit {
   commitId: string;
   authorName: string;
   mail: string;
-  date: string;
+
+  
+  date: Date;
   message: string;
-  parentCommitIDs: string[];
-  parentCommits: Commit[];
-  parentCommitSet: Set<Commit>;
-  _childCommits: Commit[];
+  parentCommitIDs: string[] = [];
+  parentCommits: Commit[] = [];
+  childCommits: Commit[] = [];
 
   constructor(
     commitId: string,
     authorName: string,
     mail: string,
-    date: string,
+    date: Date,
     message: string,
     parentCommitIDs: string[],
   ) {
@@ -23,17 +24,6 @@ export class Commit {
     this.date = date;
     this.message = message;
     this.parentCommitIDs = parentCommitIDs;
-  }
-
-  get childCommits(): Commit[] {
-    if (this._childCommits == null) {
-      this._childCommits = [];
-    }
-    return this._childCommits;
-  }
-
-  set childCommits(commits: Commit[]) {
-    this._childCommits = commits;
   }
 
   outputConsole() {

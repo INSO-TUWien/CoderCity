@@ -26,7 +26,7 @@ export class GitController {
         this.logger.log(`GET: commits`);
         const gitCommits = [];
         for (let [key, value] of this.gitService.gitModel.commits) {
-            //this.logger.log(`commit ${value}`);
+            this.logger.log(`Commit ${value}`);
             gitCommits.push(value);
         }
         return gitCommits;
@@ -37,6 +37,7 @@ export class GitController {
         this.logger.log(`GET: branches`);
         const branches = [];
         for (let [key, value] of this.gitService.gitModel.branches) {
+            this.logger.log(`Branch ${value}`);
             branches.push(value);
         }
         return branches;
