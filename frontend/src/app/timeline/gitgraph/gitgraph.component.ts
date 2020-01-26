@@ -54,21 +54,37 @@ export class GitgraphComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.renderGitVisualization([]);
   }
 
   private drawGraph(branches: Branch[], commits: Commit[]) {
     const gitModel = new GitModel(branches, commits);
     gitModel.rebuild();
 
-    gitModel.commits.forEach((commit) => {
-      let drawing = SVG().addTo(this.graphElement.nativeElement).size(this.SVG_WIDTH, this.SVG_HEIGHT);
-      drawing.line(0, 0, 200, 0).stroke({ width: this.STROKE_WIDTH, color: '#3BC4C7', linecap: 'round'}).move(15, 20);
+    let svg = SVG().addTo(this.graphElement.nativeElement).size(this.SVG_WIDTH, this.SVG_HEIGHT);
 
-      for (let i = 0; i < commits.length; i++) {
-        this.addCommitCircle(drawing, 10 + i * COMMIT_CIRCLE_DISTANCE, 10);
-      }
+    // Index of branches
+    let graphBranches = 1;
+    let commitGraphData: number[][];
+
+    let x = 0;
+    let y = 0;
+
+    // Draw commit nodes originating from root nodes (Nodes without parent commmits)
+    gitModel.rootCommits.forEach((commit) => {
+      this.renderCommit(svg, x, y, commit);
+      x++;
     });
+  }
+
+  private renderCommit(svg: Svg, x: number, y: number, commit: Commit) {
+    this.renderCommitCircle(svg, x, y, commit);
+    for (let i = 0; i < commit.childCommits.length; i++) {
+      this.renderCommit(svg, x + 1, y + i, commit.childCommits[i]);
+    }
+  }
+
+  private renderCommitCircle(svg: Svg, x: number, y: number, commit: Commit) {
+    this.addCommitCircle(svg, 10 + x * COMMIT_CIRCLE_DISTANCE, 10 + y * 25, undefined, undefined, commit.commitId);
   }
 
   private renderGitVisualization(commits: Commit[]) {
@@ -96,13 +112,26 @@ export class GitgraphComponent implements OnInit {
     // this.addCommitCircle(drawing, 120, 40, '#4D7CE8');
   }
 
-  private addCommitCircle(svg: Svg, x: number, y: number, color: string = '#0AB6B9', style: CommitCircleStyle = CommitCircleStyle.Circle) {
+  private addCommitCircle(
+      svg: Svg,
+      x: number,
+      y: number,
+      color: string = '#0AB6B9',
+      style: CommitCircleStyle = CommitCircleStyle.Circle,
+      commitID?: string
+    ) {
     const CIRCLE_WIDTH = 18;
     const INNER_CIRCLE_WIDTH = CIRCLE_WIDTH / 2;
+
     if (style === CommitCircleStyle.Circle) {
+      // Outer circle
       svg
         .circle(CIRCLE_WIDTH)
+        .id(`${commitID}`)
         .fill(color).move(x, y)
+        .on('mouseover', () => {
+          alert(`commit ${commitID}`);
+        })
         .on('mouseover', function() {
           this.stroke({ width: 4, color: '#3BC4C7' });
         })

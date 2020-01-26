@@ -18,6 +18,7 @@ import { reducers, metaReducers } from './reducers';
 import { GitEffects } from './shared/git/git.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { BranchSimpleNamePipe } from './pipes/branch-simple-name.pipe';
+import { SelectionPopoverComponent } from './selection-popover/selection-popover.component';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -30,7 +31,8 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     BranchNameLabelComponent,
     BranchNameContainerComponent,
     CommitMessageContainerComponent,
-    BranchSimpleNamePipe
+    BranchSimpleNamePipe,
+    SelectionPopoverComponent
   ],
   imports: [
     BrowserModule,
