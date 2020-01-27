@@ -9,6 +9,7 @@ import { GitModel } from '../../shared/git/git-model';
 import { Branch } from 'src/app/shared/git/branch.model';
 import { cloneDeep } from 'lodash-es';
 import { COMMIT_CIRCLE_DISTANCE } from '../gitgraph/rendering/renderer';
+import * as GitActions from '../gitgraph/git.action';
 
 @Component({
   selector: 'cc-gitgraph',
@@ -84,15 +85,13 @@ export class GitgraphComponent implements OnInit {
   }
 
   private renderCommitCircle(svg: Svg, x: number, y: number, commit: Commit) {
-    this.addCommitCircle(svg, 10 + x * COMMIT_CIRCLE_DISTANCE, 10 + y * 25, undefined, undefined, commit.commitId);
+    this.addCommitCircle(svg, 10 + x * COMMIT_CIRCLE_DISTANCE, 10 + y * 25, undefined, undefined, commit);
   }
 
   private renderGitVisualization(commits: Commit[]) {
     if (!Array.isArray(commits) || commits.length <= 0) {
       return;
     }
-
-    const COMMIT_CIRCLE_DISTANCE = 38;
 
     let drawing = SVG().addTo(this.graphElement.nativeElement).size(this.SVG_WIDTH, this.SVG_HEIGHT);
     drawing.line(0, 0, 200, 0).stroke({ width: this.STROKE_WIDTH, color: '#3BC4C7', linecap: 'round'}).move(15, 20);
@@ -118,7 +117,7 @@ export class GitgraphComponent implements OnInit {
       y: number,
       color: string = '#0AB6B9',
       style: CommitCircleStyle = CommitCircleStyle.Circle,
-      commitID?: string
+      commit?: Commit
     ) {
     const CIRCLE_WIDTH = 18;
     const INNER_CIRCLE_WIDTH = CIRCLE_WIDTH / 2;
@@ -127,10 +126,10 @@ export class GitgraphComponent implements OnInit {
       // Outer circle
       svg
         .circle(CIRCLE_WIDTH)
-        .id(`${commitID}`)
+        .id(`${commit.commitId}`)
         .fill(color).move(x, y)
         .on('mouseover', () => {
-          alert(`commit ${commitID}`);
+          this.store.dispatch(GitActions.setCommitPreview({commitPreview: commit}));
         })
         .on('mouseover', function() {
           this.stroke({ width: 4, color: '#3BC4C7' });

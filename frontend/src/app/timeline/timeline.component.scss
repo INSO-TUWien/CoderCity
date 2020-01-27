@@ -1,9 +1,10 @@
 :host {
-    position: fixed;
     height: 280px;
     width: 800px;
-    left: 20px;
-    bottom: 20px;
+
+    margin-left: 20px;
+    margin-bottom: 20px;
+
     background-color: white;
     z-index: 400;
     padding: 16px;

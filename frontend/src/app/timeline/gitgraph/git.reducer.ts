@@ -6,11 +6,13 @@ import { Branch } from 'src/app/shared/git/branch.model';
 export interface State {
   commits: Commit[];
   branches: Branch[];
+  commitPreview: Commit;
 }
 
 export const initialState: State = {
     commits: [],
-    branches: []
+    branches: [],
+    commitPreview: null
 };
 
 const exampleCommit = new Commit(
@@ -24,12 +26,6 @@ const exampleCommit = new Commit(
 
 export const GitGraphReducer = createReducer(
     initialState,
-/*     on(GitActions.fetchCommits, (state) => {
-        return {
-            ...state,
-            commits: [...state.commits, exampleCommit]
-        };
-    }), */
     on(GitActions.loadCommitsSuccess, (state, { commits }) => {
         console.log(`reducer loadCommitsSuccess: State: ${JSON.stringify(state)} Payload ${JSON.stringify(commits)}`);
         return {
@@ -43,5 +39,11 @@ export const GitGraphReducer = createReducer(
             ...state,
             branches: branches
         };
-    })
+    }),
+    on(GitActions.setCommitPreview, (state, { commitPreview }) => {
+        return {
+            ...state,
+            commitPreview: commitPreview
+        };
+    }),
 );
