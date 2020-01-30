@@ -1,15 +1,14 @@
 :host {
+    z-index: 400;
+}
+
+.container {
+    padding: 16px;
     height: 280px;
     width: 800px;
-
-    margin-left: 20px;
-    margin-bottom: 20px;
-
-    background-color: white;
-    z-index: 400;
-    padding: 16px;
     border-radius: 4px;
     box-shadow: 4px 4px 4px 0 rgba(226,226,226,0.50);
+    background-color: white;
 }
 
 #gitgraph {

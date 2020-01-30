@@ -8,8 +8,12 @@ import { tap, take, withLatestFrom, map } from 'rxjs/operators';
 import { GitModel } from '../../shared/git/git-model';
 import { Branch } from 'src/app/shared/git/branch.model';
 import { cloneDeep } from 'lodash-es';
-import { COMMIT_CIRCLE_DISTANCE } from '../gitgraph/rendering/renderer';
+import { COMMIT_CIRCLE_DISTANCE, Renderer } from '../gitgraph/rendering/renderer';
 import * as GitActions from '../gitgraph/git.action';
+import { GraphCommit } from './rendering/elements/graph-commit';
+import { GraphLine } from './rendering/elements/graph-line';
+import { RenderElement } from './rendering/render-element';
+import { GraphMergeCommit } from './rendering/elements/graph-merge-commit';
 
 @Component({
   selector: 'cc-gitgraph',
@@ -23,10 +27,13 @@ export class GitgraphComponent implements OnInit {
 
   STROKE_WIDTH = 3;
   SVG_WIDTH = 800;
-  SVG_HEIGHT = 400;
+  SVG_HEIGHT = 140;
 
   branches$: Observable<Branch[]>;
   commits$: Observable<Commit[]>;
+
+  svg: Svg;
+  renderer: Renderer;
 
   constructor(private store: Store<State>) {
     this.commits$ = this.store
@@ -55,40 +62,71 @@ export class GitgraphComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.svg = SVG().addTo(this.graphElement.nativeElement).size(this.SVG_WIDTH, this.SVG_HEIGHT);
+    this.renderer = new Renderer(this.svg);
   }
 
   private drawGraph(branches: Branch[], commits: Commit[]) {
     const gitModel = new GitModel(branches, commits);
     gitModel.rebuild();
 
-    let svg = SVG().addTo(this.graphElement.nativeElement).size(this.SVG_WIDTH, this.SVG_HEIGHT);
-
-    // Index of branches
-    let graphBranches = 1;
-    let commitGraphData: number[][];
-
     let x = 0;
     let y = 0;
 
     // Draw commit nodes originating from root nodes (Nodes without parent commmits)
     gitModel.rootCommits.forEach((commit) => {
-      this.renderCommit(svg, x, y, commit);
+      this.renderCommit(this.svg, x, y, commit);
       x++;
     });
+    this.renderer.render();
   }
 
-  private renderCommit(svg: Svg, x: number, y: number, commit: Commit) {
-    this.renderCommitCircle(svg, x, y, commit);
+  private renderCommit(svg: Svg, x: number, y: number, commit: Commit, previous?: RenderElement) {
+    // Render commit circle or merge commit circle if commit has more than 1 parents
+    const graphCommit = (commit.parentCommits.length >= 2) ?
+        this.renderCommitMergeCircle(svg, x, y, commit)
+      : this.renderCommitCircle(svg, x, y, commit);
+    // Connect commit circle with previous commit
+    if (previous != null) {
+      this.renderer.addElement(new GraphLine(previous, graphCommit));
+    }
     for (let i = 0; i < commit.childCommits.length; i++) {
-      this.renderCommit(svg, x + 1, y + i, commit.childCommits[i]);
+      this.renderCommit(svg, x + 1, y + i, commit.childCommits[i], graphCommit);
     }
   }
 
-  private renderCommitCircle(svg: Svg, x: number, y: number, commit: Commit) {
-    this.addCommitCircle(svg, 10 + x * COMMIT_CIRCLE_DISTANCE, 10 + y * 25, undefined, undefined, commit);
+  private renderCommitMergeCircle(svg: Svg, x: number, y: number, commit: Commit): GraphMergeCommit {
+    const circleX = 10 + x * COMMIT_CIRCLE_DISTANCE;
+    const circleY = 10 + y * 25;
+
+    const commitCircle = new GraphMergeCommit(
+      this.store,
+      circleX,
+      circleY,
+      commit,
+      undefined,
+    );
+    this.renderer.addElement(commitCircle);
+    return commitCircle;
   }
 
-  private renderGitVisualization(commits: Commit[]) {
+  private renderCommitCircle(svg: Svg, x: number, y: number, commit: Commit): GraphCommit {
+    const circleX = 10 + x * COMMIT_CIRCLE_DISTANCE;
+    const circleY = 10 + y * 25;
+
+    const commitCircle = new GraphCommit(
+      this.store,
+      circleX,
+      circleY,
+      commit,
+      undefined,
+      undefined
+    );
+    this.renderer.addElement(commitCircle);
+    return commitCircle;
+  }
+
+/*   private renderGitVisualization(commits: Commit[]) {
     if (!Array.isArray(commits) || commits.length <= 0) {
       return;
     }
@@ -99,16 +137,16 @@ export class GitgraphComponent implements OnInit {
     for (let i = 0; i < commits.length; i++) {
       this.addCommitCircle(drawing, 10 + i * COMMIT_CIRCLE_DISTANCE, 10);
     }
-    // this.addCommitCircle(drawing, 10, 10);
-    // this.addCommitCircle(drawing, 50, 10);
-    // this.addBranchOut(drawing, 90, 20, 120, 50);
-    // this.addCommitCircle(drawing, 90, 10);
+    this.addCommitCircle(drawing, 10, 10);
+    this.addCommitCircle(drawing, 50, 10);
+    this.addBranchOut(drawing, 90, 20, 120, 50);
+    this.addCommitCircle(drawing, 90, 10);
 
-    // this.addBranchIn(drawing, 120, 50, 165, 20);
-    // this.addMergeCircle(drawing, 160, 10);
+    this.addBranchIn(drawing, 120, 50, 165, 20);
+    this.addMergeCircle(drawing, 160, 10);
 
-    // this.addCommitCircle(drawing, 200, 10);
-    // this.addCommitCircle(drawing, 120, 40, '#4D7CE8');
+    this.addCommitCircle(drawing, 200, 10);
+    this.addCommitCircle(drawing, 120, 40, '#4D7CE8');
   }
 
   private addCommitCircle(
@@ -150,7 +188,7 @@ export class GitgraphComponent implements OnInit {
         .fill('#ffffff')
         .move(x + (INNER_CIRCLE_WIDTH / 2), y + (INNER_CIRCLE_WIDTH / 2)); // Add offsets due to bounding box center position
     }
-  }
+  } */
 
   private addMergeCircle(svg: Svg, x: number, y: number) {
     const MERGE_CIRCLE_WIDTH = 10;
@@ -215,9 +253,4 @@ export class GitgraphComponent implements OnInit {
       ).stroke({ width: this.STROKE_WIDTH, color: '#4D7CE8' }).fill('transparent');
   }
 
-}
-
-enum CommitCircleStyle {
-  Circle,
-  Rectangle
 }

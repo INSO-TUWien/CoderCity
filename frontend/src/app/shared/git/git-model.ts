@@ -82,16 +82,19 @@ export class GitModel {
             // Current commit has no parent commit nodes / is root commit node
             this.rootCommits.set(commit.commitId, commit);
         }
+        // In all parent commits of the current commit, set the children commits field to the current one.
         parentCommitIDs.forEach(commitID => {
             if (this.commitExists(commitID)) {
                 const parentCommit = this.getCommit(commitID);
                 // Assign parent commit node as a parent commit in current commit node.
-                if (!commit.parentCommits.includes(parentCommit)) {
+                if (!commit.parentCommits.some(e => e.commitId === commitID)) {
                     commit.parentCommits.push(parentCommit);
                 }
 
                 // Assign current commit node as a child of the parent commit node.
-                if (!parentCommit.childCommits.includes(commit)) {
+                if (!parentCommit.childCommits.some(
+                    c => c.commitId ===  commit.commitId
+                )) {
                     parentCommit.childCommits.push(commit);
                 }
 
