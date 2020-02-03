@@ -27,14 +27,14 @@ const exampleCommit = new Commit(
 export const GitGraphReducer = createReducer(
     initialState,
     on(GitActions.loadCommitsSuccess, (state, { commits }) => {
-        console.log(`reducer loadCommitsSuccess: State: ${JSON.stringify(state)} Payload ${JSON.stringify(commits)}`);
+        // console.log(`reducer loadCommitsSuccess: State: ${JSON.stringify(state)} Payload ${JSON.stringify(commits)}`);
         return {
             ...state,
             commits: commits
         };
     }),
     on(GitActions.loadBranchesSuccess, (state, { branches }) => {
-        console.log(`reducer loadBranchesSuccess: State: ${JSON.stringify(state)} Payload ${JSON.stringify(branches)}`);
+        // console.log(`reducer loadBranchesSuccess: State: ${JSON.stringify(state)} Payload ${JSON.stringify(branches)}`);
         return {
             ...state,
             branches: branches

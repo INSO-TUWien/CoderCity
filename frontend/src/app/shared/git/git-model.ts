@@ -15,7 +15,7 @@ export class GitModel {
     commits: Map<string, Commit> = new Map();
 
     // Commits with no parent
-    rootCommits: Map<string, Commit> = new Map();
+    rootCommits: Set<string> = new Set();
 
     // heads of all available branches
     branches: Map<string, Branch> = new Map();
@@ -24,7 +24,7 @@ export class GitModel {
         this.commits.set(commit.commitId, commit);
         if (!Array.isArray(commit.parentCommitIDs)) {
             // Commit does not have any parent commits. Add to root commits
-            this.rootCommits.set(commit.commitId, commit);
+            this.rootCommits.add(commit.commitId);
         }
     }
 
@@ -80,7 +80,7 @@ export class GitModel {
         const parentCommitIDs = commit.parentCommitIDs;
         if (!Array.isArray(parentCommitIDs) || parentCommitIDs.length === 0) {
             // Current commit has no parent commit nodes / is root commit node
-            this.rootCommits.set(commit.commitId, commit);
+            this.rootCommits.add(commit.commitId);
         }
         // In all parent commits of the current commit, set the children commits field to the current one.
         parentCommitIDs.forEach(commitID => {
@@ -93,14 +93,18 @@ export class GitModel {
 
                 // Assign current commit node as a child of the parent commit node.
                 if (!parentCommit.childCommits.some(
-                    c => c.commitId ===  commit.commitId
+                    c => c.commitId === commit.commitId
                 )) {
                     parentCommit.childCommits.push(commit);
                 }
 
+                // Update commits in datastructure
+                this.commits.set(commit.commitId, commit);
+                this.commits.set(parentCommit.commitId, parentCommit);
+
                 this.fetchAndAssignParentCommit(parentCommit);
             } else {
-                console.log(`Parent commit ${commitID} does not exist for commit ${commit}.`);
+                console.error(`Parent commit ${commitID} does not exist for commit ${commit}.`);
             }
         });
     }

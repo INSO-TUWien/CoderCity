@@ -1,6 +1,5 @@
 import { RenderElement } from '../render-element';
 import { Svg } from '@svgdotjs/svg.js';
-import { GraphCommit } from './graph-commit';
 
 export const STROKE_WIDTH = 3;
 
