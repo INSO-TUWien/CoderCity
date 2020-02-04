@@ -40,33 +40,11 @@ export class GitGraphRenderer {
   drawGraph(gitModel: GitModel) {
     this.clear();
     this.gitModel = gitModel;
-    this.createCommitCirclesRecursively();
+    this.createCommitCircles();
     this.createLines();
     this.render();
   }
 
-  private createCommitCircles(): void {
-    this.gitModel.commits.forEach((commit) => {
-      this.createCommit(this.svg, this.g_x, this.g_y, commit);
-
-      // Update occupiedBranches array which tracks active branches.
-      if (commit.childCommits.length === 0) {
-        // If commit has no children, then the branch ends here. Release branch
-        this.occupiedBranches[this.g_x][this.g_y] = null;
-      } else {
-        // Set current commit in occupied branches array where all active branches are tracked.
-        this.occupiedBranches[this.g_x][this.g_y] = commit.commitId;
-      }
-
-      this.g_x++;
-      console.log(`occupiedbranches: ${JSON.stringify(this.occupiedBranches)}`);
-
-      // Do not advance y coordinate in case there is only one child Commit (straight line)
-      if (commit.childCommits.length !== 1) {
-        this.g_y++;
-      }
-    });
-  }
 
   private getOccupiedBranches(x: number): string[] {
     return Object.assign([], this.occupiedBranches[x]);
@@ -82,53 +60,48 @@ export class GitGraphRenderer {
     return (element !== null) ? true : false;
   }
 
-  private isValidBranchPath(startElement: AbstractGraphCommit, endElement: AbstractGraphCommit): boolean {
+  private isValidBranchPath(startElement: AbstractGraphCommit, endX: number, endY: number): boolean {
     // Use x coordinate of start element as starting point
     const startX = startElement.x;
-    const endX = endElement.x;
-    const y = endElement.y;
     // Traverse through all elements up until endElement is reached. If the graph contains other elements the path is not valid.
     for (let x = startX; x < endX; x++) {
-      if (this.isOccupied(x, y)) {
+      if (this.isOccupied(x, endY)) {
         return false;
       }
     }
     return true;
   }
 
-  private createCommitCirclesRecursively(): void {
+  private createCommitCircles(): void {
     this.gitModel.commits.forEach((commit) => {
       this.createCommit(this.svg, this.g_x, this.g_y, commit);
 
       // Get occupied branches array of current commit
-      const occupiedBranches = this.getOccupiedBranches(
+      const occupiedBranchesSnapshot = this.getOccupiedBranches(
         (this.g_x === 0) ? 0 : this.g_x - 1);
       // Update occupiedBranches array which tracks active branches.
       if (commit.childCommits.length === 0) {
         // If commit has no children, then the branch ends here. Release branch
-        occupiedBranches[this.g_y] = null;
+        occupiedBranchesSnapshot[this.g_y] = null;
       } else {
         // Set current commit in occupied branches array where all active branches are tracked.
-        occupiedBranches[this.g_y] = commit.commitId;
+        occupiedBranchesSnapshot[this.g_y] = commit.commitId;
       }
 
       console.debug(`Drawing commit ${commit.message}. Occupied Branches: ${JSON.stringify(this.occupiedBranches)}`);
 
-      this.setOccupiedBranches(this.g_x, occupiedBranches);
-
+      this.setOccupiedBranches(this.g_x, occupiedBranchesSnapshot);
       this.g_x++;
 
       // Do not advance y coordinate in case there is only one child Commit (straight line)
       if (commit.childCommits.length !== 1) {
-        // Select next y coordinate of next commit circle
-        const nonOccupiedBranchIndex = this.occupiedBranches.findIndex(e => e === null);
+/*         // Select next y coordinate of next commit circle
+        const nonOccupiedBranchIndex = occupiedBranchesSnapshot.findIndex(e => e === null);
+        // Free slot found. Make sure, there is no collision with another branch
         if (nonOccupiedBranchIndex !== -1) {
-          this.g_y = nonOccupiedBranchIndex;
-        } else {
-          alert(occupiedBranches.length);
-          this.g_y = occupiedBranches.length;
-        }
-        //this.g_y++;
+          this.g_y++;
+        } */
+        this.g_y++;
       }
     });
   }
