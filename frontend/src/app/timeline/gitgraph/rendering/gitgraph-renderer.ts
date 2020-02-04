@@ -7,6 +7,7 @@ import { Commit } from 'src/app/shared/git/commit.model';
 import { GraphRoundedLine } from './elements/graph-rounded-line';
 import { GraphMergeCommit } from './elements/graph-merge-commit';
 import { GraphCommit } from './elements/graph-commit';
+import { AbstractGraphCommit } from './elements/abstract-graph-commit';
 
 export const COMMIT_CIRCLE_DISTANCE = 38;
 
@@ -18,9 +19,8 @@ export class GitGraphRenderer {
   private g_y: number = 0;
 
   // Stores which branches are active at index i of array. Used when drawing lines between commits.
-  private occupiedBranches: string[] = [];
-
-  private graphCommits: Map<string, RenderElement> = new Map();
+  private occupiedBranches: string[][] = [];
+  private graphCommits: Map<string, AbstractGraphCommit> = new Map();
 
   constructor(private svg: Svg, private store: Store<State>) {}
 
@@ -28,51 +28,109 @@ export class GitGraphRenderer {
     this.renderElements.push(element);
   }
 
-  private clear() {
+  /**
+   * Clears and empties the current svg element.
+   */
+  clear() {
     // TODO Fix clear function
     this.renderElements = [];
     this.svg.clear();
   }
 
-  renderGitModel(gitModel: GitModel) {
+  drawGraph(gitModel: GitModel) {
     this.clear();
     this.gitModel = gitModel;
-    this.drawGraph();
+    this.createCommitCirclesRecursively();
+    this.createLines();
+    this.render();
   }
 
-  private drawGraph(): void {
+  private createCommitCircles(): void {
     this.gitModel.commits.forEach((commit) => {
       this.createCommit(this.svg, this.g_x, this.g_y, commit);
-      this.g_x++;
 
       // Update occupiedBranches array which tracks active branches.
       if (commit.childCommits.length === 0) {
         // If commit has no children, then the branch ends here. Release branch
-        this.occupiedBranches[this.g_y] = null;
+        this.occupiedBranches[this.g_x][this.g_y] = null;
       } else {
         // Set current commit in occupied branches array where all active branches are tracked.
-        this.occupiedBranches[this.g_y] = commit.commitId;
+        this.occupiedBranches[this.g_x][this.g_y] = commit.commitId;
       }
 
+      this.g_x++;
       console.log(`occupiedbranches: ${JSON.stringify(this.occupiedBranches)}`);
 
       // Do not advance y coordinate in case there is only one child Commit (straight line)
       if (commit.childCommits.length !== 1) {
-        // Select next y coordinate of next commit circle
-/*         const nonOccupiedBranchIndex = this.occupiedBranches.findIndex(e => e === null);
-        if (nonOccupiedBranchIndex !== -1) {
-          this.g_y = nonOccupiedBranchIndex;
-        } else {
-          this.g_y = this.occupiedBranches.length;
-        } */
-
         this.g_y++;
       }
     });
+  }
 
-    this.createLines();
+  private getOccupiedBranches(x: number): string[] {
+    return Object.assign([], this.occupiedBranches[x]);
+  }
 
-    this.render();
+  private setOccupiedBranches(x: number, occupiedBranches: string[]): void {
+    this.occupiedBranches[x] = occupiedBranches;
+  }
+
+  private isOccupied(x: number, y: number): boolean {
+    const occupiedBranches = this.getOccupiedBranches(x);
+    const element = occupiedBranches[y];
+    return (element !== null) ? true : false;
+  }
+
+  private isValidBranchPath(startElement: AbstractGraphCommit, endElement: AbstractGraphCommit): boolean {
+    // Use x coordinate of start element as starting point
+    const startX = startElement.x;
+    const endX = endElement.x;
+    const y = endElement.y;
+    // Traverse through all elements up until endElement is reached. If the graph contains other elements the path is not valid.
+    for (let x = startX; x < endX; x++) {
+      if (this.isOccupied(x, y)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private createCommitCirclesRecursively(): void {
+    this.gitModel.commits.forEach((commit) => {
+      this.createCommit(this.svg, this.g_x, this.g_y, commit);
+
+      // Get occupied branches array of current commit
+      const occupiedBranches = this.getOccupiedBranches(
+        (this.g_x === 0) ? 0 : this.g_x - 1);
+      // Update occupiedBranches array which tracks active branches.
+      if (commit.childCommits.length === 0) {
+        // If commit has no children, then the branch ends here. Release branch
+        occupiedBranches[this.g_y] = null;
+      } else {
+        // Set current commit in occupied branches array where all active branches are tracked.
+        occupiedBranches[this.g_y] = commit.commitId;
+      }
+
+      console.debug(`Drawing commit ${commit.message}. Occupied Branches: ${JSON.stringify(this.occupiedBranches)}`);
+
+      this.setOccupiedBranches(this.g_x, occupiedBranches);
+
+      this.g_x++;
+
+      // Do not advance y coordinate in case there is only one child Commit (straight line)
+      if (commit.childCommits.length !== 1) {
+        // Select next y coordinate of next commit circle
+        const nonOccupiedBranchIndex = this.occupiedBranches.findIndex(e => e === null);
+        if (nonOccupiedBranchIndex !== -1) {
+          this.g_y = nonOccupiedBranchIndex;
+        } else {
+          alert(occupiedBranches.length);
+          this.g_y = occupiedBranches.length;
+        }
+        //this.g_y++;
+      }
+    });
   }
 
   private createLines(): void {
@@ -122,6 +180,8 @@ export class GitGraphRenderer {
       this.store,
       circleX,
       circleY,
+      x,
+      y,
       commit,
       undefined
     );
@@ -142,6 +202,8 @@ export class GitGraphRenderer {
       this.store,
       circleX,
       circleY,
+      x,
+      y,
       commit,
       undefined,
       undefined

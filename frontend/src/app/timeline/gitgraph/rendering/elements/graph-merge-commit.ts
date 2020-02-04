@@ -1,20 +1,22 @@
-import { AbstractStoreRenderElement } from '../abstract-store-render-element';
 import { Store } from '@ngrx/store';
 import { Commit } from 'src/app/shared/git/commit.model';
 import { CommitCircleStyle } from './graph-commit';
 import { State } from 'src/app/reducers';
 import { Svg } from '@svgdotjs/svg.js';
 import * as GitActions from '../../git.action';
+import { AbstractGraphCommit } from './abstract-graph-commit';
 
 export const MERGE_CIRCLE_WIDTH = 10;
 export const CIRCLE_COLOR = '#0AB6B9';
 
-export class GraphMergeCommit extends AbstractStoreRenderElement {
+export class GraphMergeCommit extends AbstractGraphCommit {
 
     constructor(
         public store: Store<State>,
         public x: number,
         public y: number,
+        public graphPositionX: number,
+        public graphPositionY: number,
         public commit: Commit,
         public color: string = CIRCLE_COLOR
     ) {

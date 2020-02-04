@@ -1,9 +1,9 @@
 import { Commit } from 'src/app/shared/git/commit.model';
 import { Svg } from '@svgdotjs/svg.js';
 import { State } from 'src/app/reducers';
-import { AbstractStoreRenderElement } from '../abstract-store-render-element';
 import * as GitActions from '../../git.action';
 import { Store } from '@ngrx/store';
+import { AbstractGraphCommit } from './abstract-graph-commit';
 
 export const CIRCLE_WIDTH = 18;
 export const INNER_CIRCLE_WIDTH = CIRCLE_WIDTH / 2;
@@ -13,12 +13,14 @@ export enum CommitCircleStyle {
     Rectangle
 }
 
-export class GraphCommit extends AbstractStoreRenderElement {
+export class GraphCommit extends AbstractGraphCommit {
 
     constructor(
         public store: Store<State>,
         public x: number,
         public y: number,
+        public graphPositionX: number,
+        public graphPositionY: number,
         public commit: Commit,
         public style: CommitCircleStyle = CommitCircleStyle.Circle,
         public color: string = '#0AB6B9'
