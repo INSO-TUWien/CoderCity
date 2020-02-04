@@ -8,7 +8,7 @@ import { tap, take, withLatestFrom, map } from 'rxjs/operators';
 import { GitModel } from '../../shared/git/git-model';
 import { Branch } from 'src/app/shared/git/branch.model';
 import { cloneDeep } from 'lodash-es';
-import { GitGraphRenderer } from '../gitgraph/rendering/renderer';
+import { GitGraphRenderer } from './rendering/gitgraph-renderer';
 
 @Component({
   selector: 'cc-gitgraph',

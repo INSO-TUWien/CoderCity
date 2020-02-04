@@ -1,12 +1,12 @@
-import { RenderElement } from "./render-element";
-import { Svg } from "@svgdotjs/svg.js";
-import { GitModel } from "src/app/shared/git/git-model";
-import { Store } from "@ngrx/store";
-import { State } from "src/app/reducers";
-import { Commit } from "src/app/shared/git/commit.model";
-import { GraphRoundedLine } from "./elements/graph-rounded-line";
-import { GraphMergeCommit } from "./elements/graph-merge-commit";
-import { GraphCommit } from "./elements/graph-commit";
+import { RenderElement } from './render-element';
+import { Svg } from '@svgdotjs/svg.js';
+import { GitModel } from 'src/app/shared/git/git-model';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/reducers';
+import { Commit } from 'src/app/shared/git/commit.model';
+import { GraphRoundedLine } from './elements/graph-rounded-line';
+import { GraphMergeCommit } from './elements/graph-merge-commit';
+import { GraphCommit } from './elements/graph-commit';
 
 export const COMMIT_CIRCLE_DISTANCE = 38;
 
@@ -16,6 +16,9 @@ export class GitGraphRenderer {
 
   private g_x: number = 0;
   private g_y: number = 0;
+
+  // Stores which branches are active at index i of array. Used when drawing lines between commits.
+  private occupiedBranches: string[] = [];
 
   private graphCommits: Map<string, RenderElement> = new Map();
 
@@ -41,19 +44,43 @@ export class GitGraphRenderer {
     this.gitModel.commits.forEach((commit) => {
       this.createCommit(this.svg, this.g_x, this.g_y, commit);
       this.g_x++;
+
+      // Update occupiedBranches array which tracks active branches.
+      if (commit.childCommits.length === 0) {
+        // If commit has no children, then the branch ends here. Release branch
+        this.occupiedBranches[this.g_y] = null;
+      } else {
+        // Set current commit in occupied branches array where all active branches are tracked.
+        this.occupiedBranches[this.g_y] = commit.commitId;
+      }
+
+      console.log(`occupiedbranches: ${JSON.stringify(this.occupiedBranches)}`);
+
       // Do not advance y coordinate in case there is only one child Commit (straight line)
       if (commit.childCommits.length !== 1) {
+        // Select next y coordinate of next commit circle
+/*         const nonOccupiedBranchIndex = this.occupiedBranches.findIndex(e => e === null);
+        if (nonOccupiedBranchIndex !== -1) {
+          this.g_y = nonOccupiedBranchIndex;
+        } else {
+          this.g_y = this.occupiedBranches.length;
+        } */
+
         this.g_y++;
       }
     });
 
+    this.createLines();
+
+    this.render();
+  }
+
+  private createLines(): void {
     // Traverse all child commit nodes and draw lines between parent and child commit
     this.gitModel.rootCommits.forEach((rootCommitId) => {
       const rootCommit = this.gitModel.getCommit(rootCommitId);
       this.createCommitLine(rootCommit.commitId);
     });
-
-    this.render();
   }
 
   private createCommitLine(commitId: string) {
