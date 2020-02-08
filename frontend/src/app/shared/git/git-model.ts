@@ -87,15 +87,15 @@ export class GitModel {
             if (this.commitExists(commitID)) {
                 const parentCommit = this.getCommit(commitID);
                 // Assign parent commit node as a parent commit in current commit node.
-                if (!commit.parentCommits.some(e => e.commitId === commitID)) {
-                    commit.parentCommits.push(parentCommit);
+                if (!commit.parentCommitIDs.some(parentCommitID => parentCommitID === commitID)) {
+                    commit.parentCommitIDs.push(parentCommit.commitId);
                 }
 
                 // Assign current commit node as a child of the parent commit node.
-                if (!parentCommit.childCommits.some(
-                    c => c.commitId === commit.commitId
+                if (!parentCommit.childCommitIDs.some(
+                    commitId => commitId === commit.commitId
                 )) {
-                    parentCommit.childCommits.push(commit);
+                    parentCommit.childCommitIDs.push(commit.commitId);
                 }
 
                 // Update commits in datastructure

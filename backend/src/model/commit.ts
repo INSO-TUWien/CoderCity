@@ -3,10 +3,10 @@ export class Commit {
   authorName: string;
   mail: string;
 
-  
   date: Date;
   message: string;
   parentCommitIDs: string[] = [];
+  childCommitIDs: string[] = [];
   parentCommits: Commit[] = [];
   childCommits: Commit[] = [];
 
