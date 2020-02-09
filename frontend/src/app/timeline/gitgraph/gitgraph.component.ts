@@ -73,12 +73,5 @@ export class GitgraphComponent implements OnInit {
     gitModel.rebuild();
 
     this.renderer.drawGraph(gitModel);
-
-  /*   gitModel.commits.forEach((commit, key, map) => {
-      this.renderCommitByTime(this.svg, this.g_x, this.g_y, commit);
-      this.g_x++;
-      this.g_y++;
-    });
-    this.renderer.render(); */
   }
 }

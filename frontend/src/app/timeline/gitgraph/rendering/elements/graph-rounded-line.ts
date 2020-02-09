@@ -103,7 +103,7 @@ export class GraphRoundedLine implements RenderElement {
         const endY = this.endElement.y + OFFSET_Y;
 
         // Check if end node is above or below start node in y-coordinate.
-        if (endY > startY) {
+        if (startY < endY) {
             /**
              * Render L shaped arc
              * Example for svg path representing L shaped arc.
@@ -152,7 +152,7 @@ export class GraphRoundedLine implements RenderElement {
 
             const P1_X = startX;
             const P1_Y = startY;
-            const P2_Y = endY - 10;
+            const P2_Y = endY + 10;
             const P3_X = P1_X + 10;
             const P3_Y = endY;
             const P4_X = endX;
