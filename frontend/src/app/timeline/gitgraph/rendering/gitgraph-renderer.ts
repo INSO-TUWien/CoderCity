@@ -15,8 +15,8 @@ export class GitGraphRenderer {
   private renderElements: RenderElement[] = [];
   private gitModel: GitModel;
 
-  private g_x: number = 0;
-  private g_y: number = 0;
+  private grid_x: number = 0;
+  private grid_y: number = 0;
 
   // Stores which branches are active at index i of array. Used when drawing lines between commits.
   private occupiedBranches: string[][] = [];
@@ -79,33 +79,45 @@ export class GitGraphRenderer {
     return true;
   }
 
-
-  private createCommitCircles(): void {
+  private computeBranchChildren(): void {
     // Get all branch children
-    const commits = Array.from<Commit>(this.gitModel.commits.values());
-    commits.forEach((commit) => {
+    this.gitModel.commits.forEach((commit) => {
+      // TODO: OPTIMIZATION: Branches may be visited multiple times.
       // Branch children are all children of a node except the first child node.
       // Since the edge to the first child node should be drawn with a straight line)
       if (Array.isArray(commit.childCommitIDs) && commit.childCommitIDs.length > 1) {
         commit.childCommitIDs.forEach((childCommitID) => {
-          this.branchChildrenIDs.add(childCommitID);
+          // Ignore merge commits (commits which have > 2 parents)
+          const childCommit = this.gitModel.commits.get(childCommitID);
+          if (childCommit.parentCommitIDs.length < 2) {
+            // Commit is not merge commit
+            this.branchChildrenIDs.add(childCommitID);
+          }
         });
       }
     });
+  }
 
+  private createCommitCircles(): void {
+    this.computeBranchChildren();
     this.gitModel.commits.forEach((commit) => {
       this.createCommitCircle(commit);
     });
   }
 
-
-  private getReplacementInActiveBranches(commit: Commit, activeBranches: string[]): number {
+  /**
+   * Computes eligible replacements/successors to commits stored in the active branches.
+   */
+  private getReplacementInActiveBranches(commit: Commit, activeBranches: string[]): number[] {
     // For all parent ids of the commit, check if a parent is in the active branches array.
-    let replacement = -1;
+    const replacements = [];
     commit.parentCommitIDs.forEach((parentId) => {
-      replacement = activeBranches.findIndex((c) => c === parentId);
+      const replacement = activeBranches.findIndex((c) => c === parentId);
+      if (replacement !== -1) {
+        replacements.push(replacement);
+      }
     });
-    return replacement;
+    return replacements;
   }
 
   private getEmptySlotInActiveBranches(commit: Commit, activeBranches: string[]): number {
@@ -116,7 +128,7 @@ export class GitGraphRenderer {
   private createCommitCircle(commit: Commit): void {
     // Get occupied branches array of current commit
     const occupiedBranchesSnapshot = this.getOccupiedBranches(
-      (this.g_x === 0) ? 0 : this.g_x - 1);
+      (this.grid_x === 0) ? 0 : this.grid_x - 1);
 
     console.debug(`Drawing commit: ${commit.message} sha: ${commit.commitId}. \n Occupied Branches: ${JSON.stringify(occupiedBranchesSnapshot)}`);
 
@@ -124,7 +136,7 @@ export class GitGraphRenderer {
     const activeBranchReplacement = this.getReplacementInActiveBranches(commit, occupiedBranchesSnapshot);
 
     if (
-      activeBranchReplacement === -1
+      activeBranchReplacement.length === 0
       || this.branchChildrenIDs.has(commit.commitId)) {
       // No replacement for an existing active branch could be found.
       // Or commit is a branch children which branches out from the parent node.
@@ -137,34 +149,34 @@ export class GitGraphRenderer {
         // Check whether empty slot is valid (does not overlap with other commits)
         validPlacement = commit.parentCommitIDs.map((parentCommitID) => {
           const parentCommit = this.graphCommits.get(parentCommitID);
-          return this.isValidBranchPath(parentCommit, this.g_x, emptySlot);
+          return this.isValidBranchPath(parentCommit, this.grid_x, emptySlot);
         }).reduce((prev, cur) => prev && cur, true);
       }
 
       if (emptySlot !== -1 && validPlacement === true) {
-        this.g_y = emptySlot;
+        this.grid_y = emptySlot;
       } else {
-        this.g_y = (this.g_x === 0) ? 0 : this.g_y + 1;
+        this.grid_y = (this.grid_x === 0) ? 0 : this.grid_y + 1;
       }
     } else {
-      this.g_y = activeBranchReplacement;
+      this.grid_y = activeBranchReplacement[0];
       console.debug(`Commit ${commit.message} sha: ${commit.commitId} replaces ${occupiedBranchesSnapshot[activeBranchReplacement]}`);
     }
 
-    this.createCommit(this.svg, this.g_x, this.g_y, commit);
+    this.createCommit(this.svg, this.grid_x, this.grid_y, commit);
 
     // Update occupiedBranches array which tracks active branches.
     if (commit.childCommitIDs.length === 0) {
       // If commit has no children, then the branch ends here. Release/Remove the current branch from active branches array.
-      occupiedBranchesSnapshot[this.g_y] = null;
+      occupiedBranchesSnapshot[this.grid_y] = null;
     } else {
       // Set current commit in occupied branches array where all active branches are tracked.
-      occupiedBranchesSnapshot[this.g_y] = commit.commitId;
+      occupiedBranchesSnapshot[this.grid_y] = commit.commitId;
     }
 
     // Update active branches.
-    this.setOccupiedBranches(this.g_x, occupiedBranchesSnapshot);
-    this.g_x++;
+    this.setOccupiedBranches(this.grid_x, occupiedBranchesSnapshot);
+    this.grid_x++;
   }
 
   private createLines(): void {
