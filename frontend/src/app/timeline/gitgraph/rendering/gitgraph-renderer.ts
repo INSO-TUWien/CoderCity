@@ -163,7 +163,7 @@ export class GitGraphRenderer {
       console.debug(`Commit ${commit.message} sha: ${commit.commitId} replaces ${occupiedBranchesSnapshot[activeBranchReplacement[0]]}`);
     }
 
-    this.createCommit(this.svg, this.grid_x, this.grid_y, commit);
+    this.createCommit(this.grid_x, this.grid_y, commit);
 
     // Update occupiedBranches array which tracks active branches.
     if (commit.childCommitIDs.length === 0) {
@@ -199,7 +199,6 @@ export class GitGraphRenderer {
   }
 
   private createCommit(
-    svg: Svg,
     x: number,
     y: number,
     commit: Commit
@@ -207,14 +206,13 @@ export class GitGraphRenderer {
     // Render commit circle or merge commit circle if commit has more than 1 parents
     const graphCommit =
       commit.parentCommitIDs.length >= 2
-        ? this.renderCommitMergeCircle(svg, x, y, commit)
-        : this.renderCommitCircle(svg, x, y, commit);
+        ? this.renderCommitMergeCircle(x, y, commit)
+        : this.renderCommitCircle(x, y, commit);
 
     this.graphCommits.set(graphCommit.commit.commitId, graphCommit);
   }
 
   private renderCommitMergeCircle(
-    svg: Svg,
     x: number,
     y: number,
     commit: Commit
@@ -236,7 +234,6 @@ export class GitGraphRenderer {
   }
 
   private renderCommitCircle(
-    svg: Svg,
     x: number,
     y: number,
     commit: Commit

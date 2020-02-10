@@ -22,6 +22,10 @@ export class GraphRoundedLine implements RenderElement {
     }
 
     render(svg: Svg): void {
+        if (this.startElement == null || this.endElement == null) {
+            console.error(`GraphRoundedLine: Could not render due to invalid values: `
+            + `startElement: ${this.startElement} endElement: ${this.endElement}`);
+        }
         if (this.endElement instanceof GraphCommit) {
             this.renderBranchOut(svg);
         } else if (this.endElement instanceof GraphMergeCommit) {
