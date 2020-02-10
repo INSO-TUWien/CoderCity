@@ -9,7 +9,8 @@ export const STROKE_WIDTH = 3;
 export const OFFSET_X = 15 / 2;
 export const OFFSET_Y = 20 / 2;
 
-export const BRANCH_IN_COLOR = '#4D7CE8' ;
+export const BRANCH_IN_COLOR = '#4D7CE8';
+export const BRANCH_OUT_COLOR = '#3BC4C7';
 
 export class GraphRoundedLine implements RenderElement {
     x: number;
@@ -63,6 +64,18 @@ export class GraphRoundedLine implements RenderElement {
             )
             .stroke({ width: STROKE_WIDTH, color: BRANCH_IN_COLOR })
             .fill('transparent')
+            .back();
+        } else if (endY === startY) {
+            svg.line(
+                this.startElement.x + OFFSET_X,
+                this.startElement.y + OFFSET_Y,
+                this.endElement.x + OFFSET_X,
+                this.endElement.y + OFFSET_Y)
+            .stroke(
+                {
+                    width: STROKE_WIDTH,
+                    color: BRANCH_IN_COLOR,
+                    linecap: 'round'})
             .back();
         } else {
             /**
@@ -131,9 +144,21 @@ export class GraphRoundedLine implements RenderElement {
                     `M ${P1_X} ${P2_Y} Q ${P1_X} ${endY} ${P3_X} ${P3_Y}` +
                     `M ${P3_X} ${P3_Y} L ${P4_X} ${P3_Y}`
                 )
-                .stroke({ width: STROKE_WIDTH, color: '#3BC4C7' })
+                .stroke({ width: STROKE_WIDTH, color: BRANCH_OUT_COLOR })
                 .fill('transparent')
                 .back();
+        } else if (endY === startY) {
+            svg.line(
+                this.startElement.x + OFFSET_X,
+                this.startElement.y + OFFSET_Y,
+                this.endElement.x + OFFSET_X,
+                this.endElement.y + OFFSET_Y)
+            .stroke(
+                {
+                    width: STROKE_WIDTH,
+                    color: BRANCH_OUT_COLOR,
+                    linecap: 'round'})
+            .back();
         } else {
             /**
              * Render L shaped arc
@@ -162,7 +187,7 @@ export class GraphRoundedLine implements RenderElement {
                     `M ${P1_X} ${P2_Y} Q ${P1_X} ${endY} ${P3_X} ${P3_Y}` +
                     `M ${P3_X} ${P3_Y} L ${P4_X} ${P3_Y}`
                 )
-                .stroke({ width: STROKE_WIDTH, color: '#3BC4C7' })
+                .stroke({ width: STROKE_WIDTH, color: BRANCH_OUT_COLOR })
                 .fill('transparent')
                 .back();
         }

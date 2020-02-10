@@ -160,7 +160,7 @@ export class GitGraphRenderer {
       }
     } else {
       this.grid_y = activeBranchReplacement[0];
-      console.debug(`Commit ${commit.message} sha: ${commit.commitId} replaces ${occupiedBranchesSnapshot[activeBranchReplacement]}`);
+      console.debug(`Commit ${commit.message} sha: ${commit.commitId} replaces ${occupiedBranchesSnapshot[activeBranchReplacement[0]]}`);
     }
 
     this.createCommit(this.svg, this.grid_x, this.grid_y, commit);
