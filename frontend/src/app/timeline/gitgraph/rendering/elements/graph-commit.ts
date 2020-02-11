@@ -4,6 +4,7 @@ import { State } from 'src/app/reducers';
 import * as GitActions from '../../git.action';
 import { Store } from '@ngrx/store';
 import { AbstractGraphCommit } from './abstract-graph-commit';
+import { getBranchColor, getBranchHighlightColor } from '../graph-colors';
 
 export const CIRCLE_WIDTH = 18;
 export const INNER_CIRCLE_WIDTH = CIRCLE_WIDTH / 2;
@@ -14,6 +15,7 @@ export enum CommitCircleStyle {
 }
 
 export class GraphCommit extends AbstractGraphCommit {
+  private highlightColor: string;
 
     constructor(
         public store: Store<State>,
@@ -26,15 +28,20 @@ export class GraphCommit extends AbstractGraphCommit {
         public color: string = '#0AB6B9'
     ) {
         super(store);
+        this.color = getBranchColor(this.graphPositionY);
+        this.highlightColor = getBranchHighlightColor(this.graphPositionY);
     }
 
     render(svg: Svg): void {
         if (this.style === CommitCircleStyle.Circle) {
             // Outer circle
-            svg
+            const circle = svg
               .circle(CIRCLE_WIDTH)
               .id(`${this.commit.commitId}`)
-              .fill(this.color).move(this.x, this.y)
+              .fill(
+                this.color
+              )
+              .move(this.x, this.y)
               .on('mouseover', () => {
                 this.store.dispatch(
                     GitActions.setCommitPreview(
@@ -43,13 +50,12 @@ export class GraphCommit extends AbstractGraphCommit {
                         }
                     )
                 );
+                circle.stroke({ width: 4, color: this.highlightColor });
               })
-              .on('mouseover', function() {
-                this.stroke({ width: 4, color: '#3BC4C7' });
-              })
-              .on('mouseout', function() {
-                this.fill({ color: this.color});
-                this.stroke({ width: 0 });
+              .on('mouseout', () => {
+                circle
+                  .fill({ color: this.color})
+                  .stroke({ width: 0 });
               });
 
             // Inner white circle

@@ -2,10 +2,12 @@ import { RenderElement } from '../render-element';
 import { Svg } from '@svgdotjs/svg.js';
 import { GraphCommit } from './graph-commit';
 import { GraphMergeCommit } from './graph-merge-commit';
+import { AbstractGraphCommit } from './abstract-graph-commit';
+import { getBranchColor } from '../graph-colors';
 
 export const STROKE_WIDTH = 3;
 
-// Account for offset in bounding boxes of commit circles
+// Offsets due to bounding boxes of commit circles
 export const OFFSET_X = 15 / 2;
 export const OFFSET_Y = 20 / 2;
 
@@ -16,8 +18,8 @@ export class GraphLine implements RenderElement {
     x: number;
     y: number;
     constructor(
-        private startElement: RenderElement,
-        private endElement: RenderElement
+        private startElement: AbstractGraphCommit,
+        private endElement: AbstractGraphCommit
     ) {
     }
 
@@ -66,7 +68,10 @@ export class GraphLine implements RenderElement {
             `M ${P2_X} ${P1_Y} Q ${P3_X} ${P1_Y} ${P3_X} ${P3_Y}` +
             `M ${P3_X} ${P3_Y} L ${P3_X} ${P4_Y}`
             )
-            .stroke({ width: STROKE_WIDTH, color: BRANCH_IN_COLOR })
+            .stroke({
+                width: STROKE_WIDTH,
+                color: getBranchColor(this.startElement.graphPositionY)
+            })
             .fill('transparent')
             .back();
         } else if (endY === startY) {
@@ -78,7 +83,7 @@ export class GraphLine implements RenderElement {
             .stroke(
                 {
                     width: STROKE_WIDTH,
-                    color: BRANCH_IN_COLOR,
+                    color: getBranchColor(this.startElement.graphPositionY),
                     linecap: 'round'})
             .back();
         } else {
@@ -107,7 +112,7 @@ export class GraphLine implements RenderElement {
             `M ${P2_X} ${P1_Y} Q ${P3_X} ${P1_Y} ${P3_X} ${P3_Y}` +
             `M ${P3_X} ${P3_Y} L ${P3_X} ${P4_Y}`
             )
-            .stroke({ width: STROKE_WIDTH, color: BRANCH_IN_COLOR })
+            .stroke({ width: STROKE_WIDTH, color: getBranchColor(this.startElement.graphPositionY)})
             .fill('transparent')
             .back();
         }
@@ -148,7 +153,9 @@ export class GraphLine implements RenderElement {
                     `M ${P1_X} ${P2_Y} Q ${P1_X} ${endY} ${P3_X} ${P3_Y}` +
                     `M ${P3_X} ${P3_Y} L ${P4_X} ${P3_Y}`
                 )
-                .stroke({ width: STROKE_WIDTH, color: BRANCH_OUT_COLOR })
+                .stroke({ 
+                    width: STROKE_WIDTH, 
+                    color: getBranchColor(this.endElement.graphPositionY)})
                 .fill('transparent')
                 .back();
         } else if (endY === startY) {
@@ -160,7 +167,7 @@ export class GraphLine implements RenderElement {
             .stroke(
                 {
                     width: STROKE_WIDTH,
-                    color: BRANCH_OUT_COLOR,
+                    color: getBranchColor(this.startElement.graphPositionY),
                     linecap: 'round'})
             .back();
         } else {
@@ -191,7 +198,7 @@ export class GraphLine implements RenderElement {
                     `M ${P1_X} ${P2_Y} Q ${P1_X} ${endY} ${P3_X} ${P3_Y}` +
                     `M ${P3_X} ${P3_Y} L ${P4_X} ${P3_Y}`
                 )
-                .stroke({ width: STROKE_WIDTH, color: BRANCH_OUT_COLOR })
+                .stroke({ width: STROKE_WIDTH, color: getBranchColor(this.endElement.graphPositionY) })
                 .fill('transparent')
                 .back();
         }

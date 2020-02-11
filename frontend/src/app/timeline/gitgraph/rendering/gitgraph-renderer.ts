@@ -120,6 +120,11 @@ export class GitGraphRenderer {
     return replacements;
   }
 
+  /**
+   * Retrieves the next empty slot available in the active branches array.
+   * @param commit 
+   * @param activeBranches 
+   */
   private getEmptySlotInActiveBranches(commit: Commit, activeBranches: string[]): number {
     const emptySlotIndex = activeBranches.findIndex((val) => val === null);
     return emptySlotIndex;

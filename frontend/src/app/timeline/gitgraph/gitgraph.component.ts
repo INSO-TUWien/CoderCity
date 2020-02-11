@@ -10,6 +10,9 @@ import { Branch } from 'src/app/shared/git/branch.model';
 import { cloneDeep } from 'lodash-es';
 import { GitGraphRenderer } from './rendering/gitgraph-renderer';
 
+export const SVG_WIDTH = 1200;
+export const SVG_HEIGHT = 840;
+
 @Component({
   selector: 'cc-gitgraph',
   templateUrl: './gitgraph.component.html',
@@ -20,18 +23,11 @@ export class GitgraphComponent implements OnInit {
   @ViewChild('gitgraph', {static: true})
   graphElement: ElementRef;
 
-  STROKE_WIDTH = 3;
-  SVG_WIDTH = 1200;
-  SVG_HEIGHT = 840;
-
   branches$: Observable<Branch[]>;
   commits$: Observable<Commit[]>;
 
   svg: Svg;
   renderer: GitGraphRenderer;
-
-  g_x: number = 0;
-  g_y: number = 0;
 
   constructor(private store: Store<State>) {
     this.commits$ = this.store
@@ -64,7 +60,7 @@ export class GitgraphComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.svg = SVG().addTo(this.graphElement.nativeElement).size(this.SVG_WIDTH, this.SVG_HEIGHT);
+    this.svg = SVG().addTo(this.graphElement.nativeElement).size(SVG_WIDTH, SVG_HEIGHT);
     this.renderer = new GitGraphRenderer(this.svg, this.store);
   }
 
