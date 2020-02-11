@@ -2,17 +2,20 @@ import { Branch } from './branch.model';
 import { Commit } from './commit.model';
 
 export class GitModel {
-
     constructor(branches: Branch[], commits: Commit[]) {
         if (branches == null || commits == null) {
             throw new Error('Invalid Arguments: branches or commits are null or undefined');
         }
         this.addCommits(commits);
         this.addBranches(branches);
+        this.rebuild();
     }
 
-    // Array of all commits
+    // Map of all commits with sha commit id as hash key
     commits: Map<string, Commit> = new Map();
+
+    // Commits sorted by time as array.
+    commitsSortedByTime: Commit[] = [];
 
     // Commits with no parent
     rootCommits: Set<string> = new Set();
@@ -52,36 +55,42 @@ export class GitModel {
         }
     }
 
-    addBranch(branch: Branch) {
+    addBranch(branch: Branch): void {
         this.branches.set(branch.name, branch);
     }
 
-    addBranches(branches: Branch[]) {
+    addBranches(branches: Branch[]): void {
         branches.forEach((branch) => {
             this.branches.set(branch.name, branch);
         });
+    }
+
+    sortCommitsByTime(): void {
+        const commits = Array.from(this.commits.values());
+        this.commitsSortedByTime = commits.sort(
+            (a: Commit, b: Commit) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
+        console.debug(`SortedCommits: ${JSON.stringify(this.commitsSortedByTime)}`);
     }
 
     /**
      * Rebuilds the dag by setting parent commit objects using the parent commit id string array.
      */
     rebuild() {
-        // Traverse all branches until all nodes are connected.
-        this.branches.forEach(branch => {
-            const branchHeadCommit = branch.commit;
-            if (branchHeadCommit == null) {
-                throw new Error('Branch Head commmit is null');
-            }
-            this.fetchAndAssignParentCommit(branchHeadCommit);
+        this.commits.forEach((commit) => {
+            this.computeParentAndChildReferences(commit);
         });
+        this.sortCommitsByTime();
     }
 
-    private fetchAndAssignParentCommit(commit: Commit) {
+    private computeParentAndChildReferences(commit: Commit) {
+        console.log(`computeParentChild ${commit.message}`);
         const parentCommitIDs = commit.parentCommitIDs;
         if (!Array.isArray(parentCommitIDs) || parentCommitIDs.length === 0) {
             // Current commit has no parent commit nodes / is root commit node
             this.rootCommits.add(commit.commitId);
         }
+
         // In all parent commits of the current commit, set the children commits field to the current one.
         parentCommitIDs.forEach(commitID => {
             if (this.commitExists(commitID)) {
@@ -99,10 +108,10 @@ export class GitModel {
                 }
 
                 // Update commits in datastructure
+                //this.commits.delete(commit.commitId);
+                //this.commits.delete(parentCommit.commitId);
                 this.commits.set(commit.commitId, commit);
                 this.commits.set(parentCommit.commitId, parentCommit);
-
-                this.fetchAndAssignParentCommit(parentCommit);
             } else {
                 console.error(`Parent commit ${commitID} does not exist for commit ${commit}.`);
             }

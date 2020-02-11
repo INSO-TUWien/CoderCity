@@ -70,8 +70,6 @@ export class GitgraphComponent implements OnInit {
 
   private drawGraph(branches: Branch[], commits: Commit[]) {
     const gitModel = new GitModel(branches, commits);
-    gitModel.rebuild();
-
     this.renderer.drawGraph(gitModel);
   }
 }

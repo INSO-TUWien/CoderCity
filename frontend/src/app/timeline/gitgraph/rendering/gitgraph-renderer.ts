@@ -4,7 +4,7 @@ import { GitModel } from 'src/app/shared/git/git-model';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/reducers';
 import { Commit } from 'src/app/shared/git/commit.model';
-import { GraphRoundedLine } from './elements/graph-rounded-line';
+import { GraphLine } from './elements/graph-line';
 import { GraphMergeCommit } from './elements/graph-merge-commit';
 import { GraphCommit } from './elements/graph-commit';
 import { AbstractGraphCommit } from './elements/abstract-graph-commit';
@@ -81,7 +81,7 @@ export class GitGraphRenderer {
 
   private computeBranchChildren(): void {
     // Get all branch children
-    this.gitModel.commits.forEach((commit) => {
+    this.gitModel.commitsSortedByTime.forEach((commit) => {
       // TODO: OPTIMIZATION: Branches may be visited multiple times.
       // Branch children are all children of a node except the first child node.
       // Since the edge to the first child node should be drawn with a straight line)
@@ -100,7 +100,7 @@ export class GitGraphRenderer {
 
   private createCommitCircles(): void {
     this.computeBranchChildren();
-    this.gitModel.commits.forEach((commit) => {
+    this.gitModel.commitsSortedByTime.forEach((commit) => {
       this.createCommitCircle(commit);
     });
   }
@@ -192,7 +192,7 @@ export class GitGraphRenderer {
     commit.childCommitIDs.forEach((childCommitID) => {
       const startElement = this.graphCommits.get(commit.commitId);
       const endElement = this.graphCommits.get(childCommitID);
-      const line = new GraphRoundedLine(startElement, endElement);
+      const line = new GraphLine(startElement, endElement);
       this.addElement(line);
       this.createCommitLine(childCommitID);
     });
