@@ -11,7 +11,7 @@ import { cloneDeep } from 'lodash-es';
 import { GitGraphRenderer } from './rendering/gitgraph-renderer';
 
 export const SVG_WIDTH = 1200;
-export const SVG_HEIGHT = 840;
+export const SVG_HEIGHT = 240;
 
 @Component({
   selector: 'cc-gitgraph',
@@ -60,7 +60,13 @@ export class GitgraphComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.svg = SVG().addTo(this.graphElement.nativeElement).size(SVG_WIDTH, SVG_HEIGHT);
+    this.initGitGraph();
+  }
+
+  private initGitGraph(): void {
+    this.svg = SVG()
+      .addTo(this.graphElement.nativeElement)
+      .size(SVG_WIDTH, SVG_HEIGHT);
     this.renderer = new GitGraphRenderer(this.svg, this.store);
   }
 

@@ -8,8 +8,8 @@ import { GraphLine } from './elements/graph-line';
 import { GraphMergeCommit } from './elements/graph-merge-commit';
 import { GraphCommit } from './elements/graph-commit';
 import { AbstractGraphCommit } from './elements/abstract-graph-commit';
-
-export const COMMIT_CIRCLE_DISTANCE = 38;
+import { COMMIT_CIRCLE_DISTANCE } from './gitgraph-constants';
+import { computeDimensions } from './compute-position';
 
 export class GitGraphRenderer {
   private renderElements: RenderElement[] = [];
@@ -44,6 +44,11 @@ export class GitGraphRenderer {
     this.createCommitCircles();
     this.createLines();
     this.render();
+  }
+
+  private resizeSVG(commitsCount: number, branchesCount: number): void {
+    const dimensions = computeDimensions(commitsCount, branchesCount);
+    this.svg.size(dimensions.width, dimensions.height);
   }
 
   private getOccupiedBranches(x: number): string[] {
@@ -122,8 +127,8 @@ export class GitGraphRenderer {
 
   /**
    * Retrieves the next empty slot available in the active branches array.
-   * @param commit 
-   * @param activeBranches 
+   * @param commit
+   * @param activeBranches
    */
   private getEmptySlotInActiveBranches(commit: Commit, activeBranches: string[]): number {
     const emptySlotIndex = activeBranches.findIndex((val) => val === null);
@@ -211,26 +216,23 @@ export class GitGraphRenderer {
     // Render commit circle or merge commit circle if commit has more than 1 parents
     const graphCommit =
       commit.parentCommitIDs.length >= 2
-        ? this.renderCommitMergeCircle(x, y, commit)
+        ? this.createCommitMergeCircle(x, y, commit)
         : this.renderCommitCircle(x, y, commit);
 
     this.graphCommits.set(graphCommit.commit.commitId, graphCommit);
   }
 
-  private renderCommitMergeCircle(
+  private createCommitMergeCircle(
     x: number,
     y: number,
     commit: Commit
   ): GraphMergeCommit {
-    const circleX = 10 + x * COMMIT_CIRCLE_DISTANCE;
-    const circleY = 10 + y * 25;
-
     const commitCircle = new GraphMergeCommit(
       this.store,
-      circleX,
-      circleY,
-      x,
-      y,
+      {
+        x,
+        y
+      },
       commit,
       undefined
     );
@@ -243,17 +245,13 @@ export class GitGraphRenderer {
     y: number,
     commit: Commit
   ): GraphCommit {
-    const circleX = 10 + x * COMMIT_CIRCLE_DISTANCE;
-    const circleY = 10 + y * 25;
-
     const commitCircle = new GraphCommit(
       this.store,
-      circleX,
-      circleY,
-      x,
-      y,
+      {
+        x,
+        y
+      },
       commit,
-      undefined,
       undefined
     );
     this.addElement(commitCircle);

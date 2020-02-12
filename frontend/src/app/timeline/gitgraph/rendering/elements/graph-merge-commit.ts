@@ -5,6 +5,7 @@ import { Svg } from '@svgdotjs/svg.js';
 import * as GitActions from '../../git.action';
 import { AbstractGraphCommit } from './abstract-graph-commit';
 import { getBranchColor, getBranchHighlightColor } from '../graph-colors';
+import {  computeMergeCommitCirclePosition, GridPosition } from '../compute-position';
 
 export const MERGE_CIRCLE_WIDTH = 10;
 export const CIRCLE_COLOR = '#0AB6B9';
@@ -14,16 +15,23 @@ export class GraphMergeCommit extends AbstractGraphCommit {
 
     constructor(
         public store: Store<State>,
-        public x: number,
-        public y: number,
-        public graphPositionX: number,
-        public graphPositionY: number,
+        public readonly gridPosition: GridPosition,
         public commit: Commit,
         public color: string = CIRCLE_COLOR
     ) {
         super(store);
-        this.color = getBranchColor(this.graphPositionY);
-        this.highlightColor = getBranchHighlightColor(this.graphPositionY);
+        if (gridPosition.x < 0 && gridPosition.y < 0) {
+            console.error(`GraphMergeCommit: Invalid parameters graphPosition are null or undefined`);
+            return;
+        }
+        this.color = getBranchColor(this.gridPosition.y);
+        this.highlightColor = getBranchHighlightColor(this.gridPosition.y);
+
+        const pixelCoordinates = computeMergeCommitCirclePosition({ x: gridPosition.x, y: gridPosition.y});
+        this.x = pixelCoordinates.x;
+        this.y = pixelCoordinates.y;
+        this.graphPositionX = this.gridPosition.x;
+        this.graphPositionY = this.gridPosition.y;
     }
 
     render(svg: Svg) {
