@@ -6,6 +6,7 @@ import * as GitActions from '../../gitgraph/git.action';
 import { map, tap } from 'rxjs/operators';
 import { Commit } from 'src/app/shared/git/commit.model';
 import { GitgraphService } from '../gitgraph.service';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'cc-commit-message-container',
@@ -13,6 +14,8 @@ import { GitgraphService } from '../gitgraph.service';
   styleUrls: ['./commit-message-container.component.scss']
 })
 export class CommitMessageContainerComponent implements OnInit {
+
+  faPlay = faPlay;
 
   @ViewChild('messageContainer', {static: true})
   messageContainer: ElementRef<HTMLElement>;

@@ -1,6 +1,8 @@
 <div class="d-flex flex-row">
     <div class="left-pane d-flex flex-column justify-content-between">
-        <button class="btn btn-primary" (click)="onCommitsClick()">Commits</button>
+        <button class="btn btn-primary btn-sm" (click)="onCommitsClick()">
+            <fa-icon [icon]="faPlay"></fa-icon>
+        </button>
         <div class="ci-status-label d-flex align-items-center justify-content-center">
             CI Status
         </div>

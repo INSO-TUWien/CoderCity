@@ -1,4 +1,9 @@
 <div class="container d-flex flex-column">
-    <h3>Timeline</h3>
+    <div class="d-flex flex-row justify-content-between">
+        <h3>Timeline</h3>
+        <button class="btn btn-light btn-sm">
+            <fa-icon [icon]="faChevronUp"></fa-icon>
+        </button>
+    </div>
     <cc-gitgraph></cc-gitgraph>
 </div>
