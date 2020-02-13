@@ -10,6 +10,7 @@ import { GraphCommit } from './elements/graph-commit';
 import { AbstractGraphCommit } from './elements/abstract-graph-commit';
 import { COMMIT_CIRCLE_DISTANCE } from './gitgraph-constants';
 import { computeDimensions } from './compute-position';
+import { GitGraphGrid } from './gitgraph-grid';
 
 export class GitGraphRenderer {
   private renderElements: RenderElement[] = [];
@@ -19,11 +20,15 @@ export class GitGraphRenderer {
   private grid_y: number = 0;
 
   // Stores which branches are active at index i of array. Used when drawing lines between commits.
-  private occupiedBranches: string[][] = [];
+  private activeBranches: string[][] = [];
   private branchChildrenIDs: Set<string> = new Set();
   private graphCommits: Map<string, AbstractGraphCommit> = new Map();
 
-  constructor(private svg: Svg, private store: Store<State>) {}
+  constructor(
+    private svg: Svg,
+    private store: Store<State>,
+    private gitGraphGrid: GitGraphGrid
+  ) {}
 
   private addElement(element: RenderElement) {
     this.renderElements.push(element);
@@ -52,11 +57,11 @@ export class GitGraphRenderer {
   }
 
   private getOccupiedBranches(x: number): string[] {
-    return Object.assign([], this.occupiedBranches[x]);
+    return Object.assign([], this.activeBranches[x]);
   }
 
   private setOccupiedBranches(x: number, occupiedBranches: string[]): void {
-    this.occupiedBranches[x] = occupiedBranches;
+    this.activeBranches[x] = occupiedBranches;
   }
 
   /**
@@ -111,7 +116,7 @@ export class GitGraphRenderer {
   }
 
   /**
-   * Computes eligible replacements/successors to commits stored in the active branches.
+   * Computes eligible replacements/successors to commits stored in the active branches array.
    */
   private getReplacementInActiveBranches(commit: Commit, activeBranches: string[]): number[] {
     // For all parent ids of the commit, check if a parent is in the active branches array.

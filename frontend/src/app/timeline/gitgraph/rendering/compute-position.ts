@@ -33,8 +33,8 @@ export function computeCommitCirclePosition(gridPosition: GridPosition): PixelPo
 
 /**
  * Calculates the dimensions of the svg container in width / height
- * @param commitsCount 
- * @param branchesCount 
+ * @param commitsCount
+ * @param branchesCount
  */
 export function computeDimensions(commitsCount: number, branchesCount: number): Boundary {
     if (commitsCount < 0) {
