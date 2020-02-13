@@ -10,7 +10,7 @@ export interface PixelPosition {
     y: number;
 }
 
-export interface Boundary {
+export interface Dimension {
     height: number;
     width: number;
 }
@@ -36,7 +36,7 @@ export function computeCommitCirclePosition(gridPosition: GridPosition): PixelPo
  * @param commitsCount
  * @param branchesCount
  */
-export function computeDimensions(commitsCount: number, branchesCount: number): Boundary {
+export function computeDimensions(commitsCount: number, branchesCount: number): Dimension {
     if (commitsCount < 0) {
         console.error(`computeBoundaries: Invalid parameter commitsCount`);
         return null;

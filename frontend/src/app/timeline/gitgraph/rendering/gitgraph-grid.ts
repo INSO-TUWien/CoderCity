@@ -1,9 +1,16 @@
-import { AbstractGraphCommit } from "./elements/abstract-graph-commit";
+import { AbstractGraphCommit } from './elements/abstract-graph-commit';
 import { Commit } from 'src/app/shared/git/commit.model';
+import { Dimension, computeDimensions } from './compute-position';
 
 export class GitGraphGrid {
   // Stores which branches are active at index i of array. Used when drawing lines between commits.
   private activeBranches: string[][] = [];
+
+  private branchesCount = 0;
+
+  private getCommitsCount(): number {
+      return this.activeBranches.length;
+  }
 
   getActiveBranches(x: number): string[] {
     return Object.assign([], this.activeBranches[x]);
@@ -11,6 +18,19 @@ export class GitGraphGrid {
 
   setActiveBranches(x: number, occupiedBranches: string[]): void {
     this.activeBranches[x] = occupiedBranches;
+
+    // Update number of max branches in the grid.
+    if (occupiedBranches.length > this.branchesCount) {
+        this.branchesCount = occupiedBranches.length;
+    }
+  }
+
+  getDimensions(): Dimension {
+    const dimensions = computeDimensions(this.getCommitsCount(), this.branchesCount);
+    return {
+        height: dimensions.height,
+        width: dimensions.width
+    };
   }
 
   /**
@@ -45,7 +65,7 @@ export class GitGraphGrid {
   /**
    * Computes eligible replacements/successors to commits stored in the active branches array.
    */
-  private getReplacementInActiveBranches(commit: Commit, activeBranches: string[]): number[] {
+  getReplacementInActiveBranches(commit: Commit, activeBranches: string[]): number[] {
     // For all parent ids of the commit, check if a parent is in the active branches array.
     const replacements = [];
     commit.parentCommitIDs.forEach((parentId) => {
