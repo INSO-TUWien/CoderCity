@@ -78,13 +78,6 @@ export class GitGraphRenderer {
     });
   }
 
-  /**
-   * Computes eligible replacements/successors to commits stored in the active branches array.
-   */
-  private getReplacementInActiveBranches(commit: Commit, activeBranches: string[]): number[] {
-    return this.gitGraphGrid.getReplacementInActiveBranches(commit, activeBranches);
-  }
-
 
   private createCommitCircle(commit: Commit): void {
     // Get occupied branches array of current commit
@@ -95,7 +88,7 @@ export class GitGraphRenderer {
     console.debug(`Drawing commit: ${commit.message} sha: ${commit.commitId}. \n Occupied Branches: ${JSON.stringify(activeBranches)}`);
 
     // Check whether a commit can replace a commit in the active branches array
-    const activeBranchReplacement = this.getReplacementInActiveBranches(commit, activeBranches);
+    const activeBranchReplacement = this.gitGraphGrid.getReplacementInActiveBranches(commit, activeBranches);
 
     if (
       activeBranchReplacement.length === 0
