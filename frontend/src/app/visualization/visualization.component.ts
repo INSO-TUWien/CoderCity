@@ -14,8 +14,8 @@ export class VisualizationComponent implements OnInit {
   constructor(private socketService: SocketService) { }
 
   ngOnInit() {
-    //this.engine = new Engine();
-    //this.engine.start();
+    // this.engine = new Engine();
+    // this.engine.start();
     //this.socketService.sendMessage();
   }
 
