@@ -9,9 +9,7 @@ import { GitModel } from '../../shared/git/git-model';
 import { Branch } from 'src/app/shared/git/branch.model';
 import { cloneDeep } from 'lodash-es';
 import { GitGraphRenderer } from './rendering/gitgraph-renderer';
-
-export const SVG_WIDTH = 1200;
-export const SVG_HEIGHT = 240;
+import { GitgraphService } from './gitgraph.service';
 
 @Component({
   selector: 'cc-gitgraph',
@@ -21,15 +19,21 @@ export const SVG_HEIGHT = 240;
 export class GitgraphComponent implements OnInit {
 
   @ViewChild('gitgraph', {static: true})
-  graphElement: ElementRef;
+  graphElement: ElementRef<HTMLElement>;
 
   branches$: Observable<Branch[]>;
   commits$: Observable<Commit[]>;
 
+  // Element is active when mouse is hovering above it.
+  active: boolean;
+
   svg: Svg;
   renderer: GitGraphRenderer;
 
-  constructor(private store: Store<State>) {
+  constructor(
+    private store: Store<State>,
+    private gitGraphService: GitgraphService
+    ) {
     this.commits$ = this.store
     .pipe(
       select(store => store.git.commits),
@@ -61,14 +65,46 @@ export class GitgraphComponent implements OnInit {
 
   ngOnInit() {
     this.initGitGraph();
+    this.initEvents();
+
+    this.gitGraphService.scrollLeft.subscribe(value => {
+      if (!this.active) {
+        this.setScrollLeft(value);
+      }
+    });
+  }
+
+  private initEvents(): void {
+    this.graphElement.nativeElement.onmouseenter = () => {
+      this.active = true;
+    };
+
+    this.graphElement.nativeElement.onmouseleave = () => {
+      this.active = false;
+    };
+
+    this.graphElement.nativeElement.onscroll = () => {
+      if (this.active) {
+        const scrollLeft = this.graphElement.nativeElement.scrollLeft;
+        this.scroll(scrollLeft);
+      }
+    };
+  }
+
+  private setScrollLeft(value: number) {
+    this.graphElement.nativeElement.scrollLeft = value;
+  }
+
+  private scroll(value: number) {
+    this.gitGraphService.scrollLeft.next(value);
   }
 
   private initGitGraph(): void {
     this.svg = SVG()
       .addTo(this.graphElement.nativeElement)
-      .size(SVG_WIDTH, SVG_HEIGHT);
     this.renderer = new GitGraphRenderer(this.svg, this.store);
   }
+
 
   private drawGraph(branches: Branch[], commits: Commit[]) {
     const gitModel = new GitModel(branches, commits);
