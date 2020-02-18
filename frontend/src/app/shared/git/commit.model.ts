@@ -5,8 +5,9 @@ export class Commit {
   date: Date;
   message: string;
   parentCommitIDs: string[] = [];
-  parentCommits: Commit[] = [];
-  childCommits: Commit[] = [];
+  childCommitIDs: string[] = [];
+  //parentCommits: Commit[] = [];
+  //childCommits: Commit[] = [];
 
   constructor(
     commitId: string,

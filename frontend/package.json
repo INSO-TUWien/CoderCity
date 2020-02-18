@@ -25,6 +25,7 @@
     "@ngrx/effects": "^8.6.0",
     "@ngrx/store": "^8.6.0",
     "@svgdotjs/svg.js": "^3.0.16",
+    "@types/chroma-js": "^2.0.0",
     "@types/lodash-es": "^4.17.3",
     "@types/webgl2": "0.0.5",
     "bootstrap": "^4.4.1",

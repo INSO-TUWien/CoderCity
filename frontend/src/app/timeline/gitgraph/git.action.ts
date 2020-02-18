@@ -8,7 +8,8 @@ export enum GitActionTypes {
   LOAD_COMMITS_FAILURE = '[Git] Load Commits Failure',
   LOAD_BRANCHES = '[Git] Load Branches',
   LOAD_BRANCHES_SUCCESS = '[Git] Load Branches Success',
-  LOAD_BRANCHES_FAILURE = '[Git] Load Branches Failure'
+  LOAD_BRANCHES_FAILURE = '[Git] Load Branches Failure',
+  SET_COMMIT_PREVIEW = '[Git] Set Commit Preview',
 }
 
 export const fetchCommits = createAction(
@@ -35,4 +36,9 @@ export const loadBranchesSuccess = createAction(
 
 export const loadBranchesFailure = createAction(
   GitActionTypes.LOAD_BRANCHES_FAILURE
+);
+
+export const setCommitPreview = createAction(
+  GitActionTypes.SET_COMMIT_PREVIEW,
+  props<{ commitPreview: Commit}>()
 );

@@ -1,1 +1,23 @@
-<p>selection-popover works!</p>
+<div class="selection-container" [ngSwitch]="mode">
+    <div *ngSwitchCase="Mode.Preview">
+        <div class="card-text">
+            <span class="font-weight-bold">Commit </span>
+            <span>{{ (commitPreview$ | async)?.date | date:'medium' }}</span> 
+            <div class="commit-id-label text-muted">{{(commitPreview$ | async)?.commitId}}</div>
+            <div>{{ (commitPreview$ | async)?.message }}</div>
+        </div>
+    </div>
+    <div *ngSwitchCase="Mode.Interval">
+        <div class="card-text">
+            <span class="font-weight-bold">From:</span> 
+            12.04 Initial Commit
+        </div>
+        <div class="card-text">
+            <span class="font-weight-bold">To:</span>
+            13.04 Created component
+        </div>
+    </div>
+    <div *ngSwitchDefault>
+        ERROR: Unknown state
+    </div>
+</div>
