@@ -23,7 +23,7 @@ export class CommitMessageContainerComponent implements OnInit {
             (a, b) =>
               a.date.getTime() - b.date.getTime()
           )),
-          tap(val => console.log(`Commits ${JSON.stringify(val)}`))
+          //tap(val => console.log(`Commits ${JSON.stringify(val)}`))
       );
   }
 

@@ -14,11 +14,11 @@ export class GitEffects {
             mergeMap(() => this.gitService.getGitCommits()
                 .pipe(
                     map(commits => {
-                        console.log(`GitEffects commits ${JSON.stringify(commits)}`);
+                        // console.log(`GitEffects commits ${JSON.stringify(commits)}`);
                         return { type: GitActionTypes.LOAD_COMMITS_SUCCESS, commits }
                     }),
                     catchError((error) => {
-                        console.log(`GitEffects error ${JSON.stringify(error)}`);
+                        console.error(`GitEffects error ${JSON.stringify(error)}`);
                         return EMPTY;
                     })
                 )
@@ -31,11 +31,11 @@ export class GitEffects {
             mergeMap(() => this.gitService.getGitBranches()
                 .pipe(
                     map(branches => {
-                        console.log(`GitEffects: loadBranches ${JSON.stringify(branches)}`);
+                        // console.log(`GitEffects: loadBranches ${JSON.stringify(branches)}`);
                         return { type: GitActionTypes.LOAD_BRANCHES_SUCCESS, branches }
                     }),
                     catchError((error) => {
-                        console.log(`GitEffects: loadBranches: ERROR ${JSON.stringify(error)}`);
+                        console.error(`GitEffects: loadBranches: ERROR ${JSON.stringify(error)}`);
                         return EMPTY;
                     })
                 )
