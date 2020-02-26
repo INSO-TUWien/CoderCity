@@ -1,0 +1,16 @@
+<div class="d-flex flex-column">
+  <div
+    *ngFor="let author of authors"
+    [ngbTooltip]="author.fullname"
+    placement="left"
+    [style.backgroundColor]="author.color"
+    class="rounded-circle 
+                author-circle 
+                text-center 
+                d-flex 
+                align-items-center 
+                justify-content-center"
+  >
+    {{author.fullname | authorInitials | uppercase}}
+  </div>
+</div>
