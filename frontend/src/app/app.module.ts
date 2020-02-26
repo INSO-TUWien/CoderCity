@@ -11,6 +11,7 @@ import { BranchNameLabelComponent } from './timeline/gitgraph/branch-name-contai
 import { BranchNameContainerComponent } from './timeline/gitgraph/branch-name-container/branch-name-container.component';
 import { CommitMessageContainerComponent } from './timeline/gitgraph/commit-message-container/commit-message-container.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { StoreModule } from '@ngrx/store';
@@ -19,6 +20,8 @@ import { GitEffects } from './shared/git/git.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { BranchSimpleNamePipe } from './pipes/branch-simple-name.pipe';
 import { SelectionPopoverComponent } from './selection-popover/selection-popover.component';
+import { AuthorPanelComponent } from './author-panel/author-panel.component';
+import { AuthorInitialsPipe } from './pipes/author-initials.pipe';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -32,9 +35,12 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     BranchNameContainerComponent,
     CommitMessageContainerComponent,
     BranchSimpleNamePipe,
-    SelectionPopoverComponent
+    SelectionPopoverComponent,
+    AuthorPanelComponent,
+    AuthorInitialsPipe
   ],
   imports: [
+    NgbModule,
     BrowserModule,
     AppRoutingModule,
     FontAwesomeModule,

@@ -1,30 +1,30 @@
-import { Repository, Revwalk, Reference, Commit } from 'nodegit';
-import * as path from 'path';
-import { Branch } from 'src/model/branch';
-import { Commit as CommitModel } from 'src/model/commit';
-import * as fs from 'fs';
+import { Repository as NodeGitRepository, Revwalk, Reference, Commit } from 'nodegit';
+import { Branch } from '../model/branch.model';
+import { Commit as CommitModel } from '../model/commit.model';
 import { GitModel } from 'src/datastore/git-model';
 import { Logger } from '@nestjs/common';
+import { Repository } from 'src/services/git/repo';
 
 export class GitIndexer {
     private readonly logger = new Logger(GitIndexer.name);
-
-    private gitFolderPath: string;
     private gitModel: GitModel;
 
-    constructor(gitFolderPath: string, gitModel: GitModel) {
-        this.gitFolderPath = path.resolve(__dirname, '../../../../projects/demo-git-flow/.git');
+    constructor(
+        private gitFolderPath: string,
+        gitModel: GitModel,
+        private repo: Repository) {
         this.gitModel = gitModel;
+        this.logger.debug(`FOLDER_PATH ${this.gitFolderPath}`);
     }
 
     async startIndexing(): Promise<void> {
-        this.logger.log(`Indexing Git folder at ${this.gitFolderPath}`);
-        const repo = await Repository.open(this.gitFolderPath);
-        await this.indexAllGitCommits(repo);
-        await this.indexBranchRefCommits(repo);
+/*         this.logger.log(`Indexing Git folder at ${this.gitFolderPath}`);
+        const repo = await Repository.open(this.gitFolderPath); */
+        await this.indexAllGitCommits(this.repo.getRepo());
+        await this.indexBranchRefCommits(this.repo.getRepo());
     }
 
-    private async indexAllGitCommits(repo: Repository) {
+    private async indexAllGitCommits(repo: NodeGitRepository) {
         const branchNames = await GitIndexer.getAllBranchNames(repo);
         this.logger.log(`Detected branches: ${branchNames}`);
         branchNames.forEach(async (branch) => {
@@ -51,7 +51,7 @@ export class GitIndexer {
         });
     }
 
-    private async indexBranchRefCommits(repo: Repository) {
+    private async indexBranchRefCommits(repo: NodeGitRepository) {
         const branchNames = await GitIndexer.getAllBranchNames(repo);
         this.logger.log(`branch names: ${branchNames}`);
         const branches = await this.getBranches(repo, branchNames);
@@ -59,7 +59,7 @@ export class GitIndexer {
         this.gitModel.addBranches(branches);
     }
 
-    async getBranches(repo: Repository, branchNames: string[]): Promise<Branch[]> {
+    async getBranches(repo: NodeGitRepository, branchNames: string[]): Promise<Branch[]> {
         let result: Branch[] = [];
         result = await Promise.all(branchNames.map(async (branchRef) => {
             const branch = new Branch();
@@ -83,7 +83,7 @@ export class GitIndexer {
         );
     }
 
-    static getAllBranchNames(repo: Repository): Promise<string[]> {
+    static getAllBranchNames(repo: NodeGitRepository): Promise<string[]> {
         return repo.getReferenceNames(Reference.TYPE.LISTALL);
     }
 }

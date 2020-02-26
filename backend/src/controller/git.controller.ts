@@ -1,12 +1,9 @@
 import { Controller, Logger, Get } from '@nestjs/common';
-import { GitIndexer } from 'src/git-indexer/git-indexer';
-import { GitModel } from 'src/datastore/git-model';
 import { GitService } from 'src/services/git/git.service';
 
 @Controller('git')
 export class GitController {
     private readonly logger = new Logger(GitController.name);
-    private readonly GIT_FOLDER_PATH = '';
 
     constructor(private readonly gitService: GitService) {
         this.logger.log(`Initializing GitController`);

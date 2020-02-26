@@ -1,4 +1,4 @@
-import { Commit } from "./commit";
+import { Commit } from "./commit.model";
 
 export class Branch {
     name: string;
