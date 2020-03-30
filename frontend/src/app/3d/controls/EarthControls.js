@@ -17,10 +17,6 @@ import {
 	Vector3
 } from "three";
 
-import {
-	EventBus
-} from '../eventbus';
-
 // This set of controls performs orbiting, dollying (zooming), and panning.
 // Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).
 //
@@ -29,9 +25,6 @@ import {
 //    Pan - right mouse, or left mouse + ctrl/meta/shiftKey, or arrow keys / touch: two-finger move
 
 var EarthControls = function ( object, domElement ) {
-
-	// ADDED: Eventbus for communication with other entities.
-	const eventBus = EventBus.getInstance();
 
 	this.object = object;
 
@@ -394,7 +387,7 @@ var EarthControls = function ( object, domElement ) {
 		var offset = new Vector3();
 
 		return function pan( deltaX, deltaY ) {
-			console.log(`pan: dX: ${deltaX} dY: ${deltaY}`);
+			//console.log(`pan: dX: ${deltaX} dY: ${deltaY}`);
 
 			var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 

@@ -1,5 +1,5 @@
 import { Bounds } from './bounds';
-import { Element } from './element';
+import { CityElement } from './city-element';
 import { Vector2 } from 'three';
 
 export class KDTreeNode {
@@ -8,13 +8,11 @@ export class KDTreeNode {
     position: THREE.Vector2,
     bounds: Bounds,
     depth: number = 0,
-    dimension: number,
-    element?: Element
+    element?: CityElement
   ) {
     this.position = position;
     this.bounds = bounds;
     this.depth = depth;
-    this.dimension = dimension;
     this.element = element;
   }
   // Parent node
@@ -34,11 +32,9 @@ export class KDTreeNode {
   splitCoordinate?: number;
 
   // Contains element in tree
-  element?: Element;
+  element?: CityElement;
 
   depth: number;
-  dimension: number;
-
   /**
    * Executes the given function on each traversed node in pre order traversal manner.
    * @param node the current node
@@ -91,7 +87,7 @@ export class KDTreeNode {
    * @param element the element to be inserted.
    * @returns true if element
    */
-  insertElement(node: KDTreeNode, element: Element): boolean {
+  insertElement(node: KDTreeNode, element: CityElement): boolean {
     if (node == null || element === undefined || element === null) {
       return;
     }
@@ -100,11 +96,11 @@ export class KDTreeNode {
       throw new Error('Invalid values: Element bounds is smaller or equal 0.');
     }
 
-    // Check depth to determine on which dimension/axis to split
-    node.axis = node.depth % node.dimension;
+    // Check depth to determine on which axis to split
+    node.axis = node.depth % 2; // Split on x / y axis alterningly
 
     // Check if current node is of exact matching size and not occupied
-    // If so put element into this node
+    // If so, put element into this node
     if (node.bounds.equals(element.bounds) && this.isEmpty()) {
       this.element = element;
       return true;
@@ -128,16 +124,14 @@ export class KDTreeNode {
         node.left = new KDTreeNode(
           this.position,
           bounds[0],
-          this.depth + 1,
-          this.dimension
+          this.depth + 1
         );
 
         // Create right node
         node.right = new KDTreeNode(
           node.position.clone().add(new Vector2(element.bounds.x, 0)),
           bounds[1],
-          node.depth + 1,
-          node.dimension
+          node.depth + 1
         );
       }
 
@@ -161,16 +155,14 @@ export class KDTreeNode {
         node.left = new KDTreeNode(
           node.position,
           bounds[0],
-          node.depth + 1,
-          node.dimension
+          node.depth + 1
         );
 
         // Create right node
         node.right = new KDTreeNode(
           node.position.clone().add(new Vector2(0, element.bounds.y)),
           bounds[1],
-          node.depth + 1,
-          node.dimension
+          node.depth + 1
         );
       }
 

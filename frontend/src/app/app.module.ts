@@ -4,24 +4,22 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { VisualizationComponent } from './visualization/visualization.component';
-import { TimelineComponent } from './timeline/timeline.component';
-import { GitgraphComponent } from './timeline/gitgraph/gitgraph.component';
-import { BranchNameLabelComponent } from './timeline/gitgraph/branch-name-container/branch-name-label/branch-name-label.component';
-import { BranchNameContainerComponent } from './timeline/gitgraph/branch-name-container/branch-name-container.component';
-import { CommitMessageContainerComponent } from './timeline/gitgraph/commit-message-container/commit-message-container.component';
+import { VisualizationComponent } from './components/visualization/visualization.component';
+import { TimelineComponent } from './components/timeline/timeline.component';
+import { GitgraphComponent } from './components/timeline/gitgraph/gitgraph.component';
+import { BranchNameLabelComponent } from './components/timeline/gitgraph/branch-name-container/branch-name-label/branch-name-label.component';
+import { BranchNameContainerComponent } from './components/timeline/gitgraph/branch-name-container/branch-name-container.component';
+import { CommitMessageContainerComponent } from './components/timeline/gitgraph/commit-message-container/commit-message-container.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { StoreModule } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
-import { GitEffects } from './shared/git/git.effects';
-import { EffectsModule } from '@ngrx/effects';
 import { BranchSimpleNamePipe } from './pipes/branch-simple-name.pipe';
-import { SelectionPopoverComponent } from './selection-popover/selection-popover.component';
-import { AuthorPanelComponent } from './author-panel/author-panel.component';
+import { SelectionPopoverComponent } from './components/selection-popover/selection-popover.component';
+import { AuthorPanelComponent } from './components/author-panel/author-panel.component';
 import { AuthorInitialsPipe } from './pipes/author-initials.pipe';
+import { InformationPanelComponent } from './components/information-panel/information-panel.component';
+import { SidePanelComponent } from './components/side-panel/side-panel.component';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -37,7 +35,9 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     BranchSimpleNamePipe,
     SelectionPopoverComponent,
     AuthorPanelComponent,
-    AuthorInitialsPipe
+    AuthorInitialsPipe,
+    InformationPanelComponent,
+    SidePanelComponent
   ],
   imports: [
     NgbModule,
@@ -46,14 +46,6 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     FontAwesomeModule,
     HttpClientModule,
     SocketIoModule.forRoot(config),
-    EffectsModule.forRoot([GitEffects]),
-    StoreModule.forRoot(reducers, {
-      metaReducers,
-      runtimeChecks: {
-        strictStateImmutability: true,
-        strictActionImmutability: true
-      }
-    })
   ],
   providers: [],
   bootstrap: [AppComponent]

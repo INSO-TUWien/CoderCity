@@ -7,11 +7,12 @@ export class Entity {
     // Threejs mesh represented by this entity
     object: Object3D = new THREE.Object3D();
 
+    constructor() {}
+
     /**
      * TODO Called when entity is initiated.
      */
-    init() {
-    }
+    init() {}
 
 
     addEntity(entity: Entity): void {
@@ -26,11 +27,18 @@ export class Entity {
         this.entities.splice(this.entities.indexOf(entity), 1);
     }
 
+    setUserData(userData) {
+        this.object.userData = userData;
+    }
+
+    get userData() {
+        return this.object.userData;
+    }
+
     /**
      * TODO Called when entity is destroyed
      */
     destroy(): void {
-
     }
 
     update(): void {

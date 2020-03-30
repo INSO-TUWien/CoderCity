@@ -1,24 +1,53 @@
 import { Entity } from '../entity';
 import { BoxGeometry, MeshBasicMaterial, MeshLambertMaterial } from 'three';
 import * as THREE from 'three';
+import { BlameHunk } from 'src/app/model/blamehunk.model';
 
 export class Cube extends Entity {
     geometry: THREE.BoxGeometry;
     material: THREE.Material;
     mesh: THREE.Mesh;
 
-    constructor(width: number, height: number, depth: number, color?: THREE.Color) {
+    constructor(width: number, height: number, depth: number, color: THREE.Color) {
         super();
         this.geometry = new BoxGeometry(width, height, depth);
-        this.material = new MeshBasicMaterial({color: color ? color : 'red'});
+        this.material = new MeshLambertMaterial(
+            {
+                color,
+                transparent: true,
+                opacity: 0.90
+            }
+        );
         this.mesh = new THREE.Mesh(this.geometry, this.material);
     }
 
     init() {
         this.object.add(this.mesh);
+        // // If data associated with the object exists: Copy data to mesh.
+        // const exampleHunk = new BlameHunk(1, 2, 2, "test", "test", "signature");
+        // this.mesh.userData.test = exampleHunk;
+    }
+
+    setUserData(userData) {
+        if (this.mesh != null) {
+            this.mesh.userData = userData;
+        }
     }
 
     setPosition(x: number, y: number, z: number) {
         this.mesh.position.set(x, y, z);
+    }
+
+    calculateBoundingBoxCenterOffset(): THREE.Vector3 {
+        // Calculcate center point of bounding box
+        let bboxCenter = new THREE.Vector3();
+        this.geometry.computeBoundingBox();
+        let bbox = this.geometry.boundingBox.clone();
+        let bboxMin = bbox.min;
+        let bboxMax = bbox.max;
+        bboxCenter.setX((bboxMax.x - bboxMin.x) / 2);
+        bboxCenter.setY((bboxMax.y - bboxMin.y) / 2);
+        bboxCenter.setZ((bboxMax.z - bboxMin.z) / 2);
+        return bboxCenter;
     }
 }
