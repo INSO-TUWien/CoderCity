@@ -1,4 +1,4 @@
-//Boundaries in x (width) and y (height)
+// Boundaries in x (width) and y (height)
 export class Bounds {
 
     // Width of boundary

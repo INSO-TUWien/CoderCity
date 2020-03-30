@@ -23,14 +23,6 @@ export class Commit {
     this.parentCommitIDs = parentCommitIDs;
   }
 
-  outputConsole() {
-/*     console.log('SHA: ' + this.commitId);
-    console.log('Author:', this.authorName + ' <' + this.mail + '>');
-    console.log('Date:', this.date);
-    console.log('\n    ' + this.message);
-    console.log(`Parent Commits: ${this.parentCommitIDs}\n`); */
-  }
-
   toString(): string {
     let result =
       '\n ----- COMMIT -------' +

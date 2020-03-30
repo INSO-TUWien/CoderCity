@@ -1,3 +1,5 @@
+import { Signature } from "./signature.model";
+
 /**
  * Model for a hunk.
  */
@@ -9,6 +11,6 @@ export class BlameHunk {
         public linesInHunk: number,
         public commitId: string,
         public path: string,
-        public signature: string,
+        public signature: Signature,
     ) {}
 }

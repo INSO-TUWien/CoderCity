@@ -1,6 +1,7 @@
 import { Branch } from '../model/branch.model';
 import { Commit } from '../model/commit.model';
 import { Logger } from '@nestjs/common';
+import { Signature } from 'src/model/signature.model';
 
 export class GitModel {
     private readonly logger = new Logger(GitModel.name);
@@ -18,6 +19,8 @@ export class GitModel {
 
     // heads of all available branches
     branches: Map<string, Branch> = new Map();
+
+    authors: Set<Signature> = new Set();
 
     addCommit(commit: Commit) {
         this.commits.set(commit.commitId, commit);
@@ -108,8 +111,6 @@ export class GitModel {
                 }
 
                 // Update commits in datastructure
-                //this.commits.delete(commit.commitId);
-                //this.commits.delete(parentCommit.commitId);
                 this.commits.set(commit.commitId, commit);
                 this.commits.set(parentCommit.commitId, parentCommit);
             } else {

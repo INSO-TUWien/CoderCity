@@ -3,9 +3,6 @@ import { KDTreeNode } from './kd-treenode';
 import { Element } from './element';
 
 export class KDTree {
-
-    static DIMENSION = 2;
-
     position: THREE.Vector2;
     bounds: Bounds;
     rootNode: KDTreeNode;
@@ -14,7 +11,7 @@ export class KDTree {
         position: THREE.Vector2,
         bounds: Bounds
     ) {
-        this.rootNode = new KDTreeNode(position, bounds, 0, KDTree.DIMENSION, null);
+        this.rootNode = new KDTreeNode(position, bounds, 0, null);
     }
 
     getEmptyLeafNodes(): KDTreeNode[] {
