@@ -39,10 +39,10 @@ export class RandomRectangleGenerator {
 export function calculcateMaxAreaForElements(elements: CityElement[]): Bounds {
     let x = 0;
     let y = 0;
-    elements.forEach((element) => {
-        x += element.bounds.x;
-        y += element.bounds.y;
-    });
+    for (let element of elements) {
+        x += Math.ceil(element.bounds.x);
+        y += Math.ceil(element.bounds.y);
+    }
     return new Bounds(x, y);
 }
 
@@ -103,7 +103,6 @@ export class District extends Entity implements Element {
 
     addCityElement(cityElement: CityElement) {
         this.districtElements.push(cityElement);
-        this.sortCityElements();
         this.computeCity();
     }
 
@@ -111,17 +110,17 @@ export class District extends Entity implements Element {
         cityElements.forEach(element  => {
             this.districtElements.push(element);
         });
-        this.sortCityElements();
         this.computeCity();
     }
 
     // Sort elements by surface area descending. (Largest first)
     private sortCityElements() {
         this.districtElements.sort((a, b) => b.bounds.x * b.bounds.y - a.bounds.x * a.bounds.y);
-        console.log(`Sorted city elements: ${JSON.stringify(this.districtElements)}`);
+        //console.log(`Sorted city elements: ${JSON.stringify(this.districtElements)}`);
     }
 
     private computeCity(): void {
+        this.sortCityElements();
         // Determine largest area that can be taken up if all elements are placed.
         const maxArea = calculcateMaxAreaForElements(this.districtElements);
         this.tree = new KDTree(new Vector2(0, 0), maxArea);
@@ -200,6 +199,9 @@ export class District extends Entity implements Element {
             expanders.sort((a, b) =>  {
                 return Math.abs(Math.atan(1) - a.ratio) - Math.abs(Math.atan(1) - b.ratio);
             });
+            if (expanders[0] == null) {
+                alert(`expanders is null ${JSON.stringify(element)}`);
+            }
             targetNode = expanders[0].node;
         }
 

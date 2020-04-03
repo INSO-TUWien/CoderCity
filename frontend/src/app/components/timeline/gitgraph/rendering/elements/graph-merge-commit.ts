@@ -39,10 +39,12 @@ export class GraphMergeCommit extends AbstractGraphCommit {
                 this.color
             )
             .on('mouseover', () => {
-                this.onMouseOverCallback(this.commit);
                 circle
                     .stroke({ width: 4, color: this.highlightColor });
-              })
+            })
+            .on('click', () => {
+                this.onMouseOverCallback(this.commit);
+            })
             .on('mouseout', () => {
                 circle
                     .fill({ color: this.color})

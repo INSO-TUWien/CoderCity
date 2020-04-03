@@ -25,6 +25,22 @@ export class Commit {
     this.parentCommitIDs = parentCommitIDs;
   }
 
+  static isMergeCommit(commit: Commit) {
+    if (commit.parentCommitIDs.length >= 2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static hasChildNodes(commit: Commit) {
+    if (commit.childCommitIDs.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   outputConsole() {
     console.log('SHA: ' + this.commitId);
     console.log('Author:', this.authorName + ' <' + this.mail + '>');

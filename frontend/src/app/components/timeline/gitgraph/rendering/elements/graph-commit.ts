@@ -38,8 +38,10 @@ export class GraphCommit extends AbstractGraphCommit {
       .fill(this.color)
       .move(this.x, this.y)
       .on("mouseover", () => {
+       circle.stroke({ width: 4, color: this.highlightColor });
+      })
+      .on("click", () => {
         this.onMouseOverCallback(this.commit);
-        circle.stroke({ width: 4, color: this.highlightColor });
       })
       .on("mouseout", () => {
         circle.fill({ color: this.color }).stroke({ width: 0 });
