@@ -7,8 +7,10 @@ import { Repository } from './repo';
 export const EXAMPLE_PROJECT1_PATH = '../../../../../projects/demo-git-flow/.git';
 export const EXAMPLE_PROJECT2_PATH = '../../../../../projects/gitflow-sample/.git';
 export const EXAMPLE_PROJECT3_PATH = '../../../../../projects/ue2_github/.git';
+export const EXAMPLE_PROJECT4_PATH = '../../../../../projects/exercise2/.git';
+export const EXAMPLE_PROJECT5_PATH = '../../../../../projects/moccapps/.git';
 
-export const FOLDER_PATH = path.resolve(__dirname, EXAMPLE_PROJECT2_PATH);
+export const FOLDER_PATH = path.resolve(__dirname, EXAMPLE_PROJECT3_PATH);
 
 @Injectable()
 export class GitService {

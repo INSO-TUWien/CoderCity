@@ -15,6 +15,15 @@ export class City extends Entity {
     init(): void {
     }
 
+    /**
+     * Translates the city in the secene to the center point of the city.
+     */
+    centerCityPosition(): void {
+        const offsetX = - (this.rootDistrict.bounds.x / 2);
+        const offsetZ = - (this.rootDistrict.bounds.y / 2);
+        this.rootDistrict.setPosition(offsetX, 0, offsetZ);
+    }
+
     generateExampleCity() {
         this.rootDistrict = new District('Folder 1', this.options);
         this.rootDistrict.generateRandomBuildings(2);

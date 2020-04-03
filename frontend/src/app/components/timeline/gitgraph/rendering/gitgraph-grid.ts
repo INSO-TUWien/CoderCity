@@ -89,4 +89,21 @@ export class GitGraphGrid {
     const emptySlotIndex = activeBranches.findIndex(val => val === null);
     return emptySlotIndex;
   }
+
+  /**
+   * Retrieves an array with indices of all empty slots available in the active branches array.
+   * @param commit
+   * @param activeBranches
+   */
+  getEmptySlotsInActiveBranches(
+    activeBranches: string[]
+  ): number[] {
+    const emptySlots = [];
+    for (let i = 0; i < activeBranches.length; i++) {
+      if (activeBranches[i] == null) {
+        emptySlots.push(i);
+      }
+    }
+    return emptySlots;
+  }
 }

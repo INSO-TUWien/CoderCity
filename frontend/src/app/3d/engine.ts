@@ -98,6 +98,7 @@ export class Engine {
         this.city.generateCity(
             directory
         );
+        this.city.centerCityPosition();
         this.addEntity(this.city);
     }
 

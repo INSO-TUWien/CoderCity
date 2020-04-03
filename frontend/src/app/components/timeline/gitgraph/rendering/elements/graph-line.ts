@@ -63,7 +63,7 @@ export class GraphLine implements RenderElement {
             const P3_X = endX;
             const P3_Y = startY + 10;
             const P4_Y = endY;
-            svg.path(
+            const line = svg.path(
             `M ${P1_X} ${P1_Y} L ${P2_X} ${P1_Y}` +
             `M ${P2_X} ${P1_Y} Q ${P3_X} ${P1_Y} ${P3_X} ${P3_Y}` +
             `M ${P3_X} ${P3_Y} L ${P3_X} ${P4_Y}`
@@ -72,19 +72,31 @@ export class GraphLine implements RenderElement {
                 width: STROKE_WIDTH,
                 color: getBranchColor(this.startElement.graphPositionY)
             })
+            .on("mouseover", () => {
+                line.stroke({ width: STROKE_WIDTH + 1, color: getBranchColor(this.startElement.graphPositionY)});
+            })
+            .on("mouseout", () => {
+                line.stroke({ width: STROKE_WIDTH, color: getBranchColor(this.startElement.graphPositionY)})
+            })
             .fill('transparent')
             .back();
         } else if (endY === startY) {
-            svg.line(
+            const line = svg.line(
                 this.startElement.x + OFFSET_X,
                 this.startElement.y + OFFSET_Y,
                 this.endElement.x + OFFSET_X,
                 this.endElement.y + OFFSET_Y)
             .stroke(
-                {
+            {
                     width: STROKE_WIDTH,
                     color: getBranchColor(this.startElement.graphPositionY),
                     linecap: 'round'})
+            .on("mouseover", () => {
+                    line.stroke({ width: STROKE_WIDTH + 1, color: getBranchColor(this.startElement.graphPositionY)});
+            })
+            .on("mouseout", () => {
+                line.stroke({ width: STROKE_WIDTH, color: getBranchColor(this.startElement.graphPositionY)})
+                })
             .back();
         } else {
             /**
@@ -107,12 +119,18 @@ export class GraphLine implements RenderElement {
             const P3_X = endX;
             const P3_Y = startY - 10;
             const P4_Y = endY;
-            svg.path(
+            const line = svg.path(
             `M ${P1_X} ${P1_Y} L ${P2_X} ${P1_Y}` +
             `M ${P2_X} ${P1_Y} Q ${P3_X} ${P1_Y} ${P3_X} ${P3_Y}` +
             `M ${P3_X} ${P3_Y} L ${P3_X} ${P4_Y}`
             )
             .stroke({ width: STROKE_WIDTH, color: getBranchColor(this.startElement.graphPositionY)})
+            .on("mouseover", () => {
+                line.stroke({ width: STROKE_WIDTH + 1, color: getBranchColor(this.startElement.graphPositionY)});
+            })
+            .on("mouseout", () => {
+                 line.stroke({ width: STROKE_WIDTH, color: getBranchColor(this.startElement.graphPositionY)})
+            })
             .fill('transparent')
             .back();
         }
@@ -147,19 +165,25 @@ export class GraphLine implements RenderElement {
             const P3_X = P1_X + 10;
             const P3_Y = endY;
             const P4_X = endX;
-            svg
+            const line = svg
                 .path(
                     `M ${P1_X} ${P1_Y} L ${P1_X} ${P2_Y}` +
                     `M ${P1_X} ${P2_Y} Q ${P1_X} ${endY} ${P3_X} ${P3_Y}` +
                     `M ${P3_X} ${P3_Y} L ${P4_X} ${P3_Y}`
                 )
-                .stroke({ 
-                    width: STROKE_WIDTH, 
+                .stroke({
+                    width: STROKE_WIDTH,
                     color: getBranchColor(this.endElement.graphPositionY)})
+                .on("mouseover", () => {
+                    line.stroke({ width: STROKE_WIDTH + 1, color: getBranchColor(this.endElement.graphPositionY)});
+                })
+                .on("mouseout", () => {
+                    line.stroke({ width: STROKE_WIDTH, color: getBranchColor(this.endElement.graphPositionY)})
+                })
                 .fill('transparent')
                 .back();
         } else if (endY === startY) {
-            svg.line(
+            const line = svg.line(
                 this.startElement.x + OFFSET_X,
                 this.startElement.y + OFFSET_Y,
                 this.endElement.x + OFFSET_X,
@@ -169,6 +193,12 @@ export class GraphLine implements RenderElement {
                     width: STROKE_WIDTH,
                     color: getBranchColor(this.startElement.graphPositionY),
                     linecap: 'round'})
+            .on("mouseover", () => {
+                    line.stroke({ width: STROKE_WIDTH + 1, color: getBranchColor(this.startElement.graphPositionY)});
+                })
+            .on("mouseout", () => {
+                    line.stroke({ width: STROKE_WIDTH, color: getBranchColor(this.startElement.graphPositionY)})
+            })
             .back();
         } else {
             /**
@@ -192,13 +222,19 @@ export class GraphLine implements RenderElement {
             const P3_X = P1_X + 10;
             const P3_Y = endY;
             const P4_X = endX;
-            svg
+            const line = svg
                 .path(
                     `M ${P1_X} ${P1_Y} L ${P1_X} ${P2_Y}` +
                     `M ${P1_X} ${P2_Y} Q ${P1_X} ${endY} ${P3_X} ${P3_Y}` +
                     `M ${P3_X} ${P3_Y} L ${P4_X} ${P3_Y}`
                 )
                 .stroke({ width: STROKE_WIDTH, color: getBranchColor(this.endElement.graphPositionY) })
+                .on("mouseover", () => {
+                    line.stroke({ width: STROKE_WIDTH + 1, color: getBranchColor(this.endElement.graphPositionY)});
+                })
+                .on("mouseout", () => {
+                    line.stroke({ width: STROKE_WIDTH, color: getBranchColor(this.endElement.graphPositionY)})
+                })
                 .fill('transparent')
                 .back();
         }

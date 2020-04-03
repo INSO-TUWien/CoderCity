@@ -11,6 +11,8 @@ export class TimelineComponent implements OnInit {
   faChevronUp = faChevronUp;
   faChevronDown = faChevronDown;
 
+  isExpanded: boolean = false;
+
   constructor() { }
 
   ngOnInit() {
