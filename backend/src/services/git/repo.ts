@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Repository as NodeGitRepository, Tree, Blame, Oid } from 'nodegit';
 import { Logger } from '@nestjs/common';
 import { File, calculateLinecount } from "src/model/file.model";
