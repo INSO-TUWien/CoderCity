@@ -1,7 +1,7 @@
 stages:
     - build-frontend
     - build-backend
-build-frontend:
+build-frontend:amd64:
     stage: build-frontend
     when: on_success
     only:
@@ -11,9 +11,23 @@ build-frontend:
       - docker:dind
     script:
       - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-      - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/frontend ./frontend
-      - docker push $CI_REGISTRY/yikaiyang/codecity/frontend
-build-backend:
+      - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/$CI_APPLICATION_REPOSITORY/frontend ./frontend
+      - docker push $CI_REGISTRY/$CI_APPLICATION_REPOSITORY/frontend
+build-frontend:armv7:
+    stage: build-frontend
+    when: on_success
+    only:
+      - master
+    image: docker:stable
+    tags:
+      - armv7
+    services:
+      - docker:dind
+    script:
+      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+      - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/$CI_APPLICATION_REPOSITORY/frontend/armv7 ./frontend
+      - docker push $CI_REGISTRY/$CI_APPLICATION_REPOSITORY/frontend/armv7
+build-backend:amd64:
     stage: build-backend
     when: on_success
     only:
@@ -23,5 +37,19 @@ build-backend:
       - docker:dind
     script:
       - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-      - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/backend ./backend
-      - docker push $CI_REGISTRY/yikaiyang/codecity/backend
+      - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/$CI_APPLICATION_REPOSITORY/backend/amd64 ./backend
+      - docker push $CI_REGISTRY/$CI_APPLICATION_REPOSITORY/backend/amd64
+build-backend:armv7:
+    stage: build-backend
+    when: on_success
+    only:
+      - master
+    image: docker:stable
+    tags:
+      - armv7
+    services:
+      - docker:dind
+    script:
+      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+      - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/$CI_APPLICATION_REPOSITORY/backend/armv7 ./backend
+      - docker push $CI_REGISTRY/$CI_APPLICATION_REPOSITORY/backend/armv7
