@@ -11,7 +11,7 @@ build-frontend:
       - docker:dind
     script:
       - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-      - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/frontend .
+      - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/frontend ./frontend
       - docker push $CI_REGISTRY/yikaiyang/codecity/frontend
 build-backend:
     stage: build-backend
@@ -23,5 +23,5 @@ build-backend:
       - docker:dind
     script:
       - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-      - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/backend .
+      - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/backend ./backend
       - docker push $CI_REGISTRY/yikaiyang/codecity/backend
