@@ -1,0 +1,30 @@
+<div *ngIf="active" class="information-panel d-flex flex-column">
+    <h3>{{ (hunk$ | async)?.path}}</h3>
+    <hr/>
+    <div>
+        <table class="table borderless  table-sm">
+            <tbody>
+                <tr>
+                    <th scope="row">Lines</th>
+                    <td> {{(hunk$ | async)?.startLineNumber}} - {{(hunk$ | async)?.endLineNumber}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Number of lines</th>
+                    <td> {{(hunk$ | async)?.linesInHunk}}</td>
+                </tr>
+              <tr>
+                <th scope="row">Name</th>
+                <td> {{(hunk$ | async)?.signature?.name}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Email</th>
+                <td> {{(hunk$ | async)?.signature?.email}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Commit ID:</th>
+                <td> {{(hunk$ | async)?.commitId}}</td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+</div>

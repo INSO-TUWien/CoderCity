@@ -1,0 +1,26 @@
+.branch-label {
+    height: 28px;
+    width: 100px;
+    border-top: 1px solid rgb(243, 243, 243);
+    font-size: 12px;
+    border-right: 3px solid #0AB6B9;
+    color: rgb(80, 80, 80);
+}
+
+.branch-label:hover {
+    cursor: pointer;
+    background-color: rgb(243, 243, 243);
+    border-right: 4px solid #0AB6B9;
+}
+
+.branch-label-text {
+    margin-left: 4px;
+}
+
+.branch-label-container {
+    margin-top: 6px;
+}
+
+.branch-name {
+    font-size: 12px;
+}

@@ -1,0 +1,17 @@
+:host {
+    min-width: 260px;
+    height: 80px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.selection-container {
+    border-radius: 10px;
+    box-shadow: 4px 4px 4px 0 #E9E9E9;
+    background-color: white;
+    padding: 12px;
+}
+
+.commit-id-label {
+    font-size: x-small;
+}

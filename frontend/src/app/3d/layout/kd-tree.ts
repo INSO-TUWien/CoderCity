@@ -3,9 +3,6 @@ import { KDTreeNode } from './kd-treenode';
 import { Element } from './element';
 
 export class KDTree {
-
-    static DIMENSION = 2;
-
     position: THREE.Vector2;
     bounds: Bounds;
     rootNode: KDTreeNode;
@@ -14,11 +11,15 @@ export class KDTree {
         position: THREE.Vector2,
         bounds: Bounds
     ) {
-        this.rootNode = new KDTreeNode(position, bounds, 0, KDTree.DIMENSION, null);
+        this.rootNode = new KDTreeNode(position, bounds, 0, null);
+    }
+
+    getEmptyLeafNodes(): KDTreeNode[] {
+        return this.rootNode.getEmptyLeafNodes([], this.rootNode);
     }
 
     addElement(element: Element): boolean {
-        return this.rootNode.insertElement(element);
+        return this.rootNode.insertElement(this.rootNode, element);
     }
 
     executeWhileTraversingPreOrder(fn: (node: KDTreeNode) => void) {

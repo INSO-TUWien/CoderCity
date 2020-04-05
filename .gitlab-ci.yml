@@ -1,0 +1,27 @@
+stages:
+    - build-frontend
+    - build-backend
+build-frontend:
+    stage: build-frontend
+    when: on_success
+    only:
+      - master
+    image: docker:stable
+    services:
+      - docker:dind
+    script:
+      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+      - docker build -t -f "frontend/Dockerfile" $CI_REGISTRY/yikaiyang/codecity/frontend .
+      - docker push $CI_REGISTRY/yikaiyang/codecity/frontend
+build-backend:
+    stage: build-backend
+    when: on_success
+    only:
+      - master
+    image: docker:stable
+    services:
+      - docker:dind
+    script:
+      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+      - docker build -t -f "backend/Dockerfile" $CI_REGISTRY/yikaiyang/codecity/backend .
+      - docker push $CI_REGISTRY/yikaiyang/codecity/backend

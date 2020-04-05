@@ -1,63 +1,263 @@
 import { Entity } from '../entity';
-import { Vector2, Color } from 'three';
+import { Vector2 } from 'three';
 import { Bounds } from '../layout/bounds';
 import { KDTree } from '../layout/kd-tree';
 import { Element } from '../layout/element';
 import { Cube } from './Cube';
 import * as THREE from 'three';
-import { ColorGenerator } from '../util/color-generator';
+import { KDTreeNode } from '../layout/kd-treenode';
+import { Area } from '../layout/area';
+import { getRandomDistrictColor, getRandomBuildingColor, getRandomNumber } from 'src/app/util/color-scheme';
+import { Building} from './Building';
+import { DISTRICT_MARGIN } from '../constants';
+import { File } from '../../model/file.model';
+import { CityElement } from '../layout/city-element';
+import { SquareRootValueMapper } from '../util/mapper/squareroot-value-mapper';
+import { CityGeneratorOptions } from '../util/city-generator-options';
 
-export class District extends Entity {
+export interface PreserverNode {
+    node: KDTreeNode;
+    waste: number;
+}
 
-    elements: [number, number][] = [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5]];
-    rootAreaBounds: Bounds;
-    coveredRec: [number, number] = [0, 0];
+export interface ExpanderNode {
+    node: KDTreeNode;
+    ratio: number;
+}
 
-    tree: KDTree;
+export class RandomRectangleGenerator {
+    static generateBounds(): Bounds {
+        const randomWidth = Math.floor(Math.random() * 5) + 1;
+        const randomHeight = Math.floor(Math.random() * 5) + 1;
+        return new Bounds(randomWidth, randomHeight);
+    }
+}
 
-    constructor() {
-        super();
+/**
+ * Calculates the largest possible area taken up by the elements (represented as bounds array).
+ */
+export function calculcateMaxAreaForElements(elements: CityElement[]): Bounds {
+    let x = 0;
+    let y = 0;
+    for (let element of elements) {
+        x += Math.ceil(element.bounds.x);
+        y += Math.ceil(element.bounds.y);
+    }
+    return new Bounds(x, y);
+}
+
+export function generateRandomBuildings(count: number, options: CityGeneratorOptions): Building[] {
+    const elements: Building[] = [];
+    for (let i = 0; i < count; i++) {
+        const bounds = RandomRectangleGenerator.generateBounds();
+        elements.push(new Building(bounds, options));
+    }
+    return elements;
+}
+
+
+export class District extends Entity implements Element {
+
+    districtElements: CityElement[] = [];
+    gridPosition: Vector2 = new Vector2(0, 0);
+
+    get bounds(): Bounds {
+        return new Bounds(
+            // Add top, left, right, bottom margins to city element
+            this.coveredArea.bounds.x + DISTRICT_MARGIN * 2,
+            this.coveredArea.bounds.y + DISTRICT_MARGIN * 2
+        );
     }
 
-    private initSampleBuildings() {
-        // Determine max areal extent and assign the set the max areal extent
-        const rootArealExtent = this.elements.reduce((prev, cur) =>
-            [prev[0] + cur[0], prev[1] + cur[1]]
-        );
-        this.rootAreaBounds = new Bounds(rootArealExtent[0], rootArealExtent[1]);
-        this.tree = new KDTree(new Vector2(0, 0), this.rootAreaBounds);
-        this.elements.forEach(el => {
-            const element = new Element(new Bounds(el[0], el[1]));
-            this.tree.addElement(element);
+    private tree: KDTree;
+
+    // Currently covered area by the elements.
+    private coveredArea: Area;
+
+    constructor(public name: string, private options: CityGeneratorOptions) {
+        super();
+        this.computeCity();
+    }
+
+    generateRandomBuildings(count: number) {
+        const elements = generateRandomBuildings(count, this.options);
+        const randomHeight = getRandomNumber(6);
+        // building.createBuildingSegment(0, randomHeight + 1);
+        // building.createBuildingSegment(randomHeight + 1, randomHeight + 4);
+        this.addCityElements(elements);
+    }
+
+
+    init() {
+        // this.addToScene();
+    }
+
+    addBuilding(file: File) {
+        const width = 3;
+        const height = 3;
+        // const element = new Element(new Bounds(width, height));
+        const building = new Building(new Bounds(width, height), this.options);
+        building.createWithFile(file);
+        this.addCityElement(building);
+    }
+
+    addCityElement(cityElement: CityElement) {
+        this.districtElements.push(cityElement);
+        this.computeCity();
+    }
+
+    addCityElements(cityElements: CityElement[]) {
+        cityElements.forEach(element  => {
+            this.districtElements.push(element);
+        });
+        this.computeCity();
+    }
+
+    // Sort elements by surface area descending. (Largest first)
+    private sortCityElements() {
+        this.districtElements.sort((a, b) => b.bounds.x * b.bounds.y - a.bounds.x * a.bounds.y);
+        //console.log(`Sorted city elements: ${JSON.stringify(this.districtElements)}`);
+    }
+
+    private computeCity(): void {
+        this.sortCityElements();
+        // Determine largest area that can be taken up if all elements are placed.
+        const maxArea = calculcateMaxAreaForElements(this.districtElements);
+        this.tree = new KDTree(new Vector2(0, 0), maxArea);
+        this.coveredArea = new Area(new Vector2(0, 0), new Bounds(0, 0));
+        this.districtElements.forEach(element => {
+            this.computeCityElementPosition(element);
         });
     }
 
-    init() {
-        this.initSampleBuildings();
-        this.renderSampleBuildings();
+    /**
+     * Adds city element to kd tree and assigns positions.
+     */
+    private computeCityElementPosition(element: CityElement): void {
+        let emptyLeafNodes = this.tree.getEmptyLeafNodes();
+        // Filter nodes which are large enough to fit the element.
+        emptyLeafNodes = emptyLeafNodes.filter((node) => node.bounds.fits(element.bounds));
+
+        const preservers: PreserverNode[] = [];
+        const expanders: ExpanderNode[] = [];
+
+        emptyLeafNodes.forEach(node => {
+            // Check if cover area fits the element and the node is large enough to encompass element.
+            if (this.coveredArea.fits(new Area(node.position, element.bounds)) && node.bounds.fits(element.bounds)) {
+                // Node fits into covered area
+                const waste = node.bounds.calculateRemainingArea(element.bounds);
+                preservers.push({
+                    node,
+                    waste
+                });
+            } else {
+                // Node does not fit in current cover area.
+                // The current area must be expanded.
+
+                // Calculate position of the highest x or y points of if the element would be placed in this node.
+                // Imagine coveredArea would be area A,
+                // then point P would be the point with the highest x and y value from the origin point.
+                //
+                //  ----------------->
+                //  |       A  o
+                //  |       A  o
+                //  |AAAAAAAA  o
+                //  |ooooooooooP
+                //  v
+                //
+                const elementHighestX = node.position.x + element.bounds.x;
+                const elementHighestY = node.position.y + element.bounds.y;
+
+                // Naive approach to filter out nodes which are not at the edge of the area by checking
+                // whether node exceeds area boundaries.
+                // Only nodes at the edge are able to expand. Enclosed nodes would overlap other nodes.
+                if (elementHighestX > this.coveredArea.bounds.x || elementHighestY > this.coveredArea.bounds.y) {
+                    // Either x or y coordinate must be larger than current area for expansion, otherwise node is an enclosed node.
+                    // Calculate aspect ratio of new covered area if element was placed in this node.
+
+                    const expandedAreaX = (this.coveredArea.bounds.x > elementHighestX) ? this.coveredArea.bounds.x : elementHighestX;
+                    const expandedAreaY = (this.coveredArea.bounds.y > elementHighestY) ? this.coveredArea.bounds.y : elementHighestY;
+
+                    // Calculate aspect ratio
+                    // See: https://stackoverflow.com/questions/10416366/how-to-determine-which-aspect-ratios-are-closest
+                    const ratio = Math.atan(expandedAreaX / expandedAreaY);
+                    expanders.push({
+                        node,
+                        ratio
+                    });
+                }
+            }
+        });
+        let targetNode: KDTreeNode;
+
+        if (preservers.length > 0) {
+            // If preservers are available place element to preserver node with lowest "waste" of area.
+            preservers.sort((a, b) => a.waste - b.waste);
+            targetNode = preservers[0].node;
+        } else {
+            // Sort list based on ratio closest to 1.
+            expanders.sort((a, b) =>  {
+                return Math.abs(Math.atan(1) - a.ratio) - Math.abs(Math.atan(1) - b.ratio);
+            });
+            if (expanders[0] == null) {
+                alert(`expanders is null ${JSON.stringify(element)}`);
+            }
+            targetNode = expanders[0].node;
+        }
+
+        // Check if target node perfectly fits element
+        if (targetNode.bounds.equals(element.bounds)) {
+            targetNode.element = element;
+        } else {
+            targetNode.insertElement(targetNode, element);
+        }
+
+        // Check if the newly placed element exceed current boundaries and adjust them if so.
+        const expandedAreaX = targetNode.position.x + element.bounds.x;
+        const expandedAreaY = targetNode.position.y + element.bounds.y;
+        if (expandedAreaX > this.coveredArea.bounds.x) {
+            this.coveredArea.bounds.x = expandedAreaX;
+        }
+        if (expandedAreaY > this.coveredArea.bounds.y) {
+            this.coveredArea.bounds.y = expandedAreaY;
+        }
     }
 
-    private renderSampleBuildings() {
-        let i = 0;
-
-        // Traverse tree
+    addToScene(): void {
+        console.log(`District: ${this.name} : addToScene`);
+         // Traverse tree and add elements to scene
         this.tree.executeWhileTraversingPreOrder((node) => {
             console.log(node);
             if (node.hasElement()) {
                 const element = node.element;
-                const color = ColorGenerator.generateRandomColorRgbString();
-                let cube = new Cube(element.bounds.x, 1, element.bounds.y, new THREE.Color(color));
-                cube.setPosition(node.position.x, 0, node.position.y);
-                this.addEntity(cube);
+                if (element instanceof District) {
+                    // Element is a district
+                    // Render inner district first / recursively
+                    const district = element as District;
+                    district.addToScene();
+                    // Render inner districts elevated.
+                    district.setPosition(node.position.x + DISTRICT_MARGIN, 0.2, node.position.y + DISTRICT_MARGIN);
+                    this.addEntity(element);
+                } else if (element instanceof Building) {
+                    const building = element as Building;
+                    const bboxCenter = building.calculateBoundingBoxCenterOffset();
+                    building.setPosition(
+                        node.position.x + bboxCenter.x + DISTRICT_MARGIN,
+                        0,
+                        node.position.y + bboxCenter.z + DISTRICT_MARGIN
+                    );
+                    this.addEntity(building);
+                }
             }
         });
+        // Add this district to scene
+        const cube = new Cube(this.bounds.x, 0.2, this.bounds.y, new THREE.Color(getRandomDistrictColor()));
+        const bboxCenter = cube.calculateBoundingBoxCenterOffset();
+        cube.setPosition(bboxCenter.x, 0, bboxCenter.z);
+        this.addEntity(cube);
+    }
 
-        // this.elements.forEach(element => {
-        //     const color = ColorGenerator.generateRandomColorRgbString();
-        //     let cube = new Cube(element[0], 1, element[1], new THREE.Color(color));
-        //     cube.setPosition(i, 0, i);
-        //     this.addEntity(cube);
-        //     i++;
-        // });
+    setPosition(x: number, y: number, z: number) {
+        this.object.position.set(x, y, z);
     }
 }
