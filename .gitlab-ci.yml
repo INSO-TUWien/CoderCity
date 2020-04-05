@@ -9,7 +9,7 @@ build-frontend:
     image: jonoh/docker-buildx-qemu
     services:
       - docker:dind
-    before-script:
+    before_script:
       - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
       # Use docker-container driver to allow useful features (push/multi-platform)
       - docker buildx create --driver docker-container --use
@@ -27,7 +27,7 @@ build-backend:
     image: jonoh/docker-buildx-qemu
     services:
       - docker:dind
-    before-script:
+    before_script:
       - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
       # Use docker-container driver to allow useful features (push/multi-platform)
       - docker buildx create --driver docker-container --use
