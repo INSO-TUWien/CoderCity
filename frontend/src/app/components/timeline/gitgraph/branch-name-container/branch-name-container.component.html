@@ -1,0 +1,7 @@
+<div class="d-flex flex-column branch-label-container overflow-auto">
+    <cc-branch-name-label 
+        *ngFor="let branch of branches$ | async"
+        [title]="branch.name"
+        >
+    </cc-branch-name-label>
+</div>

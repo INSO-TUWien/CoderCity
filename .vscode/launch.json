@@ -5,13 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}/frontend"
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
+            "program": "${workspaceFolder}/backend/src/main.ts",
+            "preLaunchTask": "tsc: watch - backend/tsconfig.build.json",
+            "outFiles": ["${workspaceFolder}/backend/dist/**/*.js"],
             "skipFiles": [
                 "<node_internals>/**"
-            ],
-            "program": "${file}"
+            ], 
         },
         {
             "name": "vscode-jest-tests",

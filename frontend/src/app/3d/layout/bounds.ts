@@ -1,4 +1,4 @@
-//Boundaries in x (width) and y (height)
+// Boundaries in x (width) and y (height)
 export class Bounds {
 
     // Width of boundary
@@ -40,6 +40,16 @@ export class Bounds {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns the remainder area of current node if a given bounds is placed in it.
+     * @param bounds 
+     */
+    calculateRemainingArea(bounds: Bounds): number {
+        const area = this.x * this.y;
+        const areaToSubtract = bounds.x * bounds.y;
+        return area - areaToSubtract;
     }
 
     /**
