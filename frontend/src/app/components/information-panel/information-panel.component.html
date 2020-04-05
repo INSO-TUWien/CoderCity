@@ -20,6 +20,10 @@
                 <th scope="row">Email</th>
                 <td> {{(hunk$ | async)?.signature?.email}}</td>
               </tr>
+              <tr>
+                <th scope="row">Commit ID:</th>
+                <td> {{(hunk$ | async)?.commitId}}</td>
+              </tr>
             </tbody>
           </table>
     </div>
