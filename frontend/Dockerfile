@@ -1,5 +1,5 @@
 # STAGE 1: Building angular project
-FROM node:10.13-alpine as build-stage
+FROM node:12-alpine as build-stage
 # COPY APP FILES
 WORKDIR /app
 
