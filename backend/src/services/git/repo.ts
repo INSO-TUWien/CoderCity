@@ -147,11 +147,14 @@ export class Repository {
         for (let i = 0; i < blame.getHunkCount(); i++) {
             const hunk = blame.getHunkByIndex(i);
 
+            // Use finalStartLineNumber instead of origLineNumber.
+            // OrigLine number is the line number of the hunk at the state where the commit of the hunk was made.
+            // Whereas finalLineNumber takes into account of other hunks (code segments) inserted in between.
             const hunkModel = new BlameHunkModel(
-                hunk.origStartLineNumber(),
-                hunk.origStartLineNumber() + hunk.linesInHunk() - 1,
+                hunk.finalStartLineNumber(),
+                hunk.finalStartLineNumber() + hunk.linesInHunk() - 1,
                 hunk.linesInHunk(),
-                commitId,
+                hunk.origCommitId().tostrS(),
                 hunk.origPath(),
                 new Signature(hunk.origSignature().name(), hunk.origSignature().email())
             );
