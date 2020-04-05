@@ -6,22 +6,35 @@ build-frontend:
     when: on_success
     only:
       - master
-    image: docker:stable
+    image: jonoh/docker-buildx-qemu
     services:
       - docker:dind
-    script:
+    before-script:
       - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-      - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/frontend ./frontend
-      - docker push $CI_REGISTRY/yikaiyang/codecity/frontend
+      # Use docker-container driver to allow useful features (push/multi-platform)
+      - docker buildx create --driver docker-container --use
+      - docker buildx inspect --bootstrap
+    script:
+      - update-binfmts --enable # Important: Ensures execution of other binary formats is enabled in the kernel
+      - docker buildx build --platform linux/arm/v7,local --pull -f "frontend/Dockerfile" -t "$CI_REGISTRY_IMAGE" --push ./frontend
+      #- docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/frontend ./frontend
+      #- docker push $CI_REGISTRY/yikaiyang/codecity/frontend
 build-backend:
     stage: build-backend
     when: on_success
     only:
       - master
-    image: docker:stable
+    image: jonoh/docker-buildx-qemu
     services:
       - docker:dind
-    script:
+    before-script:
       - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-      - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/backend ./backend
-      - docker push $CI_REGISTRY/yikaiyang/codecity/backend
+      # Use docker-container driver to allow useful features (push/multi-platform)
+      - docker buildx create --driver docker-container --use
+      - docker buildx inspect --bootstrap
+    script:
+      - update-binfmts --enable # Important: Ensures execution of other binary formats is enabled in the kernel
+      - docker buildx build --platform linux/arm/v7,local --pull -f "backend/Dockerfile" -t "$CI_REGISTRY_IMAGE" --push ./backend
+    #  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    #  - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/backend ./backend
+    #  - docker push $CI_REGISTRY/yikaiyang/codecity/backend
