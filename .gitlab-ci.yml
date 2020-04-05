@@ -1,6 +1,3 @@
-variables:
-  DOCKER_HOST: tcp://docker:2375/
-
 stages:
     - build-frontend
     - build-backend
@@ -9,35 +6,22 @@ build-frontend:
     when: on_success
     only:
       - master
-    image: jonoh/docker-buildx-qemu
+    image: docker:stable
     services:
       - docker:dind
-    before_script:
-      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-      # Use docker-container driver to allow useful features (push/multi-platform)
-      - docker buildx create --driver docker-container --use
-      - docker buildx inspect --bootstrap
     script:
-      - update-binfmts --enable # Important: Ensures execution of other binary formats is enabled in the kernel
-      - docker buildx build --platform linux/arm/v7,linux/amd64 --pull -f "frontend/Dockerfile" -t "$CI_REGISTRY_IMAGE" --push ./frontend
-      #- docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/frontend ./frontend
-      #- docker push $CI_REGISTRY/yikaiyang/codecity/frontend
+      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+      - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/frontend ./frontend
+      - docker push $CI_REGISTRY/yikaiyang/codecity/frontend
 build-backend:
     stage: build-backend
     when: on_success
     only:
       - master
-    image: jonoh/docker-buildx-qemu
+    image: docker:stable
     services:
       - docker:dind
-    before_script:
-      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-      # Use docker-container driver to allow useful features (push/multi-platform)
-      - docker buildx create --driver docker-container --use
-      - docker buildx inspect --bootstrap
     script:
-      - update-binfmts --enable # Important: Ensures execution of other binary formats is enabled in the kernel
-      - docker buildx build --platform linux/arm/v7,linux/amd64 --pull -f "backend/Dockerfile" -t "$CI_REGISTRY_IMAGE" --push ./backend
-    #  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    #  - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/backend ./backend
-    #  - docker push $CI_REGISTRY/yikaiyang/codecity/backend
+      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+      - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/yikaiyang/codecity/backend ./backend
+      - docker push $CI_REGISTRY/yikaiyang/codecity/backend
