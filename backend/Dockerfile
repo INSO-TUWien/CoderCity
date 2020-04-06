@@ -10,7 +10,7 @@ COPY ./src/ /home/node/src
 
 USER root
 # If you have native dependencies, you'll need extra tools
-RUN apk add --no-cache make gcc g++ python
+RUN apk add --no-cache make gcc g++ python krb5-dev
 RUN npm ci && npm run build
 
 # ---
