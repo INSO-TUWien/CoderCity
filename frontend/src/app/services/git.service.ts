@@ -5,12 +5,12 @@ import { map, tap } from 'rxjs/operators';
 import { Branch } from '../model/branch.model';
 import { GitStore } from '../state/git.store';
 import { AuthorService } from './author.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GitService {
-  private HOST_URL = '/api';
 
   constructor(
     private httpClient: HttpClient,
@@ -20,7 +20,7 @@ export class GitService {
 
   getCommits() {
     return this.httpClient
-    .get<Commit[]>(this.HOST_URL + '/commit')
+    .get<Commit[]>(environment.apiUrl + '/commit')
     .pipe(
       map(val =>
         val.map((commit) => {
@@ -41,7 +41,7 @@ export class GitService {
 
   getBranches() {
     return this.httpClient.get<Branch[]>(
-      this.HOST_URL + '/branch'
+      environment.apiUrl  + '/branch'
     ).subscribe((branches) => {
       this.gitStore.update(state => ({
         ...state,

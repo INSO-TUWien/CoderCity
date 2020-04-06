@@ -1,16 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { GitModel } from 'src/datastore/git-model';
 import { GitIndexer } from 'src/services/git/git-indexer';
-import * as path from 'path';
 import { Repository } from './repo';
-
-export const EXAMPLE_PROJECT1_PATH = '../../../../../projects/demo-git-flow/.git';
-export const EXAMPLE_PROJECT2_PATH = '../../../../../projects/gitflow-sample/.git';
-export const EXAMPLE_PROJECT3_PATH = '../../../../../projects/ue2_github/.git';
-export const EXAMPLE_PROJECT4_PATH = '../../../../../projects/exercise2/.git';
-export const EXAMPLE_PROJECT5_PATH = '../../../../../projects/moccapps/.git';
-
-export const FOLDER_PATH = path.resolve(__dirname, EXAMPLE_PROJECT3_PATH);
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GitService {
@@ -19,21 +11,26 @@ export class GitService {
     private gitIndexer: GitIndexer;
 
     public repo: Repository;
+    private projectPath: string;
 
-    constructor() {
+    constructor(
+        private configService: ConfigService,
+    ) {
         this.logger.log(`Initializing GitController`);
+        this.projectPath = this.configService.get<string>('GIT_PROJECT_PATH');
+        this.logger.log(`Set project path: ${this.projectPath}`);
         this.initIndexing();
     }
 
     async initRepo(): Promise<void> {
-        this.repo = new Repository(FOLDER_PATH);
+        this.repo = new Repository(this.projectPath);
         await this.repo.openRepo();
     }
 
     async initIndexing() {
         await this.initRepo();
         this.gitModel = new GitModel();
-        this.gitIndexer = new GitIndexer(FOLDER_PATH, this.gitModel, this.repo);
+        this.gitIndexer = new GitIndexer(this.projectPath, this.gitModel, this.repo);
         this.gitIndexer.startIndexing ();
     }
 }
