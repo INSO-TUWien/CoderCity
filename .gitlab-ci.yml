@@ -1,5 +1,5 @@
 stages:
-    # - build-frontend
+    - build-frontend
     - build-backend
 build-frontend:amd64:
     stage: build-frontend
