@@ -8,6 +8,7 @@ WORKDIR /home/node
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "tsconfig.build.json","tsconfig.json", ".env", "/home/node/"]
 COPY ./src/ /home/node/src
 
+USER root
 # If you have native dependencies, you'll need extra tools
 RUN apk add --no-cache make gcc g++ python
 RUN npm ci && npm run build
