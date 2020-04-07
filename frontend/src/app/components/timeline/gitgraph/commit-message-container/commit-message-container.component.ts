@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Commit } from 'src/app/model/commit.model';
 import { GitgraphService } from '../gitgraph.service';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faUser } from '@fortawesome/free-solid-svg-icons';
 import { GitService } from 'src/app/services/git.service';
 import { GitQuery } from 'src/app/state/git.query';
 import { Branch } from 'src/app/model/branch.model';
@@ -15,6 +15,7 @@ import { Branch } from 'src/app/model/branch.model';
 export class CommitMessageContainerComponent implements OnInit {
 
   faPlay = faPlay;
+  faUser = faUser;
 
   @ViewChild('messageContainer', {static: true})
   messageContainer: ElementRef<HTMLElement>;
