@@ -1,8 +1,6 @@
 <div class="d-flex flex-row">
     <div class="left-pane d-flex flex-column justify-content-between">
-        <button class="btn btn-primary btn-sm btn-play" (click)="onCommitsClick()">
-            <fa-icon [icon]="faPlay" size="sm"></fa-icon>
-        </button>
+        <cc-play-button (isPlaying)="onCommitsClick($event)" style="z-index: 12;"></cc-play-button>
         <div class="status-label d-flex align-items-center justify-content-center">
             <fa-icon [icon]="faUser" size="xs"></fa-icon>
         </div>

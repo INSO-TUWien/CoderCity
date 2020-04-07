@@ -19,7 +19,6 @@ $COMMIT_MESSAGE_WIDTH: 30px;
     &::after {
         content: '';
         position: absolute;
-        // margin-left: $LEFT_PANE_WIDTH + $MESSAGE_CONTAINER_MARGIN_LEFT;
         height: 100%;
         right: $COMMIT_MESSAGE_WIDTH + $MESSAGE_CONTAINER_MARGIN_LEFT;;
         top: 0;
@@ -30,7 +29,6 @@ $COMMIT_MESSAGE_WIDTH: 30px;
     &::before {
         content: '';
         position: absolute;
-        // margin-left: $LEFT_PANE_WIDTH + $MESSAGE_CONTAINER_MARGIN_LEFT;
         height: 100%;
         width: $LEFT_PANE_WIDTH;
         left: 0;
@@ -57,11 +55,6 @@ $COMMIT_MESSAGE_WIDTH: 30px;
         z-index: 10;
         background-image: linear-gradient(to right, white, rgba(255,255,255,0));
     }
-}
-
-.btn-play {
-    width: 62px;
-    z-index: 11;
 }
 
 .status-label {

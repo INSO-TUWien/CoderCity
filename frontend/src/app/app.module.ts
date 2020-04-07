@@ -21,6 +21,7 @@ import { AuthorInitialsPipe } from './pipes/author-initials.pipe';
 import { InformationPanelComponent } from './components/information-panel/information-panel.component';
 import { SidePanelComponent } from './components/side-panel/side-panel.component';
 import { SettingsPanelComponent } from './components/settings-panel/settings-panel.component';
+import { PlayButtonComponent } from './components/timeline/play-button/play-button.component';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -39,7 +40,8 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     AuthorInitialsPipe,
     InformationPanelComponent,
     SidePanelComponent,
-    SettingsPanelComponent
+    SettingsPanelComponent,
+    PlayButtonComponent
   ],
   imports: [
     NgbModule,
