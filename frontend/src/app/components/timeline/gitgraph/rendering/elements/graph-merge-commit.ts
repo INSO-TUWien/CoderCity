@@ -1,9 +1,9 @@
 import { Commit } from 'src/app/model/commit.model';
 import { Svg } from '@svgdotjs/svg.js';
 import { AbstractGraphCommit } from './abstract-graph-commit';
-import { OnGraphCommitMouseOver } from "./graph-commit-mouseover";
 import { getBranchColor, getBranchHighlightColor } from '../graph-colors';
 import {  computeMergeCommitCirclePosition, GridPosition } from '../compute-position';
+import { OnGraphCommitMouseOver, OnGraphCommitClick } from '../callback/callback';
 
 export const MERGE_CIRCLE_WIDTH = 10;
 export const CIRCLE_COLOR = '#0AB6B9';
@@ -13,11 +13,12 @@ export class GraphMergeCommit extends AbstractGraphCommit {
 
     constructor(
         public onMouseOverCallback: OnGraphCommitMouseOver,
+        public onClickCallback: OnGraphCommitClick,
         public readonly gridPosition: GridPosition,
         public commit: Commit,
         public color: string = CIRCLE_COLOR
     ) {
-        super(onMouseOverCallback);
+        super(onMouseOverCallback, onClickCallback);
         if (gridPosition.x < 0 && gridPosition.y < 0) {
             console.error(`GraphMergeCommit: Invalid parameters graphPosition are null or undefined`);
             return;
@@ -41,9 +42,10 @@ export class GraphMergeCommit extends AbstractGraphCommit {
             .on('mouseover', () => {
                 circle
                     .stroke({ width: 4, color: this.highlightColor });
+                this.onMouseOverCallback(this.commit);
             })
             .on('click', () => {
-                this.onMouseOverCallback(this.commit);
+                
             })
             .on('mouseout', () => {
                 circle

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TimelineComponent } from './timeline.component';
+import { TimeIntervalLabelComponent } from './time-interval-label.component';
 
-describe('TimelineComponent', () => {
-  let component: TimelineComponent;
-  let fixture: ComponentFixture<TimelineComponent>;
+describe('TimeIntervalLabelComponent', () => {
+  let component: TimeIntervalLabelComponent;
+  let fixture: ComponentFixture<TimeIntervalLabelComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TimelineComponent ]
+      declarations: [ TimeIntervalLabelComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TimelineComponent);
+    fixture = TestBed.createComponent(TimeIntervalLabelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

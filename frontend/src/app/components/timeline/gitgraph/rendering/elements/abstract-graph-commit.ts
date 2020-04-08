@@ -1,7 +1,7 @@
 import { RenderElement } from '../render-element';
 import { Svg } from '@svgdotjs/svg.js';
 import { GridPosition, PixelPosition } from '../compute-position';
-import { OnGraphCommitMouseOver } from './graph-commit-mouseover';
+import { OnGraphCommitMouseOver, OnGraphCommitClick } from '../callback/callback';
 
 export abstract class AbstractGraphCommit implements RenderElement {
 
@@ -15,7 +15,8 @@ export abstract class AbstractGraphCommit implements RenderElement {
     y: number;
 
     constructor(
-        onMouseOverCallback: OnGraphCommitMouseOver) {
+        onMouseOverCallback: OnGraphCommitMouseOver,
+        onClickCallback: OnGraphCommitClick) {
     }
 
     render(svg: Svg): void {

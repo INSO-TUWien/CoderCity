@@ -92,8 +92,10 @@ export class GitgraphComponent implements OnInit {
     this.svg = SVG()
       .addTo(this.graphElement.nativeElement)
     this.renderer = new GitGraphRenderer(this.svg, (commit) => {
-      this.commitService.setPreviewCommit(commit);
-    });
+        this.commitService.setPreviewCommit(commit);
+      }
+      , () => {}
+    );
   }
 
 

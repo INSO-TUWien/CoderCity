@@ -3,7 +3,8 @@
         <div class="timeline-header d-flex justify-content-between">
             <div class="d-flex flex-row">
                 <h3>Timeline</h3>
-                <span class="ml-2 time-label"> | 1.1.2020</span>
+                <span *ngIf="(projectInterval$ | async).start != null" class="ml-2 mr-2 time-label">|</span>
+                <cc-time-interval-label [interval]="projectInterval$ | async"></cc-time-interval-label>
             </div>
         </div>
         <button class="btn btn-light btn-xs">

@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Store, StoreConfig } from '@datorama/akita';
+import { TimeInterval } from '../components/timeline/timeinterval';
 
 export interface TimelineState {
    key: string;
    isPlaying: boolean;
    isMinimized: boolean;
+   projectInterval: TimeInterval;
 }
 
 export function createInitialState(): TimelineState {
@@ -12,6 +14,10 @@ export function createInitialState(): TimelineState {
     key: '',
     isPlaying: false,
     isMinimized: true,
+    projectInterval: {
+      start: null,
+      end: null
+    }
   };
 }
 

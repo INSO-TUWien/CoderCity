@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { faChevronUp, faChevronDown, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { GitService } from 'src/app/services/git.service';
+import { TimelineQuery } from 'src/app/state/timeline.query';
+import { Observable} from 'rxjs';
+import { TimeInterval } from './timeinterval';
 
 @Component({
   selector: 'cc-timeline',
@@ -14,8 +17,14 @@ export class TimelineComponent implements OnInit {
   faChevronDown = faChevronDown;
 
   isExpanded: boolean = false;
+  projectInterval$: Observable<TimeInterval>;
 
-  constructor(private gitService: GitService) { }
+  constructor(
+    private gitService: GitService,
+    private timelineQuery: TimelineQuery
+  ) {
+    this.projectInterval$ = this.timelineQuery.projectInterval$;
+  }
 
   ngOnInit() {
   }
