@@ -3,6 +3,8 @@ import { VisualizationStore } from '../state/visualization.store';
 import { BlameHunk } from '../model/blamehunk.model';
 import { File } from '../model/file.model';
 import { Directory } from '../model/directory.model';
+import { Commit } from '../model/commit.model';
+import { CommitService } from './commit.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,8 @@ import { Directory } from '../model/directory.model';
 export class VisualizationService {
 
   constructor(
-    private visualizationStore: VisualizationStore
+    private visualizationStore: VisualizationStore,
+    private commitService: CommitService
   ) { }
 
   // Sets selected object in the codecity.
@@ -33,5 +36,20 @@ export class VisualizationService {
       ...state,
       projectFiles: directory
     }));
+  }
+
+  setSelectedCommit(commit: Commit): void {
+    this.visualizationStore.update(state => ({
+      ...state,
+      selectedCommit: commit
+    }));
+
+    if (commit != null) {
+      this.commitService.getProjectFilesAtCommit(commit).subscribe(
+        directory => {
+          this.setProjectFiles(directory);
+        }
+      );
+    }
   }
 }

@@ -33,3 +33,7 @@ $GIT_GRAPH_PADDING_LEFT: 70px;
         background-image: linear-gradient(to right, white, rgba(255,255,255,0));
     }
 }
+
+::ng-deep .gitgraph-commit {
+    cursor: pointer;
+}

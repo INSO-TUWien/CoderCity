@@ -35,6 +35,7 @@ export class GraphCommit extends AbstractGraphCommit {
     // Outer circle
     const circle = svg
       .circle(CIRCLE_WIDTH)
+      .addClass('gitgraph-commit')
       .id(`${this.commit.commitId}`)
       .fill(this.color)
       .move(this.x, this.y)
@@ -43,6 +44,7 @@ export class GraphCommit extends AbstractGraphCommit {
        this.onMouseOverCallback(this.commit);
       })
       .on("click", () => {
+        this.onClickCallback(this.commit);
       })
       .on("mouseout", () => {
         circle.fill({ color: this.color }).stroke({ width: 0 });

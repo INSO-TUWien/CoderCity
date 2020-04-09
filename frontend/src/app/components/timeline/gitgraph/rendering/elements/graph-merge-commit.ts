@@ -36,6 +36,7 @@ export class GraphMergeCommit extends AbstractGraphCommit {
     render(svg: Svg) {
         const circle = svg
             .circle(MERGE_CIRCLE_WIDTH)
+            .addClass('gitgraph-commit')
             .fill(
                 this.color
             )
@@ -45,7 +46,7 @@ export class GraphMergeCommit extends AbstractGraphCommit {
                 this.onMouseOverCallback(this.commit);
             })
             .on('click', () => {
-                
+                this.onClickCallback(this.commit);
             })
             .on('mouseout', () => {
                 circle

@@ -3,13 +3,9 @@ import { Engine } from '../../3d/engine';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { EventBus } from 'src/app/3d/util/eventbus';
 import * as EventEmitter from 'eventemitter3';
-import { BlameHunk } from 'src/app/model/blamehunk.model';
 import { VisualizationService } from 'src/app/services/visualization.service';
 import { VisualizationQuery } from 'src/app/state/visualization.query';
-import { File } from 'src/app/model/file.model';
 import { Directory } from 'src/app/model/directory.model';
-import { Object3D } from 'three';
-import { BuildingSegment } from 'src/app/3d/entities/BuildingSegment';
 import { GitQuery } from 'src/app/state/git.query';
 import { BuildingAuthorColorMapper } from 'src/app/3d/util/color/building-author-color-mapper';
 

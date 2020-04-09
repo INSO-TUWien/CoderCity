@@ -18,8 +18,7 @@ export class CommitService {
 
   constructor(
     private http: HttpClient,
-    private gitStore: GitStore,
-    private visualizationService: VisualizationService
+    private gitStore: GitStore
   ) { }
 
   getFilesAtCommit(commit: Commit): Observable<File[]> {
@@ -35,18 +34,5 @@ export class CommitService {
       ...state,
       commitPreview: commit
     }));
-
-    if (commit != null) {
-      this.getProjectFilesAtCommit(commit).subscribe(
-        directory => {
-          this.visualizationService.setProjectFiles(directory);
-        }
-      );
-      // this.getFilesAtCommit(commit).subscribe(
-      //   files => {
-      //     this.visualizationService.setFiles(files);
-      //   }
-      // )
-    }
   }
 }

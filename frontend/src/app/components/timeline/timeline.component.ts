@@ -29,8 +29,4 @@ export class TimelineComponent implements OnInit {
   ngOnInit() {
   }
 
-  onCommitsClick() {
-    this.gitService.getBranches();
-    this.gitService.getCommits();
-  }
 }

@@ -10,6 +10,7 @@ import { GitGraphRenderer } from './rendering/gitgraph-renderer';
 import { GitgraphService } from './gitgraph.service';
 import { CommitService } from 'src/app/services/commit.service';
 import { GitQuery } from 'src/app/state/git.query';
+import { VisualizationService } from 'src/app/services/visualization.service';
 
 @Component({
   selector: 'cc-gitgraph',
@@ -33,7 +34,8 @@ export class GitgraphComponent implements OnInit {
   constructor(
     private commitService: CommitService,
     private gitQuery: GitQuery,
-    private gitGraphService: GitgraphService
+    private gitGraphService: GitgraphService,
+    private visualizationService: VisualizationService
     ) {
       // Retrieve commits and sort them by time. (Oldest first)
     this.commits$ = this.gitQuery.sortedCommits$;
@@ -92,9 +94,15 @@ export class GitgraphComponent implements OnInit {
     this.svg = SVG()
       .addTo(this.graphElement.nativeElement)
     this.renderer = new GitGraphRenderer(this.svg, (commit) => {
-        this.commitService.setPreviewCommit(commit);
+        // On Hover event
+        this.commitService
+          .setPreviewCommit(commit);
       }
-      , () => {}
+      , (commit) => {
+        // On Click event
+        this.visualizationService
+          .setSelectedCommit(commit);
+      }
     );
   }
 

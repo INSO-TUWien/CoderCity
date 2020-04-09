@@ -3,11 +3,13 @@ import { Store, StoreConfig } from '@datorama/akita';
 import { BlameHunk } from '../model/blamehunk.model';
 import { File } from '../model/file.model';
 import { Directory } from '../model/directory.model';
+import { Commit } from '../model/commit.model';
 
 export interface VisualizationState {
   selectedObject: BlameHunk;
   files: File[];
   projectFiles: Directory;
+  selectedCommit: Commit;
 }
 
 export function createInitialState(): VisualizationState {
@@ -15,6 +17,7 @@ export function createInitialState(): VisualizationState {
     selectedObject: null,
     files: [],
     projectFiles: null,
+    selectedCommit: null
   };
 }
 
