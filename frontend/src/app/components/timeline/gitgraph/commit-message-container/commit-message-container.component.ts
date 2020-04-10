@@ -6,6 +6,7 @@ import { faPlay, faUser } from '@fortawesome/free-solid-svg-icons';
 import { GitService } from 'src/app/services/git.service';
 import { GitQuery } from 'src/app/state/git.query';
 import { Branch } from 'src/app/model/branch.model';
+import { TimelineService } from '../../timeline.service';
 
 @Component({
   selector: 'cc-commit-message-container',
@@ -29,7 +30,8 @@ export class CommitMessageContainerComponent implements OnInit {
   constructor(
     private gitService: GitService,
     private gitQuery: GitQuery,
-    private gitGraphService: GitgraphService
+    private gitGraphService: GitgraphService,
+    private timelineService: TimelineService
   ) {
     this.commits$ = this.gitQuery.sortedCommits$;
   }
@@ -67,6 +69,10 @@ export class CommitMessageContainerComponent implements OnInit {
 
   private scroll(value: number) {
     this.gitGraphService.scrollLeft.next(value);
+  }
+
+  changeIndicatorStatus() {
+    this.timelineService.changeIndicatorStatus();
   }
 
   onCommitsClick() {

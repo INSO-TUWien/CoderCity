@@ -1,16 +1,19 @@
 <div class="d-flex flex-row">
     <div class="left-pane d-flex flex-column justify-content-between">
         <cc-play-button (isPlaying)="onCommitsClick($event)" style="z-index: 12;"></cc-play-button>
-        <div class="status-label d-flex align-items-center justify-content-center">
+        <button class="status-label d-flex align-items-center justify-content-center" (click)="changeIndicatorStatus()">
             <fa-icon [icon]="faUser" size="xs"></fa-icon>
-        </div>
+        </button>
     </div>
     <div class="messages-container">
         <div #messageContainer class="commit-message-container overflow-auto" style="white-space: nowrap">
-            <div class="commit-message" *ngFor="let commit of commits$ | async">
-                <span class="branch-indicator"></span>
-                <span class="commit-message-text">{{commit.message}}</span>
-            </div>
+            <span class="commit-messages">
+                <div class="commit-message" *ngFor="let commit of commits$ | async">
+                    {{commit.message}}
+                </div>
+            </span>
+            
+            <cc-indicator-bar></cc-indicator-bar>
         </div>
     </div>
     

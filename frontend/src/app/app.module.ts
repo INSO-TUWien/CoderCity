@@ -23,6 +23,8 @@ import { SidePanelComponent } from './components/side-panel/side-panel.component
 import { SettingsPanelComponent } from './components/settings-panel/settings-panel.component';
 import { PlayButtonComponent } from './components/timeline/play-button/play-button.component';
 import { TimeIntervalLabelComponent } from './components/timeline/time-interval-label/time-interval-label.component';
+import { CommitMessageIndicatorComponent } from './components/timeline/gitgraph/commit-message-container/commit-message-indicator/commit-message-indicator.component';
+import { IndicatorBarComponent } from './components/timeline/gitgraph/commit-message-container/indicator-bar/indicator-bar.component';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -43,7 +45,9 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     SidePanelComponent,
     SettingsPanelComponent,
     PlayButtonComponent,
-    TimeIntervalLabelComponent
+    TimeIntervalLabelComponent,
+    CommitMessageIndicatorComponent,
+    IndicatorBarComponent
   ],
   imports: [
     NgbModule,

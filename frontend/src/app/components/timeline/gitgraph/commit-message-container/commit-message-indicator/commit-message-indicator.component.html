@@ -1,0 +1,9 @@
+<div class="branch-indicator d-flex justify-content-center align-items-center">
+    <div 
+        *ngIf="(status$ | async) === CommitMessageIndicatorStatus.AuthorColor" 
+        class="indicator"></div>
+    <div *ngIf="(status$ | async) === CommitMessageIndicatorStatus.Author" 
+        class="author-circle rounded-circle d-flex justify-content-center align-items-center">
+        {{commit.authorName | authorInitials | uppercase}}
+    </div>
+</div>

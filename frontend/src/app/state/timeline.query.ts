@@ -6,6 +6,7 @@ import { TimelineStore, TimelineState } from './timeline.store';
 export class TimelineQuery extends Query<TimelineState> {
 
   projectInterval$ = this.select(state => state.projectInterval);
+  indicatorStatus$ = this.select(state => state.indicatorStatus);
 
   constructor(protected store: TimelineStore) {
     super(store);

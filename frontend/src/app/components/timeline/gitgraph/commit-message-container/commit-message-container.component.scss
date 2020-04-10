@@ -81,14 +81,6 @@ $COMMIT_MESSAGE_WIDTH: 30px;
     display: inline-block;
 }
 
-.commit-message-text {
-    margin-left: 8px;
-}
-
-.branch-indicator {
-    height: 4px;
-    width: 4px;
-    border-radius: 2px;
-    background: #0AB6B9;
-    display: inline-block;
+.commit-messages {
+    margin-left: 12px;
 }
