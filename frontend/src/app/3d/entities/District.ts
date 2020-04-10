@@ -14,6 +14,8 @@ import { File } from '../../model/file.model';
 import { CityElement } from '../layout/city-element';
 import { SquareRootValueMapper } from '../util/mapper/squareroot-value-mapper';
 import { CityGeneratorOptions } from '../util/city-generator-options';
+import { Directory } from 'src/app/model/directory.model';
+import { IntersectableDirectory } from 'src/app/model/intersectable/intersectable-directory';
 
 export interface PreserverNode {
     node: KDTreeNode;
@@ -70,12 +72,14 @@ export class District extends Entity implements Element {
     }
 
     private tree: KDTree;
+    private name: string;
 
     // Currently covered area by the elements.
     private coveredArea: Area;
 
-    constructor(public name: string, private options: CityGeneratorOptions) {
+    constructor(public directory: Directory, private options: CityGeneratorOptions) {
         super();
+        this.name = directory.name;
         this.computeCity();
     }
 
@@ -254,6 +258,7 @@ export class District extends Entity implements Element {
         const cube = new Cube(this.bounds.x, 0.2, this.bounds.y, new THREE.Color(getRandomDistrictColor()));
         const bboxCenter = cube.calculateBoundingBoxCenterOffset();
         cube.setPosition(bboxCenter.x, 0, bboxCenter.z);
+        cube.setUserData(IntersectableDirectory.fromObject(this.directory));
         this.addEntity(cube);
     }
 

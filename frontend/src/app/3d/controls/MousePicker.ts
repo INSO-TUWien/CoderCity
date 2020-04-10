@@ -4,6 +4,8 @@ import { Mesh, MeshLambertMaterial, Object3D } from 'three';
 import { EventBus } from '../util/eventbus';
 import * as EventEmitter from 'eventemitter3';
 import { BlameHunk } from 'src/app/model/blamehunk.model';
+import { Directory } from 'src/app/model/directory.model';
+import { IntersectableDirectory } from 'src/app/model/intersectable/intersectable-directory';
 
 /**
  * Mouse picker to trigger hover/selection for elements in 3d scene.
@@ -90,8 +92,10 @@ export class MousePicker extends Entity {
                 this.intersectedObjectColor = material.emissive.getHex();
                 material.emissive.setHex(0xff0000);
 
-                //console.log(`Intersected Object: ${JSON.stringify(object.userData)}`);
+                // console.log(`Intersected Object: ${JSON.stringify(object.userData)}`);
                 if (object.userData instanceof BlameHunk) {
+                    this.eventBus.emit(`intersectObject`, object.userData);
+                } else if (object.userData instanceof IntersectableDirectory) {
                     this.eventBus.emit(`intersectObject`, object.userData);
                 }
              }

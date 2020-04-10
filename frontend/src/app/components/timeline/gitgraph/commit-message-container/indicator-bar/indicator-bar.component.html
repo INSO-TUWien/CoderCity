@@ -1,4 +1,4 @@
-<div class="d-flex flex-row">
+<div class="indicator-bar d-flex flex-row">
     <div *ngFor="let commit of commits$ | async" class="indicator-item">
         <cc-commit-message-indicator [commit]="commit"></cc-commit-message-indicator>
     </div>

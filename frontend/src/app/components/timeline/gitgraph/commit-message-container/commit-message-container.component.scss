@@ -7,7 +7,6 @@ $COMMIT_MESSAGE_WIDTH: 30px;
 .commit-message-container {
     margin-bottom: 8px;
     margin-left: $MESSAGE_CONTAINER_MARGIN_LEFT;
-    padding-left: 20px;
     padding-top: $MESSAGE_CONTAINER_HEIGHT;
 }
 
@@ -83,4 +82,5 @@ $COMMIT_MESSAGE_WIDTH: 30px;
 
 .commit-messages {
     margin-left: 12px;
+    padding-left: 18px;
 }

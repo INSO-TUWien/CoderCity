@@ -40,7 +40,7 @@ export class GitService {
           this.timelineServie.updateProjectInterval({
             start: firstCommitDate,
             end: lastCommitDate
-          })
+          });
         }
       })
     ).subscribe(commits => {

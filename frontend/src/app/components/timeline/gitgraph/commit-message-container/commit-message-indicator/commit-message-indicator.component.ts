@@ -12,8 +12,6 @@ import { CommitMessageIndicatorStatus } from './CommitMessageIndicatorStatus';
 export class CommitMessageIndicatorComponent implements OnInit {
 
   CommitMessageIndicatorStatus = CommitMessageIndicatorStatus;
-
-  status: CommitMessageIndicatorStatus = CommitMessageIndicatorStatus.Author;
   status$: Observable<CommitMessageIndicatorStatus>;
 
   @Input()
@@ -21,9 +19,6 @@ export class CommitMessageIndicatorComponent implements OnInit {
 
   constructor(private timelineQuery: TimelineQuery) {
     this.status$ = this.timelineQuery.indicatorStatus$;
-    // this.timelineQuery.indicatorStatus$.subscribe((status) => {
-    //   this.status = status;
-    // });
   }
 
   ngOnInit() {
