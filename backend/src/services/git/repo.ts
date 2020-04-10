@@ -52,8 +52,8 @@ export class Repository {
         // If directory is null, then directory is the root directory
         if (directory == null) {
             directory = new Directory();
-            directory.name = '';
-            directory.fullPath = '';
+            directory.name = '/';
+            directory.fullPath = '/';
         }
         const entries = tree.entries();
         this.logger.log(`getFilesWithDirectories: ${entries.length}`);
