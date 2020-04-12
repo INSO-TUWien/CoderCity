@@ -45,6 +45,7 @@ export class SettingsPanelComponent implements OnInit {
       const preferences = value as Preferences;
       this.settingsPanelService.updatePreferences(preferences);
       console.debug(`Updated preferences ${JSON.stringify(preferences)}`);
+      this.activeModal.close();
     }
   }
 

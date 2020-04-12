@@ -1,39 +1,44 @@
-$FADE_EFFECT_WIDTH: 12px;
 $GIT_GRAPH_HEIGHT: 120px;
-$GIT_GRAPH_PADDING_LEFT: 70px;
+$GIT_GRAPH_PADDING_LEFT: 20px;
 
 #gitgraph {
     border-top: 1px solid rgb(243, 243, 243);
     height: $GIT_GRAPH_HEIGHT;
 }
 
-.gitgraph-container {
-    position: relative;
-    padding-left: $GIT_GRAPH_PADDING_LEFT;
-    height: 100%;
-    width: 100%;
-    &::after {
-        content: '';
-        position: absolute;
-        height: $GIT_GRAPH_HEIGHT;
-        right: 0;
-        top: 0;
-        width: $FADE_EFFECT_WIDTH;
-        z-index: 10;
-        background-image: linear-gradient(to left, white, rgba(255,255,255,0));
-    }
-    &::before {
-        content: '';
-        position: absolute;
-        height: $GIT_GRAPH_HEIGHT;
-        width: $FADE_EFFECT_WIDTH;
-        left: $GIT_GRAPH_PADDING_LEFT;
-        top: 0;
-        z-index: 10;
-        background-image: linear-gradient(to right, white, rgba(255,255,255,0));
-    }
-}
-
 ::ng-deep .gitgraph-commit {
     cursor: pointer;
 }
+
+
+
+// $GIT_GRAPH_PADDING_LEFT: 70px;
+// $GIT_GRAPH_HEIGHT: 120px;
+// $FADE_EFFECT_WIDTH: 12px;
+
+// .gitgraph-container {
+//     position: relative;
+//     padding-left: $GIT_GRAPH_PADDING_LEFT;
+//     height: 100%;
+//     width: 100%;
+//     &::after {
+//         content: '';
+//         position: absolute;
+//         height: $GIT_GRAPH_HEIGHT;
+//         right: 0;
+//         top: 0;
+//         width: $FADE_EFFECT_WIDTH;
+//         z-index: 10;
+//         background-image: linear-gradient(to left, white, rgba(255,255,255,0));
+//     }
+//     &::before {
+//         content: '';
+//         position: absolute;
+//         height: $GIT_GRAPH_HEIGHT;
+//         width: $FADE_EFFECT_WIDTH;
+//         left: $GIT_GRAPH_PADDING_LEFT;
+//         top: 0;
+//         z-index: 10;
+//         background-image: linear-gradient(to right, white, rgba(255,255,255,0));
+//     }
+// }

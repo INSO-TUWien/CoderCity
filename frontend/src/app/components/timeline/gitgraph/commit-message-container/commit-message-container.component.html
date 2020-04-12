@@ -5,7 +5,7 @@
             <fa-icon [icon]="faUser" size="xs"></fa-icon>
         </button>
     </div>
-    <div class="messages-container">
+    <div class="messages-container d-flex flex-column">
         <div #messageContainer class="commit-message-container overflow-auto" style="white-space: nowrap">
             <span class="commit-messages">
                 <div class="commit-message" *ngFor="let commit of commits$ | async">
@@ -14,5 +14,6 @@
             </span>
             <cc-indicator-bar></cc-indicator-bar>
         </div>
+        <cc-gitgraph></cc-gitgraph>
     </div>
 </div>

@@ -1,12 +1,11 @@
 $MESSAGE_CONTAINER_HEIGHT: 80px;
-$MESSAGE_CONTAINER_MARGIN_LEFT: 20px;
-$LEFT_PANE_WIDTH: 48px;
+$MESSAGE_CONTAINER_MARGIN_LEFT: 40px;
+$LEFT_PANE_WIDTH: 68px;
 $FADE_EFFECT_WIDTH: 12px;
 $COMMIT_MESSAGE_WIDTH: 30px;
 
 .commit-message-container {
     margin-bottom: 8px;
-    margin-left: $MESSAGE_CONTAINER_MARGIN_LEFT;
     padding-top: $MESSAGE_CONTAINER_HEIGHT;
 }
 
@@ -29,7 +28,7 @@ $COMMIT_MESSAGE_WIDTH: 30px;
         content: '';
         position: absolute;
         height: 100%;
-        width: $LEFT_PANE_WIDTH;
+        width: $FADE_EFFECT_WIDTH;
         left: 0;
         top: 0;
         z-index: 10;
@@ -41,19 +40,6 @@ $COMMIT_MESSAGE_WIDTH: 30px;
     min-width: $LEFT_PANE_WIDTH;
     width: $LEFT_PANE_WIDTH;
     margin-bottom: 4px;
-}
-
-.left-pane {
-    position: relative;
-    &:after {
-        content: "";
-        position: absolute;
-        margin-left: $LEFT_PANE_WIDTH + $MESSAGE_CONTAINER_MARGIN_LEFT;
-        height: 100%;
-        width: $FADE_EFFECT_WIDTH;
-        z-index: 10;
-        background-image: linear-gradient(to right, white, rgba(255,255,255,0));
-    }
 }
 
 .status-label {

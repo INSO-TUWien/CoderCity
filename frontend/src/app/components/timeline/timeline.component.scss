@@ -1,3 +1,5 @@
+$TIMELINE_HEIGHT: 300px;
+
 :host {
     z-index: 400;
     font-size: 12pt;
@@ -10,7 +12,7 @@
 
 .container {
     padding: 16px;
-    height: 280px;
+    height: $TIMELINE_HEIGHT;
     min-width: 600px;
     border-radius: 4px;
     box-shadow: 4px 4px 4px 0 rgba(226,226,226,0.50);
