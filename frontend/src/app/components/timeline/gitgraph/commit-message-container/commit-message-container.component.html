@@ -1,7 +1,7 @@
 <div class="d-flex flex-row">
     <div class="left-pane d-flex flex-column justify-content-between">
         <cc-play-button (isPlaying)="onCommitsClick($event)" style="z-index: 12;"></cc-play-button>
-        <button class="status-label d-flex align-items-center justify-content-center" (click)="changeIndicatorStatus()">
+        <button class="btn-xs btn btn-light" (click)="changeIndicatorStatus()">
             <fa-icon [icon]="faUser" size="xs"></fa-icon>
         </button>
     </div>
@@ -12,9 +12,7 @@
                     {{commit.message}}
                 </div>
             </span>
-            
             <cc-indicator-bar></cc-indicator-bar>
         </div>
     </div>
-    
 </div>
