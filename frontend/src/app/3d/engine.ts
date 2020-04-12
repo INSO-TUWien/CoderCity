@@ -7,6 +7,7 @@ import { MousePicker } from './controls/MousePicker';
 import { Directory } from '../model/directory.model';
 import { BuildingColorMapper } from './util/color/building-color-mapper';
 import { BuildingRandomColorMapper } from './util/color/building-random-color-mapper';
+import { Preferences, BuildingColorMapperPreference } from '../components/settings-panel/state/preferences.model';
 
 export class Engine {
     private canvasElement: HTMLCanvasElement;
@@ -38,20 +39,11 @@ export class Engine {
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.set( 0, 50,60);
+        this.camera.position.set( 0, 50, 60);
 
         this.light = new THREE.HemisphereLight( 0xffffff, 0x8f8f8f, 1);
         this.light.position.set( 0, 50, 10);
 
-        /**
-         * An axis object to visualize the 3 axes in a simple way.
-         * The X axis is red. The Y axis is green. The Z axis is blue.
-         */
-        this.axesHelper = new THREE.AxesHelper(30);
-        this.gridHelper = new THREE.GridHelper(100, 100);
-
-        //this.scene.add(this.gridHelper);
-        //this.scene.add(this.axesHelper);
         this.scene.add(this.light);
         this.scene.background = new THREE.Color('#EEEEEE');
 
@@ -66,6 +58,17 @@ export class Engine {
     private init() {
         //document.body.appendChild(this.stats.dom);
         this.setupScene();
+    }
+
+    private initHelpers() {
+        /**
+         * An axis object to visualize the 3 axes in a simple way.
+         * The X axis is red. The Y axis is green. The Z axis is blue.
+         */
+        this.axesHelper = new THREE.AxesHelper(30);
+        this.gridHelper = new THREE.GridHelper(100, 100);
+        this.scene.add(this.gridHelper);
+        this.scene.add(this.axesHelper);
     }
 
     private handleWindowResize() {

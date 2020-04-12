@@ -5,7 +5,12 @@
             <span class="project-label"> | </span>
             <span class="project-label">moccapps</span>
         </h3>
-        <button class="btn btn-light btn-xs"><fa-icon [icon]="faSlidersH" size="xs"></fa-icon></button>
+        <button 
+            class="btn btn-light btn-xs"
+            (click)="openModal()"
+            ngbTooltip="Settings">
+            <fa-icon [icon]="faSlidersH" size="xs"></fa-icon
+        ></button>
     </div>
     <div class="mt-1">
         <input class="bg-light cc-input form-control form-control-sm" placeholder="Search">

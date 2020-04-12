@@ -8,6 +8,11 @@ import { VisualizationQuery } from 'src/app/state/visualization.query';
 import { Directory } from 'src/app/model/directory.model';
 import { GitQuery } from 'src/app/state/git.query';
 import { BuildingAuthorColorMapper } from 'src/app/3d/util/color/building-author-color-mapper';
+import { SettingsQuery } from '../settings-panel/state/settings.query';
+import { Preferences, BuildingColorMapperPreference } from '../settings-panel/state/preferences.model';
+import { BuildingRandomColorMapper } from 'src/app/3d/util/color/building-random-color-mapper';
+import { Author } from 'src/app/model/author.model';
+import { withLatestFrom } from 'rxjs/operators';
 
 @Component({
   selector: 'cc-visualization',
@@ -19,12 +24,18 @@ export class VisualizationComponent implements OnInit {
   engine: Engine;
   private eventBus: EventEmitter;
   private projectFiles: Directory;
+  private authors: Author[];
   private filesSubscription: Subscription;
+  private settingsSubscription: Subscription;
+
+  private authors$;
+  private preferences$;
 
   constructor(
     private visualizationService: VisualizationService,
     private visualizationQuery: VisualizationQuery,
-    private gitQuery: GitQuery
+    private gitQuery: GitQuery,
+    private settingsQuery: SettingsQuery
   ) {
   }
 
@@ -33,32 +44,64 @@ export class VisualizationComponent implements OnInit {
     this.engine.start();
     this.initEventBus();
 
-    // Render code city if both authors and projectFiles fields are existing
-    combineLatest(this.gitQuery.authors$, this.visualizationQuery.projectFiles$).subscribe(
+    this.authors$ = this.gitQuery.authors$;
+    this.preferences$ = this.settingsQuery.preferences$;
+
+    this.visualizationQuery.projectFiles$.subscribe(
       (val) => {
-        const authors  = val[0];
-        const directory = val[1];
-        if (authors != null && directory != null) {
+        const directory = val;
+        if (directory != null) {
           this.projectFiles = directory;
-          const authorBuildingColorMapper = new BuildingAuthorColorMapper(authors);
-          this.engine.setBuildingColorMapper(authorBuildingColorMapper);
-          this.engine.generateCity(this.projectFiles);
+          this.renderCity();
         }
       }
     );
+
+    // Handle preference changes. Wait for author data before rendering.
+    combineLatest(this.gitQuery.authors$, this.settingsQuery.preferences$).subscribe(
+      (val) => {
+        const authors  = val[0];
+        const preferences = val[1];
+        this.authors = authors;
+        if (authors != null && preferences != null) {
+            this.handlePreferences(preferences);
+            this.renderCity();
+        }
+      }
+    );
+  }
+
+  private renderCity(): void {
+    if (this.projectFiles != null) {
+      this.engine.generateCity(this.projectFiles);
+    }
+  }
+
+  private handlePreferences(preferences: Preferences) {
+    if (preferences == null) {
+        console.error(`Engine: setPreferences: preferences is null or undefined.`);
+    }
+    // Update BuildingColorMapper based on set preference
+    const buildingColorPreference = preferences.colorMapping.buildingColor;
+    if (buildingColorPreference === BuildingColorMapperPreference.author) {
+        this.engine.setBuildingColorMapper(new BuildingAuthorColorMapper(this.authors));
+    } else if (buildingColorPreference === BuildingColorMapperPreference.random) {
+        this.engine.setBuildingColorMapper(new BuildingRandomColorMapper());
+    }
   }
 
   ngOnDestroy(): void {
     //Called once, before the instance istroyed.
     //Add 'implements OnDestroy' to the class.
     this.filesSubscription.unsubscribe();
+    this.settingsSubscription.unsubscribe();
   }
 
   private initEventBus(): void {
     this.eventBus = EventBus.instance;
     this.eventBus.on('intersectObject', (intersectedObject) => {
       this.visualizationService.setSelectedObject(intersectedObject);
-      // if (intersectedObject != null) { 
+      // if (intersectedObject != null) {
       //   if (intersectedObject instanceof BlameHunk) {
       //     this.visualizationService.setSelectedObject(intersectedObject);
       //   }

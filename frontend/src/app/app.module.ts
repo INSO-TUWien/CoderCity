@@ -25,6 +25,7 @@ import { PlayButtonComponent } from './components/timeline/play-button/play-butt
 import { TimeIntervalLabelComponent } from './components/timeline/time-interval-label/time-interval-label.component';
 import { CommitMessageIndicatorComponent } from './components/timeline/gitgraph/commit-message-container/commit-message-indicator/commit-message-indicator.component';
 import { IndicatorBarComponent } from './components/timeline/gitgraph/commit-message-container/indicator-bar/indicator-bar.component';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -49,9 +50,13 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     CommitMessageIndicatorComponent,
     IndicatorBarComponent
   ],
+  entryComponents: [
+    SettingsPanelComponent
+  ],
   imports: [
     NgbModule,
     BrowserModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     FontAwesomeModule,
     HttpClientModule,
