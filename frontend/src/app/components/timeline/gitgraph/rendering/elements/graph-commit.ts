@@ -3,7 +3,7 @@ import { Svg } from "@svgdotjs/svg.js";
 import { AbstractGraphCommit} from "./abstract-graph-commit";
 import { getBranchColor, getBranchHighlightColor } from "../graph-colors";
 import { GridPosition, computeCommitCirclePosition } from "../compute-position";
-import { OnGraphCommitMouseOver, OnGraphCommitClick } from '../callback/callback';
+import { OnGraphCommitMouseOver, OnGraphCommitClick, GitGraphCallbacks } from '../callback/callback';
 
 export const CIRCLE_WIDTH = 18;
 export const INNER_CIRCLE_WIDTH = CIRCLE_WIDTH / 2;
@@ -12,13 +12,12 @@ export class GraphCommit extends AbstractGraphCommit {
   private highlightColor: string;
 
   constructor(
-    public onMouseOverCallback: OnGraphCommitMouseOver,
-    public onClickCallback: OnGraphCommitClick,
+    public callbacks: GitGraphCallbacks,
     public readonly gridPosition: GridPosition,
     public commit: Commit,
     public color: string = "#0AB6B9"
   ) {
-    super(onMouseOverCallback, onClickCallback);
+    super(callbacks);
     this.color = getBranchColor(this.gridPosition.y);
     this.highlightColor = getBranchHighlightColor(this.gridPosition.y);
     const pixelCoordinates = computeCommitCirclePosition({
@@ -41,13 +40,14 @@ export class GraphCommit extends AbstractGraphCommit {
       .move(this.x, this.y)
       .on("mouseover", () => {
        circle.stroke({ width: 4, color: this.highlightColor });
-       this.onMouseOverCallback(this.commit);
+       this.callbacks?.onGraphCommitMouseOver(this.commit);
       })
       .on("click", () => {
-        this.onClickCallback(this.commit);
+        this.callbacks?.onGraphCommitClick(this.commit);
       })
       .on("mouseout", () => {
         circle.fill({ color: this.color }).stroke({ width: 0 });
+        this.callbacks?.onGraphCommitMouseOut(this.commit);
       });
 
     // Inner white circle

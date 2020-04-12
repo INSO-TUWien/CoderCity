@@ -93,15 +93,17 @@ export class GitgraphComponent implements OnInit {
   private initGitGraph(): void {
     this.svg = SVG()
       .addTo(this.graphElement.nativeElement)
-    this.renderer = new GitGraphRenderer(this.svg, (commit) => {
-        // On Hover event
-        this.commitService
-          .setPreviewCommit(commit);
-      }
-      , (commit) => {
-        // On Click event
-        this.visualizationService
-          .setSelectedCommit(commit);
+    this.renderer = new GitGraphRenderer(this.svg, 
+      {
+        onGraphCommitMouseOver: (commit) => {
+          this.commitService.setPreviewCommit(commit);
+        },
+        onGraphCommitClick: (commit) => {
+          this.visualizationService.setSelectedCommit(commit);
+        },
+        onGraphCommitMouseOut: (commit) => {
+          this.commitService.setPreviewCommit(null);
+        }
       }
     );
   }

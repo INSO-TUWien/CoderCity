@@ -1,7 +1,7 @@
 import { RenderElement } from '../render-element';
 import { Svg } from '@svgdotjs/svg.js';
 import { GridPosition, PixelPosition } from '../compute-position';
-import { OnGraphCommitMouseOver, OnGraphCommitClick } from '../callback/callback';
+import { GitGraphCallbacks } from '../callback/callback';
 
 export abstract class AbstractGraphCommit implements RenderElement {
 
@@ -14,9 +14,7 @@ export abstract class AbstractGraphCommit implements RenderElement {
     x: number;
     y: number;
 
-    constructor(
-        onMouseOverCallback: OnGraphCommitMouseOver,
-        onClickCallback: OnGraphCommitClick) {
+    constructor(callbacks: GitGraphCallbacks) {
     }
 
     render(svg: Svg): void {

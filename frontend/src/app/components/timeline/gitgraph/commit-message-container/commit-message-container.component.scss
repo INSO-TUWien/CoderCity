@@ -9,7 +9,7 @@ $COMMIT_MESSAGE_WIDTH: 30px;
     padding-top: $MESSAGE_CONTAINER_HEIGHT;
 }
 
-.messages-container {
+.commit-graph-container {
     width: 100%;
     padding-right: $COMMIT_MESSAGE_WIDTH + $MESSAGE_CONTAINER_MARGIN_LEFT;
     height: 100%;
@@ -40,6 +40,11 @@ $COMMIT_MESSAGE_WIDTH: 30px;
     min-width: $LEFT_PANE_WIDTH;
     width: $LEFT_PANE_WIDTH;
     margin-bottom: 4px;
+}
+
+.btn-indicator {
+    width: 48px;
+    margin-top: 68px;
 }
 
 .status-label {

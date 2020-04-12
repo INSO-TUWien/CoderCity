@@ -7,7 +7,7 @@ import { GraphMergeCommit } from './elements/graph-merge-commit';
 import { GraphCommit } from './elements/graph-commit';
 import { AbstractGraphCommit } from './elements/abstract-graph-commit';
 import { GitGraphGrid } from './gitgraph-grid';
-import { OnGraphCommitMouseOver, OnGraphCommitClick } from './callback/callback';
+import { OnGraphCommitMouseOver, OnGraphCommitClick, GitGraphCallbacks } from './callback/callback';
 
 /**
  * Checks whether given commit is a merge commit. (Has 2 or more parent commits)
@@ -24,8 +24,7 @@ export class GitGraphRenderer {
 
   constructor(
     private svg: Svg,
-    private onMouseOverCallback: OnGraphCommitMouseOver,
-    private onClickCallback: OnGraphCommitClick,
+    private callbacks: GitGraphCallbacks
   ) {}
   private renderElements: RenderElement[] = [];
   private gitModel: GitModel;
@@ -90,7 +89,6 @@ export class GitGraphRenderer {
   private forbiddenPaths: Set<[number, string]> = new Set();
 
   private isForbiddenPath(gridY: number) {
-    let isForbidden = false;
     for (let path of this.forbiddenPaths) {
       if (gridY === path[0]) {
         return true;
@@ -286,8 +284,7 @@ export class GitGraphRenderer {
     commit: Commit
   ): GraphMergeCommit {
     const commitCircle = new GraphMergeCommit(
-      this.onMouseOverCallback,
-      this.onClickCallback,
+      this.callbacks,
       {
         x,
         y
@@ -305,8 +302,7 @@ export class GitGraphRenderer {
     commit: Commit
   ): GraphCommit {
     const commitCircle = new GraphCommit(
-      this.onMouseOverCallback,
-      this.onClickCallback,
+      this.callbacks,
       {
         x,
         y
