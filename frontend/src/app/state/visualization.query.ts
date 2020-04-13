@@ -8,6 +8,7 @@ export class VisualizationQuery extends Query<VisualizationState> {
   selectedObject$ = this.select(state => state.selectedObject);
   files$ = this.select(state => state.files);
   projectFiles$ = this.select(state => state.projectFiles);
+  authorColorMap$ = this.select(state => state.authorColorMap);
 
   constructor(protected store: VisualizationStore) {
     super(store);

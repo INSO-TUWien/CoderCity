@@ -1,16 +1,6 @@
 <div class="d-flex flex-column">
-  <div
+  <cc-author-label
     *ngFor="let author of authors$ | async"
-    [ngbTooltip]="author.name"
-    placement="left"
-    [style.backgroundColor]="author.color"
-    class="rounded-circle 
-                author-circle 
-                text-center 
-                d-flex 
-                align-items-center 
-                justify-content-center"
-  >
-    {{author.name | authorInitials | uppercase}}
-  </div>
+    [author]="author"
+  ></cc-author-label>
 </div>

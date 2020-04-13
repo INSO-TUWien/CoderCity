@@ -15,6 +15,10 @@ export function getAuthorColor(index: number): string {
     return COLORS[colorIndex];
 }
 
+export function darkenColor(color: string, step: number): string {
+    return chroma(color).darken(step).hex();
+}
+
 export function getAuthorHighlightColor(index: number): string {
     const colorIndex = index % COLORS.length;
     const color = COLORS[colorIndex];

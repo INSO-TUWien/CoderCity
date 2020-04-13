@@ -3,6 +3,8 @@ import { Commit } from 'src/app/model/commit.model';
 import { TimelineQuery } from 'src/app/state/timeline.query';
 import { Observable } from 'rxjs';
 import { CommitMessageIndicatorStatus } from './CommitMessageIndicatorStatus';
+import { GitQuery } from 'src/app/state/git.query';
+import { darkenColor } from 'src/app/util/color-scheme';
 
 @Component({
   selector: 'cc-commit-message-indicator',
@@ -17,8 +19,18 @@ export class CommitMessageIndicatorComponent implements OnInit {
   @Input()
   commit: Commit;
 
-  constructor(private timelineQuery: TimelineQuery) {
+  @Input()
+  color: string;
+
+  get darkenedAuthorColor() {
+    return darkenColor(this.color, 0.2);
+  }
+
+  constructor(
+    private timelineQuery: TimelineQuery,
+  ) {
     this.status$ = this.timelineQuery.indicatorStatus$;
+
   }
 
   ngOnInit() {

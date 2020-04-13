@@ -16,10 +16,12 @@
 .author-circle {
     min-height: 18px;
     min-width: 18px;
-    border-radius: 4px;
+    border-radius: 30%;
     font-size: 7pt;
     color: rgb(66, 66, 66);
+    color: white;
     background: #5BD3D6;
-    border-bottom: solid 2px #0AB6B9;
+    border-bottom-width: calc(0.1 * $author-circle-width);
+    border-bottom-style: solid;
     text-align: center;
 }

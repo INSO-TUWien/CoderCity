@@ -10,6 +10,7 @@ export interface VisualizationState {
   files: File[];
   projectFiles: Directory;
   selectedCommit: Commit;
+  authorColorMap: Map<string, string>;
 }
 
 export function createInitialState(): VisualizationState {
@@ -17,7 +18,8 @@ export function createInitialState(): VisualizationState {
     selectedObject: null,
     files: [],
     projectFiles: null,
-    selectedCommit: null
+    selectedCommit: null,
+    authorColorMap: new Map<string, string>()
   };
 }
 

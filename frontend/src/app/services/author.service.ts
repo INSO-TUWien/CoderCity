@@ -5,6 +5,7 @@ import { GitStore } from '../state/git.store';
 import { tap, map } from 'rxjs/operators';
 import { getAuthorColor } from '../util/color-scheme';
 import { environment } from 'src/environments/environment';
+import { VisualizationStore } from '../state/visualization.store';
 
 export const HOST = '/api';
 export const AUTHOR_ENDPOINT = 'author/';
@@ -16,7 +17,8 @@ export class AuthorService {
 
   constructor(
     private http: HttpClient,
-    private gitStore: GitStore
+    private gitStore: GitStore,
+    private visualizationStore: VisualizationStore
   ) { }
 
   getAuthors() {
@@ -31,6 +33,15 @@ export class AuthorService {
         this.gitStore.update(state => ({
           ...state,
           authors
+        }));
+        // Create color map for each hash of an author
+        const colorMap = new Map<string, string>();
+        authors.forEach(author => {
+          colorMap.set(Author.hashCode(author), author.color);
+        });
+        this.visualizationStore.update(state => ({
+          ...state,
+          authorColorMap: colorMap
         }));
       }
     );

@@ -1,0 +1,14 @@
+<div
+    [ngbTooltip]="author.name"
+    placement="left"
+    [style.backgroundColor]="author.color"
+    [style.border-bottom-color]="darkenedAuthorColor"
+    class="
+        author-circle 
+        text-center 
+        d-flex 
+        align-items-center 
+        justify-content-center"
+    >
+    {{author.name | authorInitials | uppercase}}
+</div>

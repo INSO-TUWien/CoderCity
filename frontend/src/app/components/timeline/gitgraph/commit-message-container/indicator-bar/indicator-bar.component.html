@@ -1,5 +1,10 @@
 <div class="indicator-bar d-flex flex-row">
-    <div *ngFor="let commit of commits$ | async" class="indicator-item">
-        <cc-commit-message-indicator [commit]="commit"></cc-commit-message-indicator>
+    <div *ngFor="let commit of commitsWithAuthorColor$ | async" class="indicator-item">
+        <!-- color="#5BD3D6"
+        [color]="commit.authorColor" -->
+        <cc-commit-message-indicator 
+            [commit]="commit"
+            [color]="commit.authorColor"
+        ></cc-commit-message-indicator>
     </div>
 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TimelineStore } from 'src/app/state/timeline.store';
 import { TimeInterval } from './timeinterval';
-import { CommitMessageIndicatorStatus } from "./gitgraph/commit-message-container/commit-message-indicator/CommitMessageIndicatorStatus";
+import { CommitMessageIndicatorStatus } from "./gitgraph/commit-message-container/indicator-bar/commit-message-indicator/CommitMessageIndicatorStatus";
 
 @Injectable({
   providedIn: 'root'

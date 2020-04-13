@@ -3,6 +3,7 @@ $TIMELINE_HEIGHT: 300px;
 :host {
     z-index: 400;
     font-size: 12pt;
+    pointer-events: all;
 }
 
 .timeline-header {

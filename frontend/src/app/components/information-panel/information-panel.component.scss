@@ -1,3 +1,7 @@
+:host {
+    pointer-events: none;
+}
+
 .information-panel {
     position: absolute;
     top: 120px;
@@ -9,6 +13,7 @@
     box-shadow: 4px 4px 4px 0 rgba(226,226,226,0.50);
     background-color: white;
     font-size: 10pt;
+    pointer-events: all;
 }
 
 .information-panel table {
