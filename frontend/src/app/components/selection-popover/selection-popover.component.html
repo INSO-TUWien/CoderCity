@@ -1,12 +1,46 @@
-<div *ngIf="mode !== Mode.None" class="selection-container" [ngSwitch]="mode">
-    <div *ngSwitchCase="Mode.Preview">
-        <div class="card-text">
-            <span class="font-weight-bold">Commit </span>
-            <span>{{ (commitPreview$ | async)?.date | date:'medium' }}</span> 
-            <div class="commit-id-label text-muted">{{(commitPreview$ | async)?.commitId}}</div>
-            <div>{{ (commitPreview$ | async)?.message }}</div>
-        </div>
+<div *ngIf="mode !== Mode.None" [ngSwitch]="mode">
+    <!--Template for commit preview mode-->
+    <div class="d-flex flex-column selection-container" *ngSwitchCase="Mode.Preview">
+            <div class="header d-flex flex-row justify-content-between">
+                    <div class="d-flex" *ngIf="(commitPreviewWithAuthorColor$ | async) != null">
+                        <cc-author-label 
+                        [name]="(commitPreviewWithAuthorColor$ | async)?.authorName"
+                        [color]="(commitPreviewWithAuthorColor$ | async)?.authorColor"
+                        size='xs'
+                        ></cc-author-label>
+                        <div class="ml-2"
+                            [style.color]="(commitPreviewWithAuthorColor$ | async)?.authorColor">
+                            {{(commitPreview$ | async)?.authorName}}
+                        </div>
+                    </div>
+                     
+                <span class="commit-date text-muted">{{ (commitPreview$ | async)?.date | date:'medium' }}</span> 
+            </div>
+            <div class="d-flex align-items-center flex-grow-1">{{(commitPreview$ | async)?.message }}</div>
     </div>
+    <!--Template for selected commit mode-->
+    <div class="d-flex flex-column selection-container" *ngSwitchCase="Mode.Selected">
+        <div class="font-weight-bold">Selected Commit</div>
+        <div class="selected-commit-container">
+            <div class="header d-flex flex-row justify-content-between">
+                <div class="d-flex" *ngIf="(selectedCommitWithAuthorColor$ | async) != null">
+                    <cc-author-label 
+                    [name]="(selectedCommitWithAuthorColor$ | async)?.authorName"
+                    [color]="(selectedCommitWithAuthorColor$ | async)?.authorColor"
+                    size='xs'
+                    ></cc-author-label>
+                    <div class="ml-2"
+                        [style.color]="(selectedCommitWithAuthorColor$ | async)?.authorColor">
+                        {{(selectedCommitWithAuthorColor$ | async)?.authorName}}
+                    </div>
+                </div>
+                 
+            <span class="commit-date text-muted">{{ (selectedCommitWithAuthorColor$ | async)?.date | date:'medium' }}</span> 
+            </div>
+            <div class="d-flex align-items-center flex-grow-1">{{(selectedCommitWithAuthorColor$ | async)?.message }}</div>
+        </div>
+        
+</div>
     <div *ngSwitchCase="Mode.Interval">
         <div class="card-text">
             <span class="font-weight-bold">From:</span> 
@@ -19,5 +53,6 @@
     </div>
     <div *ngSwitchDefault>
         ERROR: Unknown state
-    </div>
+    </div> 
 </div>
+

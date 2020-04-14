@@ -3,10 +3,10 @@
         *ngIf="(status$ | async) === CommitMessageIndicatorStatus.AuthorColor" 
         [style.backgroundColor]="color"
         class="indicator"></div>
-    <div *ngIf="(status$ | async) === CommitMessageIndicatorStatus.Author"
-        [style.backgroundColor]="color"
-        [style.border-bottom-color]="darkenedAuthorColor"
-        class="author-circle d-flex justify-content-center align-items-center">
-        {{commit.authorName | authorInitials | uppercase}}
-    </div>
+    <cc-author-label
+        *ngIf="(status$ | async) === CommitMessageIndicatorStatus.Author"
+        [name]="commit.authorName"
+        [color]="color"
+        size='xs'
+    ></cc-author-label>
 </div>

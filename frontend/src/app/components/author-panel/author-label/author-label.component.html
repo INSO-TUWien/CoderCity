@@ -1,7 +1,8 @@
 <div
-    [ngbTooltip]="author.name"
+    *ngIf="size === 'normal'"
+    [ngbTooltip]="name"
     placement="left"
-    [style.backgroundColor]="author.color"
+    [style.backgroundColor]="color"
     [style.border-bottom-color]="darkenedAuthorColor"
     class="
         author-circle 
@@ -10,5 +11,16 @@
         align-items-center 
         justify-content-center"
     >
-    {{author.name | authorInitials | uppercase}}
+    {{name | authorInitials | uppercase}}
+</div>
+
+<div *ngIf="size === 'xs'"
+    [style.backgroundColor]="color"
+    [style.border-bottom-color]="darkenedAuthorColor"
+    class="
+        author-circle-xs
+        d-flex 
+        justify-content-center 
+        align-items-center">
+    {{name | authorInitials | uppercase}}
 </div>

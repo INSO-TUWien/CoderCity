@@ -10,10 +10,16 @@ import { darkenColor } from 'src/app/util/color-scheme';
 export class AuthorLabelComponent implements OnInit {
 
   @Input()
-  author: Author;
+  name: string;
+
+  @Input()
+  size: string = 'normal';
+
+  @Input()
+  color: string = '#5BD3D6';
 
   get darkenedAuthorColor() {
-    return darkenColor(this.author.color, 0.2);
+    return darkenColor(this.color, 0.2);
   }
 
   constructor() { }
