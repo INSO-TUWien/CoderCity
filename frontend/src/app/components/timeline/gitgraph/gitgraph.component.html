@@ -1,27 +1,6 @@
 <div id="gitgraph" #gitgraph class="overflow-auto">
-    <!-- <cc-tooltip
-        [active]="tooltipActive"
+    <cc-tooltip
+        (mouseleave)="deselectPreviewCommit()"
     >
-    </cc-tooltip> -->
-  <div
-    #popover
-    id="tooltip"
-    [style.visibility]="tooltipActive ? 'visible' : 'hidden'"
-    class="popper"
-    role="tooltip"
-    (mouseenter)="onTooltipMouseEnter()"
-    (mouseleave)="onTooltipMouseLeave()"
-  >
-    <div class="d-flex flex-column">
-      <button class="btn btn-dark btn-xs tooltip-btn">
-        <fa-icon [icon]="faEye" size="sm"></fa-icon>
-        View
-      </button>
-      <button class="btn btn-dark btn-xs tooltip-btn">
-        <fa-icon [icon]="faArrowRight" size="sm"></fa-icon>
-        <span class="ml-1">Set end</span>
-      </button>
-    </div>
-    <div id="arrow" data-popper-arrow></div>
-  </div>
+    </cc-tooltip>
 </div>

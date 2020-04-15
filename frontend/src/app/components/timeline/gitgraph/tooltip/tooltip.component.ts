@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { createPopper } from '@popperjs/core';
+import { faEye, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'cc-tooltip',
@@ -24,12 +25,14 @@ export class TooltipComponent implements OnInit {
   popover: ElementRef<HTMLElement>;
 
   @Output()
-  mouseEntered = new EventEmitter<void>();
+  mouseEnter = new EventEmitter<void>();
 
   @Output()
-  mouseLeft = new EventEmitter<void>();
+  mouseLeave = new EventEmitter<void>();
 
   private popper;
+  faEye = faEye;
+  faArrowRight = faArrowRight;
 
   constructor() { }
 
@@ -62,12 +65,12 @@ export class TooltipComponent implements OnInit {
 
   onTooltipMouseEnter() {
     this.insideTooltip = true;
-    this.mouseEntered.emit();
+    this.mouseEnter.emit();
   }
 
   onTooltipMouseLeave() {
     this.insideTooltip = false;
-    this.mouseLeft.emit();
+    this.mouseLeave.emit();
     this.active = false;
   }
 }

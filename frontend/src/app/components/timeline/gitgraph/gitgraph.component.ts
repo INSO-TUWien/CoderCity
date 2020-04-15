@@ -13,8 +13,7 @@ import { GitQuery } from 'src/app/state/git.query';
 import { VisualizationService } from 'src/app/services/visualization.service';
 import { VisualizationQuery } from 'src/app/state/visualization.query';
 import { GraphCommitState } from './rendering/elements/abstract-graph-commit';
-import { createPopper } from '@popperjs/core';
-import { faEye, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { TooltipComponent } from './tooltip/tooltip.component';
 
 @Component({
   selector: 'cc-gitgraph',
@@ -23,11 +22,11 @@ import { faEye, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 })
 export class GitgraphComponent implements OnInit {
 
-  faEye = faEye;
-  faArrowRight = faArrowRight;
-
   @ViewChild('gitgraph', {static: true})
   graphElement: ElementRef<HTMLElement>;
+
+  @ViewChild(TooltipComponent, {static: true})
+  tooltip: TooltipComponent;
 
   @ViewChild('popover', {static: true})
   popover: ElementRef<HTMLElement>;
@@ -45,9 +44,6 @@ export class GitgraphComponent implements OnInit {
   private branchesCommitSubscription: Subscription;
 
   private selectedCommit: Commit;
-  private popper;
-  tooltipActive: boolean = false;
-  private insideTooltip = false;
 
   constructor(
     private commitService: CommitService,
@@ -100,40 +96,6 @@ export class GitgraphComponent implements OnInit {
     this.branchesCommitSubscription.unsubscribe();
   }
 
-  /**
-   * Tooltips
-   */
-  private initTooltip(anchorElement) {
-    if (anchorElement != null) {
-      if (this.popper != null) {
-        this.popper.destroy();
-      }
-      this.popper = createPopper(anchorElement, this.popover.nativeElement, {
-        placement: 'bottom',
-        modifiers: [
-          {
-            name: 'offset',
-            options: {
-              offset: [0, 8],
-            },
-          },
-        ],
-      });
-    } else {
-      alert(`anchor null`);
-    }
-  }
-
-  onTooltipMouseEnter() {
-    this.insideTooltip = true;
-  }
-
-  onTooltipMouseLeave() {
-    this.insideTooltip = false;
-    this.commitService.setPreviewCommit(null);
-    this.tooltipActive = false;
-  }
-
   private initEvents(): void {
     this.graphElement.nativeElement.onmouseenter = () => {
       this.active = true;
@@ -165,24 +127,28 @@ export class GitgraphComponent implements OnInit {
     this.renderer = new GitGraphRenderer(this.svg,
       {
         onGraphCommitMouseOver: (commit) => {
-          this.tooltipActive = true;
           this.commitService.setPreviewCommit(commit);
           const element = document.getElementById(commit.commitId);
-          this.initTooltip(element);
+          this.tooltip.anchorElement = element;
+          this.tooltip.active = true;
         },
         onGraphCommitClick: (commit) => {
           this.visualizationService.setSelectedCommit(commit);
         },
         onGraphCommitMouseOut: (commit) => {
           setTimeout(() => {
-            if (!this.insideTooltip) {
-              this.commitService.setPreviewCommit(null);
-              this.tooltipActive = false;
+            if (!this.tooltip.insideTooltip) {
+              this.deselectPreviewCommit();
+              this.tooltip.active = false;
             }
           }, 300);
         }
       }
     );
+  }
+
+  private deselectPreviewCommit() {
+    this.commitService.setPreviewCommit(null);
   }
 
 
