@@ -1,6 +1,6 @@
 import { Commit } from 'src/app/model/commit.model';
 import { Svg } from '@svgdotjs/svg.js';
-import { AbstractGraphCommit } from './abstract-graph-commit';
+import { AbstractGraphCommit, GraphCommitState } from './abstract-graph-commit';
 import { getBranchColor, getBranchHighlightColor } from '../graph-colors';
 import {  computeMergeCommitCirclePosition, GridPosition } from '../compute-position';
 import { OnGraphCommitMouseOver, OnGraphCommitClick, GitGraphCallbacks } from '../callback/callback';
@@ -10,6 +10,7 @@ export const CIRCLE_COLOR = '#0AB6B9';
 
 export class GraphMergeCommit extends AbstractGraphCommit {
     private highlightColor: string;
+    private state = GraphCommitState.Default;
 
     constructor(
         public callbacks: GitGraphCallbacks,
@@ -32,25 +33,38 @@ export class GraphMergeCommit extends AbstractGraphCommit {
         this.graphPositionY = this.gridPosition.y;
     }
 
+    setState(state: GraphCommitState) {
+        if (state === GraphCommitState.Default) {
+            this.shape
+                .fill({ color: this.color})
+                .stroke({ width: 0 });
+            this.state = state;
+        } else if (state === GraphCommitState.Selected) {
+            this.shape
+                .stroke({ width: 4, color: this.highlightColor });
+            this.state = state;
+        } else if (state === GraphCommitState.Highlight) {
+            this.shape
+                .stroke({ width: 4, color: this.highlightColor });
+        }
+    }
+
     render(svg: Svg) {
-        const circle = svg
+        this.shape = svg
             .circle(MERGE_CIRCLE_WIDTH)
             .addClass('gitgraph-commit')
             .fill(
                 this.color
             )
             .on('mouseover', () => {
-                circle
-                    .stroke({ width: 4, color: this.highlightColor });
+                this.setState(GraphCommitState.Highlight);
                 this.callbacks?.onGraphCommitMouseOver(this.commit);
             })
             .on('click', () => {
                this.callbacks?.onGraphCommitClick(this.commit);
             })
             .on('mouseout', () => {
-                circle
-                    .fill({ color: this.color})
-                    .stroke({ width: 0 });
+                this.setState(this.state);
                 this.callbacks?.onGraphCommitMouseOut(this.commit);
             })
             .move(this.x, this.y + MERGE_CIRCLE_WIDTH / 2);

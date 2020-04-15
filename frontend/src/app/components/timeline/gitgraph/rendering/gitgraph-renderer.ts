@@ -5,9 +5,9 @@ import { Commit } from 'src/app/model/commit.model';
 import { GraphLine } from './elements/graph-line';
 import { GraphMergeCommit } from './elements/graph-merge-commit';
 import { GraphCommit } from './elements/graph-commit';
-import { AbstractGraphCommit } from './elements/abstract-graph-commit';
+import { AbstractGraphCommit, GraphCommitState } from './elements/abstract-graph-commit';
 import { GitGraphGrid } from './gitgraph-grid';
-import { OnGraphCommitMouseOver, OnGraphCommitClick, GitGraphCallbacks } from './callback/callback';
+import { GitGraphCallbacks } from './callback/callback';
 
 /**
  * Checks whether given commit is a merge commit. (Has 2 or more parent commits)
@@ -50,6 +50,17 @@ export class GitGraphRenderer {
     this.svg.clear();
   }
 
+  setGraphCommitState(commitId: string, state: GraphCommitState) {
+    if (this.graphCommits.has(commitId)) {
+      const graphCommit = this.graphCommits.get(commitId);
+      graphCommit.setState(state);
+    }
+  }
+
+  /**
+   * Computes positions of git graph elements using a given git model
+   * and renders them subsequently.
+   */
   drawGraph(gitModel: GitModel) {
     this.clear();
     this.gitModel = gitModel;
@@ -314,6 +325,9 @@ export class GitGraphRenderer {
     return commitCircle;
   }
 
+  /**
+   * Renders all elements in the gitgraph by calling render function of each element individually.
+   */
   render(): void {
     this.resizeSVG();
     this.renderElements.forEach(e => e.render(this.svg));

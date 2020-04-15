@@ -20,7 +20,7 @@ export function createInitialState(): TimelineState {
       start: null,
       end: null
     },
-    indicatorStatus: CommitMessageIndicatorStatus.AuthorColor
+    indicatorStatus: CommitMessageIndicatorStatus.Author
   };
 }
 

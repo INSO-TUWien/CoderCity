@@ -1,15 +1,16 @@
 import { Commit } from "src/app/model/commit.model";
 import { Svg } from "@svgdotjs/svg.js";
-import { AbstractGraphCommit} from "./abstract-graph-commit";
+import { AbstractGraphCommit, GraphCommitState} from "./abstract-graph-commit";
 import { getBranchColor, getBranchHighlightColor } from "../graph-colors";
 import { GridPosition, computeCommitCirclePosition } from "../compute-position";
-import { OnGraphCommitMouseOver, OnGraphCommitClick, GitGraphCallbacks } from '../callback/callback';
+import { GitGraphCallbacks } from '../callback/callback';
 
 export const CIRCLE_WIDTH = 18;
 export const INNER_CIRCLE_WIDTH = CIRCLE_WIDTH / 2;
 
 export class GraphCommit extends AbstractGraphCommit {
   private highlightColor: string;
+  state: GraphCommitState = GraphCommitState.Default;
 
   constructor(
     public callbacks: GitGraphCallbacks,
@@ -30,23 +31,36 @@ export class GraphCommit extends AbstractGraphCommit {
     this.graphPositionY = this.gridPosition.y;
   }
 
+  setState(state: GraphCommitState) {
+    if (state === GraphCommitState.Default) {
+      this.shape.fill({ color: this.color }).stroke({ width: 0 });
+      this.state = state;
+    } else if (state === GraphCommitState.Selected) {
+      this.shape.stroke({ width: 4, color: this.highlightColor });
+      this.state = state;
+    } else if (state === GraphCommitState.Highlight) {
+      // Do not persist state for highlight state. (Hover state).
+      this.shape.stroke({ width: 4, color: this.highlightColor });
+    }
+  }
+
   render(svg: Svg): void {
     // Outer circle
-    const circle = svg
+    this.shape = svg
       .circle(CIRCLE_WIDTH)
       .addClass('gitgraph-commit')
       .id(`${this.commit.commitId}`)
       .fill(this.color)
       .move(this.x, this.y)
       .on("mouseover", () => {
-       circle.stroke({ width: 4, color: this.highlightColor });
+       this.setState(GraphCommitState.Highlight);
        this.callbacks?.onGraphCommitMouseOver(this.commit);
       })
       .on("click", () => {
         this.callbacks?.onGraphCommitClick(this.commit);
       })
       .on("mouseout", () => {
-        circle.fill({ color: this.color }).stroke({ width: 0 });
+        this.setState(this.state);
         this.callbacks?.onGraphCommitMouseOut(this.commit);
       });
 

@@ -27,6 +27,7 @@ import { CommitMessageIndicatorComponent } from './components/timeline/gitgraph/
 import { IndicatorBarComponent } from './components/timeline/gitgraph/commit-message-container/indicator-bar/indicator-bar.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthorLabelComponent } from './components/author-panel/author-label/author-label.component';
+import { TooltipComponent } from './components/timeline/gitgraph/tooltip/tooltip.component';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -50,7 +51,8 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     TimeIntervalLabelComponent,
     CommitMessageIndicatorComponent,
     IndicatorBarComponent,
-    AuthorLabelComponent
+    AuthorLabelComponent,
+    TooltipComponent
   ],
   entryComponents: [
     SettingsPanelComponent

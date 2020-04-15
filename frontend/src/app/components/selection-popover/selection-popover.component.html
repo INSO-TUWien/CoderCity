@@ -25,9 +25,9 @@
             <div class="header d-flex flex-row justify-content-between">
                 <div class="d-flex" *ngIf="(selectedCommitWithAuthorColor$ | async) != null">
                     <cc-author-label 
-                    [name]="(selectedCommitWithAuthorColor$ | async)?.authorName"
-                    [color]="(selectedCommitWithAuthorColor$ | async)?.authorColor"
-                    size='xs'
+                        [name]="(selectedCommitWithAuthorColor$ | async)?.authorName"
+                        [color]="(selectedCommitWithAuthorColor$ | async)?.authorColor"
+                        size='xs'
                     ></cc-author-label>
                     <div class="ml-2"
                         [style.color]="(selectedCommitWithAuthorColor$ | async)?.authorColor">
