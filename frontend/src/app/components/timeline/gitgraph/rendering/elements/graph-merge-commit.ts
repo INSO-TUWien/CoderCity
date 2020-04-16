@@ -2,8 +2,8 @@ import { Commit } from 'src/app/model/commit.model';
 import { Svg } from '@svgdotjs/svg.js';
 import { AbstractGraphCommit, GraphCommitState } from './abstract-graph-commit';
 import { getBranchColor, getBranchHighlightColor } from '../graph-colors';
-import {  computeMergeCommitCirclePosition, GridPosition } from '../compute-position';
-import { OnGraphCommitMouseOver, OnGraphCommitClick, GitGraphCallbacks } from '../callback/callback';
+import { computeMergeCommitCirclePosition, GridPosition } from '../compute-position';
+import { GitGraphCallbacks } from '../callback/callback';
 
 export const MERGE_CIRCLE_WIDTH = 10;
 export const CIRCLE_COLOR = '#0AB6B9';
@@ -53,6 +53,7 @@ export class GraphMergeCommit extends AbstractGraphCommit {
         this.shape = svg
             .circle(MERGE_CIRCLE_WIDTH)
             .addClass('gitgraph-commit')
+            .id(`${this.commit.commitId}`)
             .fill(
                 this.color
             )

@@ -87,14 +87,18 @@ export class Engine {
         this.addEntity(mousePicker);
     }
 
+    deleteCity(): void {
+        console.log(`Deleting city`);
+        if (this.city != null) {
+            this.deleteEntity(this.city);
+        }
+    }
+
     /**
      * Generates a city based on git snapshot
      */
     generateCity(directory: Directory): void {
-        if (this.city != null) {
-            console.log(`generateCity: Deleting city`);
-            this.deleteEntity(this.city);
-        }
+        this.deleteCity();
 
         this.city = new City({buildingColorMapper: this.buildingColorMapper});
         //this.city.generateExampleCity();

@@ -47,6 +47,14 @@ export class VisualizationComponent implements OnInit {
     this.authors$ = this.gitQuery.authors$;
     this.preferences$ = this.settingsQuery.preferences$;
 
+    this.visualizationQuery.selectedCommit$.subscribe(
+      (commit) => {
+        if (commit === null) {
+          this.engine.deleteCity();
+        }
+      }
+    );
+
     this.visualizationQuery.projectFiles$.subscribe(
       (val) => {
         const directory = val;
@@ -91,8 +99,6 @@ export class VisualizationComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance istroyed.
-    //Add 'implements OnDestroy' to the class.
     this.filesSubscription.unsubscribe();
     this.settingsSubscription.unsubscribe();
   }

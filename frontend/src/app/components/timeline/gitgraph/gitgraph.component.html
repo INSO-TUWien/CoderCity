@@ -1,6 +1,7 @@
 <div id="gitgraph" #gitgraph class="overflow-auto">
     <cc-tooltip
         (mouseleave)="deselectPreviewCommit()"
+        (menuItemSelected)="tooltipMenuItemSelected($event)"
     >
     </cc-tooltip>
 </div>

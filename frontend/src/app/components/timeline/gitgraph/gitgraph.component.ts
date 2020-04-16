@@ -13,7 +13,7 @@ import { GitQuery } from 'src/app/state/git.query';
 import { VisualizationService } from 'src/app/services/visualization.service';
 import { VisualizationQuery } from 'src/app/state/visualization.query';
 import { GraphCommitState } from './rendering/elements/abstract-graph-commit';
-import { TooltipComponent } from './tooltip/tooltip.component';
+import { TooltipComponent, TooltipState, TooltipMenuItemSelected, TooltipMenuItem } from './tooltip/tooltip.component';
 
 @Component({
   selector: 'cc-gitgraph',
@@ -43,7 +43,7 @@ export class GitgraphComponent implements OnInit {
   private visualizationSubscription: Subscription;
   private branchesCommitSubscription: Subscription;
 
-  private selectedCommit: Commit;
+  private previousSelectedCommit: Commit;
 
   constructor(
     private commitService: CommitService,
@@ -57,14 +57,16 @@ export class GitgraphComponent implements OnInit {
     this.branches$ = this.gitQuery.branches$.pipe( map(val => [...val]));
 
     // Set selected commit to selected state
-    this.visualizationSubscription = this.visualizationQuery.selectedCommit$.subscribe((selectedCommit) => {
-      if (selectedCommit !== null) {
-        if (this.selectedCommit != null) {
-          this.renderer.setGraphCommitState(this.selectedCommit.commitId, GraphCommitState.Default);
+    this.visualizationSubscription = this.visualizationQuery.selectedCommit$.subscribe(
+      (selectedCommit) => {
+        // Deselect previous selected commit if existing
+        if (this.previousSelectedCommit != null) {
+          this.renderer.setGraphCommitState(this.previousSelectedCommit.commitId, GraphCommitState.Default);
         }
-        this.renderer.setGraphCommitState(selectedCommit.commitId, GraphCommitState.Selected);
-        this.selectedCommit = selectedCommit;
-      }
+        if (selectedCommit != null) {
+          this.renderer.setGraphCommitState(selectedCommit.commitId, GraphCommitState.Selected);
+          this.previousSelectedCommit = selectedCommit;
+        }
     });
 
     this.branchesCommitSubscription = combineLatest([this.branches$, this.commits$]).subscribe(
@@ -130,7 +132,22 @@ export class GitgraphComponent implements OnInit {
           this.commitService.setPreviewCommit(commit);
           const element = document.getElementById(commit.commitId);
           this.tooltip.anchorElement = element;
+          this.tooltip.commit = commit;
           this.tooltip.active = true;
+          // Determine tooltip state
+          if (this.previousSelectedCommit == null) {
+            // No commit was selected
+            this.tooltip.tooltipState = TooltipState.Select;
+          } else if (this.previousSelectedCommit != null && this.previousSelectedCommit.commitId === commit.commitId) {
+            // Hovered commit is selected commit
+            this.tooltip.tooltipState = TooltipState.Deselect;
+          } else if (this.previousSelectedCommit != null && this.previousSelectedCommit.date < commit.date) {
+            // Hovered commit is newer than selected commit
+            this.tooltip.tooltipState = TooltipState.SelectEnd;
+          } else if (this.previousSelectedCommit != null && this.previousSelectedCommit.date > commit.date) {
+            // Hovered commit is older than selected commit
+            this.tooltip.tooltipState = TooltipState.SelectBegin;
+          }
         },
         onGraphCommitClick: (commit) => {
           this.visualizationService.setSelectedCommit(commit);
@@ -145,6 +162,22 @@ export class GitgraphComponent implements OnInit {
         }
       }
     );
+  }
+
+  tooltipMenuItemSelected(event: TooltipMenuItemSelected) {
+    if (event.commit == null) {
+      return;
+    }
+    const action = event.action;
+    if (action === TooltipMenuItem.View) {
+      this.visualizationService.setSelectedCommit(event.commit);
+    } else if (action === TooltipMenuItem.Deselect) {
+      this.visualizationService.setSelectedCommit(null);
+    } else if (action === TooltipMenuItem.Begin) {
+
+    } else if (action === TooltipMenuItem.End) {
+
+    }
   }
 
   private deselectPreviewCommit() {
