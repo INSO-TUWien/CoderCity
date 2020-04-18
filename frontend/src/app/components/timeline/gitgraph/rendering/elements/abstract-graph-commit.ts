@@ -2,6 +2,7 @@ import { RenderElement } from '../render-element';
 import { Svg, Shape } from '@svgdotjs/svg.js';
 import { GridPosition, PixelPosition } from '../compute-position';
 import { GitGraphCallbacks } from '../callback/callback';
+import { Commit } from 'src/app/model/commit.model';
 
 export enum GraphCommitState {
     Default,
@@ -21,7 +22,9 @@ export abstract class AbstractGraphCommit implements RenderElement {
     x: number;
     y: number;
 
-    constructor(callbacks: GitGraphCallbacks) {
+    constructor(
+        public callbacks: GitGraphCallbacks, 
+        public commit: Commit) {
     }
 
     render(svg: Svg): void {

@@ -2,7 +2,7 @@ import { RenderElement } from './render-element';
 import { Svg } from '@svgdotjs/svg.js';
 import { GitModel } from 'src/app/model/git-model';
 import { Commit } from 'src/app/model/commit.model';
-import { GraphLine } from './elements/graph-line';
+import { GraphLine, generateGraphLineKey } from './elements/graph-line';
 import { GraphMergeCommit } from './elements/graph-merge-commit';
 import { GraphCommit } from './elements/graph-commit';
 import { AbstractGraphCommit, GraphCommitState } from './elements/abstract-graph-commit';
@@ -35,6 +35,7 @@ export class GitGraphRenderer {
   // Stores which branches are active at index i of array. Used when drawing lines between commits.
   private branchChildrenIDs: Set<string> = new Set();
   private graphCommits: Map<string, AbstractGraphCommit> = new Map();
+  private lines: Map<string, GraphLine> = new Map();
   private gitGraphGrid: GitGraphGrid = new GitGraphGrid();
 
   private addElement(element: RenderElement) {
@@ -54,6 +55,13 @@ export class GitGraphRenderer {
     if (this.graphCommits.has(commitId)) {
       const graphCommit = this.graphCommits.get(commitId);
       graphCommit.setState(state);
+    }
+  }
+
+  setGraphLineState(lineKey: string, state: GraphCommitState) {
+    if (this.lines.has(lineKey)) {
+      const line = this.lines.get(lineKey);
+      line.setState(state);
     }
   }
 
@@ -270,6 +278,7 @@ export class GitGraphRenderer {
         const startElement = this.graphCommits.get(commit.commitId);
         const endElement = this.graphCommits.get(childCommitID);
         const line = new GraphLine(startElement, endElement);
+        this.lines.set(generateGraphLineKey(childCommitID, commit.commitId), line);
         this.addElement(line);
       });
     });

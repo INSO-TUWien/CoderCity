@@ -41,6 +41,12 @@ export class Commit {
     }
   }
 
+  static isCommitBeforeOtherCommit(firstCommitId: string, secondCommitId: string, commits: Map<string, Commit>): boolean {
+    const firstCommit = commits.get(firstCommitId);
+    const secondCommit = commits.get(secondCommitId);
+    return firstCommit.date < secondCommit.date;
+  }
+
   toString() {
     let result =
       '\n ----- COMMIT -------' +

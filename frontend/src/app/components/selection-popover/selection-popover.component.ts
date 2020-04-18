@@ -1,9 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { Commit } from "../../model/commit.model";
 import { Observable, Subject, BehaviorSubject, of, combineLatest } from "rxjs";
-import { tap, map } from "rxjs/operators";
+import { tap, map, timeInterval } from "rxjs/operators";
 import { GitQuery } from "src/app/state/git.query";
 import { VisualizationQuery } from "src/app/state/visualization.query";
+import { CommitTimeInterval } from '../timeline/commit-timeinterval';
 
 export enum SelectionState {
   None,
@@ -36,9 +37,14 @@ export class SelectionPopoverComponent implements OnInit {
   hasSelectedCommit: boolean = false;
   commitPreview$: Observable<Commit>;
   selectedCommit$: Observable<Commit>;
+  selectedCommitTimeInterval$: Observable<CommitTimeInterval>;
   authorColorMap$: Observable<Map<string, string>>;
   commitPreviewWithAuthorColor$: Observable<any>;
   selectedCommitWithAuthorColor$: Observable<any>;
+  selectedCommitTimeIntervalWithAuthorColor$: Observable<any>;
+
+  private selectedCommitSubscription;
+  private commitPreviewSubscription;
 
   constructor(
     private gitQuery: GitQuery,
@@ -48,8 +54,11 @@ export class SelectionPopoverComponent implements OnInit {
     this.commitPreview$ = this.gitQuery.commitPreview$;
     this.authorColorMap$ = this.visualizationQuery.authorColorMap$;
     this.selectedCommit$ = this.visualizationQuery.selectedCommit$;
+    this.selectedCommitTimeInterval$ = this.visualizationQuery.selectedCommitInterval$;
+    this.selectedCommitTimeIntervalWithAuthorColor$ = this.visualizationQuery.selectedCommitTimeIntervalWithAuthorColor$;
+    this.selectedCommitWithAuthorColor$ = this.visualizationQuery.selectedCommitWithAuthorColor$;
 
-    this.commitPreview$.subscribe((commit) => {
+    this.commitPreviewSubscription = this.commitPreview$.subscribe((commit) => {
       if (commit == null) {
         if (this.hasSelectedCommit === false) {
           this.mode = SelectionState.None;
@@ -61,13 +70,19 @@ export class SelectionPopoverComponent implements OnInit {
       }
     });
 
-    this.selectedCommit$.subscribe((commit) => {
+    this.selectedCommitSubscription = this.selectedCommit$.subscribe((commit) => {
       if (commit == null) {
         this.mode = SelectionState.None;
         this.hasSelectedCommit = false;
       } else {
         this.mode = SelectionState.Selected;
         this.hasSelectedCommit = true;
+      }
+    });
+
+    this.selectedCommitTimeInterval$.subscribe(interval => {
+      if (interval != null && interval.start != null && interval.end != null) {
+        this.mode = SelectionState.Interval;
       }
     });
 
@@ -86,23 +101,12 @@ export class SelectionPopoverComponent implements OnInit {
         return result;
       })
     );
-
-    this.selectedCommitWithAuthorColor$ = combineLatest(
-      this.selectedCommit$,
-      this.authorColorMap$
-    ).pipe(
-      map(([commit, authors]) => {
-        let result = null;
-        if (commit != null && authors != null && authors.size > 0) {
-          result = {
-            ...commit,
-            authorColor: authors.get(commit.authorName + commit.mail),
-          };
-        }
-        return result;
-      })
-    );
   }
 
   ngOnInit() {}
+
+  ngOnDestroy(): void {
+    this.commitPreviewSubscription.unsubscribe();
+    this.selectedCommitSubscription.unsubscribe();
+  }
 }

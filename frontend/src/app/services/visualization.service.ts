@@ -5,6 +5,7 @@ import { File } from '../model/file.model';
 import { Directory } from '../model/directory.model';
 import { Commit } from '../model/commit.model';
 import { CommitService } from './commit.service';
+import { CommitTimeInterval } from '../components/timeline/commit-timeinterval';
 
 @Injectable({
   providedIn: 'root'
@@ -51,5 +52,12 @@ export class VisualizationService {
         }
       );
     }
+  }
+
+  setSelectedCommitInterval(commitInterval: CommitTimeInterval): void {
+    this.visualizationStore.update(state => ({
+      ...state,
+      selectedCommitInterval: commitInterval
+    }));
   }
 }

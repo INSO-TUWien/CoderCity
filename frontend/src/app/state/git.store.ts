@@ -6,6 +6,7 @@ import { Author } from '../model/author.model';
 
 export interface GitState {
   commits: Commit[];
+  commitsMap: Map<string, Commit>;
   branches: Branch[];
   authors: Author[];
   commitPreview: Commit;
@@ -14,6 +15,7 @@ export interface GitState {
 export function createInitialState(): GitState {
   return {
     commits: [],
+    commitsMap: new Map(),
     branches: [],
     authors: [],
     commitPreview: null

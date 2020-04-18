@@ -4,12 +4,14 @@ import { BlameHunk } from '../model/blamehunk.model';
 import { File } from '../model/file.model';
 import { Directory } from '../model/directory.model';
 import { Commit } from '../model/commit.model';
+import { CommitTimeInterval } from '../components/timeline/commit-timeinterval';
 
 export interface VisualizationState {
   selectedObject: BlameHunk;
   files: File[];
   projectFiles: Directory;
   selectedCommit: Commit;
+  selectedCommitInterval: CommitTimeInterval;
   authorColorMap: Map<string, string>;
 }
 
@@ -19,6 +21,10 @@ export function createInitialState(): VisualizationState {
     files: [],
     projectFiles: null,
     selectedCommit: null,
+    selectedCommitInterval: {
+      start: null,
+      end: null
+    },
     authorColorMap: new Map<string, string>()
   };
 }

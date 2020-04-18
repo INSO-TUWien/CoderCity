@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 export class GitQuery extends Query<GitState> {
   commits$ = this.select(state => state.commits);
+  commitsMap$ = this.select(state => state.commitsMap);
   sortedCommits$ = this.select(state => state.commits).pipe(
     map(val => [...val]),
     map(val => val.sort(

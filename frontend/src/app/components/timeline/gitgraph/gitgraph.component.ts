@@ -14,6 +14,9 @@ import { VisualizationService } from 'src/app/services/visualization.service';
 import { VisualizationQuery } from 'src/app/state/visualization.query';
 import { GraphCommitState } from './rendering/elements/abstract-graph-commit';
 import { TooltipComponent, TooltipState, TooltipMenuItemSelected, TooltipMenuItem } from './tooltip/tooltip.component';
+import { CommitTimeInterval } from '../commit-timeinterval';
+import { generateGraphLineKey } from './rendering/elements/graph-line';
+import { Util } from './rendering/util/util';
 
 @Component({
   selector: 'cc-gitgraph',
@@ -21,6 +24,56 @@ import { TooltipComponent, TooltipState, TooltipMenuItemSelected, TooltipMenuIte
   styleUrls: ['./gitgraph.component.scss']
 })
 export class GitgraphComponent implements OnInit {
+
+  constructor(
+    private commitService: CommitService,
+    private gitQuery: GitQuery,
+    private gitGraphService: GitgraphService,
+    private visualizationQuery: VisualizationQuery,
+    private visualizationService: VisualizationService
+    ) {
+      // Retrieve commits and sort them by time. (Oldest first)
+    this.commits$ = this.gitQuery.sortedCommits$;
+    this.commitsMap$ = this.gitQuery.commitsMap$;
+    this.branches$ = this.gitQuery.branches$.pipe( map(val => [...val]));
+    this.selectedCommitInterval$ = this.visualizationQuery.selectedCommitInterval$;
+
+    // Set selected commit to 'selected' state
+    this.visualizationSubscription = this.visualizationQuery.selectedCommit$.subscribe(
+      (selectedCommit) => {
+        // Deselect previous selected commit if existing
+        this.deselectSelectedCommit();
+        if (selectedCommit != null) {
+          this.renderer.setGraphCommitState(selectedCommit.commitId, GraphCommitState.Selected);
+          this.selectedCommit = selectedCommit;
+        }
+    });
+
+
+    combineLatest([this.commitsMap$, this.selectedCommitInterval$]).subscribe(
+      ([commits, interval]) => {
+        if (
+          commits != null && commits.size > 0 && interval != null && interval.start != null && interval.end != null) {
+            const result = Util.getCommitsBetweenAsLineIds(interval.end.commitId, interval.start.commitId, commits);
+            alert(`${JSON.stringify(result)}`);
+            result.forEach((line) => {
+              this.renderer.setGraphLineState(line, GraphCommitState.Selected);
+            })
+        }
+      }
+    );
+    this.branchesCommitSubscription = combineLatest([this.branches$, this.commits$]).subscribe(
+      (val) => {
+        // Create deep copy of branches and commits
+        const branches = cloneDeep(val[0]);
+        const commits = cloneDeep(val[1]);
+
+        if (branches.length > 0 && commits.length > 0) {
+          this.drawGraph(branches, commits);
+        }
+      }
+    );
+  }
 
   @ViewChild('gitgraph', {static: true})
   graphElement: ElementRef<HTMLElement>;
@@ -33,6 +86,8 @@ export class GitgraphComponent implements OnInit {
 
   branches$: Observable<Branch[]>;
   commits$: Observable<Commit[]>;
+  commitsMap$: Observable<Map<string, Commit>>;
+  selectedCommitInterval$: Observable<CommitTimeInterval>;
 
   // Element is active when mouse is hovering above it.
   active: boolean;
@@ -43,43 +98,12 @@ export class GitgraphComponent implements OnInit {
   private visualizationSubscription: Subscription;
   private branchesCommitSubscription: Subscription;
 
-  private previousSelectedCommit: Commit;
+  private selectedCommit: Commit;
 
-  constructor(
-    private commitService: CommitService,
-    private gitQuery: GitQuery,
-    private gitGraphService: GitgraphService,
-    private visualizationQuery: VisualizationQuery,
-    private visualizationService: VisualizationService
-    ) {
-      // Retrieve commits and sort them by time. (Oldest first)
-    this.commits$ = this.gitQuery.sortedCommits$;
-    this.branches$ = this.gitQuery.branches$.pipe( map(val => [...val]));
-
-    // Set selected commit to selected state
-    this.visualizationSubscription = this.visualizationQuery.selectedCommit$.subscribe(
-      (selectedCommit) => {
-        // Deselect previous selected commit if existing
-        if (this.previousSelectedCommit != null) {
-          this.renderer.setGraphCommitState(this.previousSelectedCommit.commitId, GraphCommitState.Default);
-        }
-        if (selectedCommit != null) {
-          this.renderer.setGraphCommitState(selectedCommit.commitId, GraphCommitState.Selected);
-          this.previousSelectedCommit = selectedCommit;
-        }
-    });
-
-    this.branchesCommitSubscription = combineLatest([this.branches$, this.commits$]).subscribe(
-      (val) => {
-        // Create deep copy of branches and commits
-        const branches = cloneDeep(val[0]);
-        const commits = cloneDeep(val[1]);
-
-        if (branches.length > 0 && commits.length > 0) {
-          this.drawGraph(branches, commits);
-        }
-      }
-    );
+  private deselectSelectedCommit() {
+    if (this.selectedCommit != null) {
+      this.renderer.setGraphCommitState(this.selectedCommit.commitId, GraphCommitState.Default);
+    }
   }
 
   ngOnInit() {
@@ -135,16 +159,16 @@ export class GitgraphComponent implements OnInit {
           this.tooltip.commit = commit;
           this.tooltip.active = true;
           // Determine tooltip state
-          if (this.previousSelectedCommit == null) {
+          if (this.selectedCommit == null) {
             // No commit was selected
             this.tooltip.tooltipState = TooltipState.Select;
-          } else if (this.previousSelectedCommit != null && this.previousSelectedCommit.commitId === commit.commitId) {
+          } else if (this.selectedCommit != null && this.selectedCommit.commitId === commit.commitId) {
             // Hovered commit is selected commit
             this.tooltip.tooltipState = TooltipState.Deselect;
-          } else if (this.previousSelectedCommit != null && this.previousSelectedCommit.date < commit.date) {
+          } else if (this.selectedCommit != null && this.selectedCommit.date < commit.date) {
             // Hovered commit is newer than selected commit
             this.tooltip.tooltipState = TooltipState.SelectEnd;
-          } else if (this.previousSelectedCommit != null && this.previousSelectedCommit.date > commit.date) {
+          } else if (this.selectedCommit != null && this.selectedCommit.date > commit.date) {
             // Hovered commit is older than selected commit
             this.tooltip.tooltipState = TooltipState.SelectBegin;
           }
@@ -174,9 +198,15 @@ export class GitgraphComponent implements OnInit {
     } else if (action === TooltipMenuItem.Deselect) {
       this.visualizationService.setSelectedCommit(null);
     } else if (action === TooltipMenuItem.Begin) {
-
+      this.visualizationService.setSelectedCommitInterval({
+        start: event.commit,
+        end: this.selectedCommit
+      });
     } else if (action === TooltipMenuItem.End) {
-
+      this.visualizationService.setSelectedCommitInterval({
+        start: this.selectedCommit,
+        end: event.commit
+      });
     }
   }
 

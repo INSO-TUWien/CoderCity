@@ -18,7 +18,7 @@ export class GraphCommit extends AbstractGraphCommit {
     public commit: Commit,
     public color: string = "#0AB6B9"
   ) {
-    super(callbacks);
+    super(callbacks, commit);
     this.color = getBranchColor(this.gridPosition.y);
     this.highlightColor = getBranchHighlightColor(this.gridPosition.y);
     const pixelCoordinates = computeCommitCirclePosition({

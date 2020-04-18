@@ -42,6 +42,16 @@ export class GitService {
             end: lastCommitDate
           });
         }
+      }),
+      tap((commits) => {
+        const mappedCommits = new Map<string, Commit>();
+        commits.forEach((commit) => {
+          mappedCommits.set(commit.commitId, commit);
+        });
+        this.gitStore.update(state => ({
+          ...state,
+          commitsMap: mappedCommits
+        }));
       })
     ).subscribe(commits => {
       this.gitStore.update(state => ({
