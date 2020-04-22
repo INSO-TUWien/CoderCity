@@ -15,7 +15,6 @@ import { VisualizationQuery } from 'src/app/state/visualization.query';
 import { GraphCommitState } from './rendering/elements/abstract-graph-commit';
 import { TooltipComponent, TooltipState, TooltipMenuItemSelected, TooltipMenuItem } from './tooltip/tooltip.component';
 import { CommitTimeInterval } from '../commit-timeinterval';
-import { generateGraphLineKey } from './rendering/elements/graph-line';
 import { Util } from './rendering/util/util';
 
 @Component({
@@ -25,6 +24,8 @@ import { Util } from './rendering/util/util';
 })
 export class GitgraphComponent implements OnInit {
 
+  private selectedLineKeys: string[];
+
   constructor(
     private commitService: CommitService,
     private gitQuery: GitQuery,
@@ -32,7 +33,7 @@ export class GitgraphComponent implements OnInit {
     private visualizationQuery: VisualizationQuery,
     private visualizationService: VisualizationService
     ) {
-      // Retrieve commits and sort them by time. (Oldest first)
+    // Retrieve commits and sort them by time. (Oldest first)
     this.commits$ = this.gitQuery.sortedCommits$;
     this.commitsMap$ = this.gitQuery.commitsMap$;
     this.branches$ = this.gitQuery.branches$.pipe( map(val => [...val]));
@@ -49,19 +50,34 @@ export class GitgraphComponent implements OnInit {
         }
     });
 
-
+    /**
+     * Handle commit graph interval selection
+     */
     combineLatest([this.commitsMap$, this.selectedCommitInterval$]).subscribe(
       ([commits, interval]) => {
+
+        if (this.selectedLineKeys != null) {
+          // Reset prior interval selection if exists
+          this.selectedLineKeys.forEach((lineKey) => {
+            this.renderer.setGraphLineState(lineKey, GraphCommitState.Default);
+          });
+        }
+
         if (
-          commits != null && commits.size > 0 && interval != null && interval.start != null && interval.end != null) {
-            const result = Util.getCommitsBetweenAsLineIds(interval.end.commitId, interval.start.commitId, commits);
-            alert(`${JSON.stringify(result)}`);
-            result.forEach((line) => {
-              this.renderer.setGraphLineState(line, GraphCommitState.Selected);
-            })
+          commits != null &&
+          commits.size > 0 &&
+          interval != null &&
+          interval.start != null && interval.end != null) {
+                const result = Util.getCommitsBetweenAsLineIds(interval.end.commitId, interval.start.commitId, commits);
+
+                result.lineCommitKeys.forEach((lineKey) => {
+                  this.renderer.setGraphLineState(lineKey, GraphCommitState.Selected);
+                });
+                this.selectedLineKeys = result.lineCommitKeys;
         }
       }
     );
+
     this.branchesCommitSubscription = combineLatest([this.branches$, this.commits$]).subscribe(
       (val) => {
         // Create deep copy of branches and commits
@@ -188,6 +204,7 @@ export class GitgraphComponent implements OnInit {
     );
   }
 
+  // Handle menu item selection
   tooltipMenuItemSelected(event: TooltipMenuItemSelected) {
     if (event.commit == null) {
       return;

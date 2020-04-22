@@ -18,4 +18,8 @@ export class CommitService {
         return this.gitService.repo.getFilesWithDirectoriesOfCommit(commitId);
     }
 
+    getCommitsBetween(startCommitId: string, endCommitId: string) {
+        
+    }
+
 }

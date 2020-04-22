@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Repository as NodeGitRepository, Tree, Blame, Oid } from 'nodegit';
+import { Repository as NodeGitRepository, Tree, Blame, Oid, Revwalk } from 'nodegit';
 import { Logger } from '@nestjs/common';
 import { File, calculateLinecount } from "src/model/file.model";
 import { BlameHunk as BlameHunkModel } from "src/model/blamehunk.model";
@@ -12,7 +12,7 @@ export class Repository {
     private repository: NodeGitRepository;
 
     constructor(
-        public readonly folderPath: string
+        public readonly folderPath: string,
     ) {
     }
 
@@ -26,6 +26,36 @@ export class Repository {
 
     getRepo(): NodeGitRepository {
         return this.repository;
+    }
+
+    /**
+     * Retrieves commits, which are reachable from endCommitId
+     * between a interval of startCommitId (inclusive), endCommitId (inclusive).
+     * See: https://libgit2.org/libgit2/#HEAD/group/revwalk/git_revwalk_push_range
+     * @param startCommitId
+     * @param endCommitId
+     */
+    async getCommitsBetween(startCommitId: string, endCommitId: string) {
+        const walker = Revwalk.create(this.repository);
+        walker.reset();
+        const result = [];
+        walker.pushRange(`${startCommitId}..${endCommitId}`);
+        walker.sorting(Revwalk.SORT.TIME, Revwalk.SORT.REVERSE);
+        let hasNext = true;
+        while (hasNext) {
+            try {
+                const oid = await walker.next();
+                result.push(oid.tostrS());
+                this.logger.log(oid.tostrS());
+            } catch (err) {
+                hasNext = false;
+            }
+        }
+        // Add start commit id at index 0, since libgit interval is (exclusive, inclusive)
+        if (result.length > 0) {
+            result.splice(0, 0, startCommitId);
+        }
+        return result;
     }
 
     /**

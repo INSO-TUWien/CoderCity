@@ -9,7 +9,7 @@ import { Directory } from '../model/directory.model';
 import { environment } from 'src/environments/environment';
 
 export const HOST = '/api';
-export const COMMIT_ENDPOINT = 'commit/';
+export const COMMIT_ENDPOINT = 'commit';
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +22,15 @@ export class CommitService {
   ) { }
 
   getFilesAtCommit(commit: Commit): Observable<File[]> {
-    return this.http.get<File[]>(environment.apiUrl  + COMMIT_ENDPOINT + commit.commitId);
+    return this.http.get<File[]>(environment.apiUrl  + COMMIT_ENDPOINT + '/' + commit.commitId);
   }
 
   getProjectFilesAtCommit(commit: Commit): Observable<Directory> {
-    return this.http.get<Directory>(environment.apiUrl  + COMMIT_ENDPOINT + commit.commitId + `?mode=directory`);
+    return this.http.get<Directory>(environment.apiUrl  + COMMIT_ENDPOINT + '/' + commit.commitId + `?mode=directory`);
+  }
+
+  getCommitIdsBetween(firstCommitId: string, endCommitId: string): Observable<string[]> {
+    return this.http.get<string[]>(environment.apiUrl  + COMMIT_ENDPOINT + `?start=${firstCommitId}&end=${endCommitId}` );
   }
 
   setPreviewCommit(commit: Commit): void {

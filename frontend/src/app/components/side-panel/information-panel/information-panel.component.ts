@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BlameHunk } from 'src/app/model/blamehunk.model';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { VisualizationQuery } from 'src/app/state/visualization.query';
-import { Directory } from 'src/app/model/directory.model';
 import { IntersectableDirectory } from 'src/app/model/intersectable/intersectable-directory';
 
 export enum InformationPanelState {

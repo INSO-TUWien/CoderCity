@@ -8,6 +8,7 @@ export interface TimelineState {
    isPlaying: boolean;
    isMinimized: boolean;
    projectInterval: TimeInterval;
+   selectedIntervalCommits: string[];
    indicatorStatus: CommitMessageIndicatorStatus;
 }
 
@@ -20,6 +21,7 @@ export function createInitialState(): TimelineState {
       start: null,
       end: null
     },
+    selectedIntervalCommits: [],
     indicatorStatus: CommitMessageIndicatorStatus.Author
   };
 }

@@ -13,13 +13,28 @@ export class CommitController {
         private gitService: GitService
     ) {}
 
+    /**
+     * Retrieves an array of all commits.
+     * (Filter: commits in between startCommitId (earliest by date) and endCommitId (latest by date))
+     */
     @Get('')
-    getCommits() {
-        const gitCommits = [];
-        for (let [key, value] of this.gitService.gitModel.commits) {
-            gitCommits.push(value);
+    async getCommits(
+        @Query('start') startCommitId,
+        @Query('end') endCommitId
+    ) {
+        this.logger.log(`start ${startCommitId} end ${endCommitId}`);
+        const result = [];
+        if (startCommitId == null && endCommitId == null) {
+            // Retrieve all commits
+            for (let [key, value] of this.gitService.gitModel.commits) {
+                result.push(value);
+            }
+        } else if (startCommitId != null && endCommitId != null) {
+            // Apply filter
+            const result = await this.gitService.repo.getCommitsBetween(startCommitId, endCommitId);
+            return result;
         }
-        return gitCommits;
+        return result;
     }
 
     @Get(':id')

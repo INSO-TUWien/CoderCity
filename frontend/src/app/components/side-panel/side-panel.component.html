@@ -9,11 +9,20 @@
             class="btn btn-light btn-xs"
             (click)="openModal()"
             ngbTooltip="Settings">
-            <fa-icon [icon]="faSlidersH" size="xs"></fa-icon
-        ></button>
+            <fa-icon [icon]="faSlidersH" size="xs"></fa-icon>
+        </button>
     </div>
     <div class="mt-1">
         <input class="bg-light cc-input form-control form-control-sm" placeholder="Search">
+    </div>
+    <div class="mt-2 d-flex flex-row justify-content-end">
+        <button class="btn btn-xs btn-light filter-btn" (click)="onTriggerFilter()">
+            <div class="d-flex flex-row justify-content-between align-items-center">
+                <fa-icon [icon]="faFilter" size="xs"></fa-icon>
+                <span class="ml-1">Filter</span>
+            </div>
+            
+        </button>
     </div>
     <!-- <div>
         <ul class="nav nav-tabs">
@@ -23,4 +32,9 @@
             <li><a href="#">Menu 3</a></li>
           </ul>
     </div> -->
+</div>
+
+<div class="side-panel-detail">
+    <cc-filter-panel></cc-filter-panel>
+    <cc-information-panel></cc-information-panel>
 </div>

@@ -7,6 +7,8 @@ import { map } from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 export class VisualizationQuery extends Query<VisualizationState> {
 
+  isFilterPanelActive$ = this.select(state => state.isFilterViewActive);
+
   selectedObject$ = this.select(state => state.selectedObject);
   selectedCommit$ = this.select(state => state.selectedCommit);
   selectedCommitInterval$ = this.select(state => state.selectedCommitInterval);
@@ -20,7 +22,7 @@ export class VisualizationQuery extends Query<VisualizationState> {
   ).pipe(
     map(([interval, authors]) => {
       let result = null;
-      if (interval != null && authors != null && authors.size > 0) {
+      if (interval != null && authors != null && interval.start != null && interval.end != null && authors.size > 0) {
         result = {
           start: {
             ...interval.start,

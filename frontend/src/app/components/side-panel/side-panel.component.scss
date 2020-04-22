@@ -6,6 +6,7 @@ $project-primary-color: #89A0CE;
     left: 18px;
 
     padding: 16px;
+    padding-bottom: 8px;
     width: 280px;
     border-radius: 4px;
     box-shadow: 4px 4px 4px 0 rgba(226,226,226,0.50);
@@ -28,4 +29,16 @@ h3 {
 
 .cc-input {
     border: 0px;
+}
+
+.side-panel-detail {
+    position: absolute;
+    top: 140px;
+    left: 18px;
+    width: 280px;
+}
+
+.filter-btn {
+    font-size: 9pt;
+    color: #363636;
 }

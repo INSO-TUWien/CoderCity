@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { faSlidersH } from '@fortawesome/free-solid-svg-icons';
+import { faSlidersH, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsPanelComponent } from '../settings-panel/settings-panel.component';
+import { VisualizationService } from 'src/app/services/visualization.service';
 
 @Component({
   selector: 'cc-side-panel',
@@ -11,8 +12,12 @@ import { SettingsPanelComponent } from '../settings-panel/settings-panel.compone
 export class SidePanelComponent implements OnInit {
 
   faSlidersH = faSlidersH;
+  faFilter = faFilter;
 
-  constructor(private modalService: NgbModal) {
+  constructor(
+    private modalService: NgbModal,
+    private visualizationService: VisualizationService
+  ) {
 
   }
 
@@ -21,5 +26,9 @@ export class SidePanelComponent implements OnInit {
 
   openModal() {
     this.modalService.open(SettingsPanelComponent);
+  }
+
+  onTriggerFilter() {
+    this.visualizationService.setIsFilterViewActive(true);
   }
 }

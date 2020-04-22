@@ -4,13 +4,11 @@ import { Observable, Subject, BehaviorSubject, of, combineLatest } from "rxjs";
 import { tap, map, timeInterval } from "rxjs/operators";
 import { GitQuery } from "src/app/state/git.query";
 import { VisualizationQuery } from "src/app/state/visualization.query";
-import { CommitTimeInterval } from '../timeline/commit-timeinterval';
 
 export enum SelectionState {
   None,
   Preview,
   Selected,
-  Interval,
 }
 
 export const MOCK_COMMIT = {
@@ -37,11 +35,9 @@ export class SelectionPopoverComponent implements OnInit {
   hasSelectedCommit: boolean = false;
   commitPreview$: Observable<Commit>;
   selectedCommit$: Observable<Commit>;
-  selectedCommitTimeInterval$: Observable<CommitTimeInterval>;
   authorColorMap$: Observable<Map<string, string>>;
   commitPreviewWithAuthorColor$: Observable<any>;
   selectedCommitWithAuthorColor$: Observable<any>;
-  selectedCommitTimeIntervalWithAuthorColor$: Observable<any>;
 
   private selectedCommitSubscription;
   private commitPreviewSubscription;
@@ -54,8 +50,6 @@ export class SelectionPopoverComponent implements OnInit {
     this.commitPreview$ = this.gitQuery.commitPreview$;
     this.authorColorMap$ = this.visualizationQuery.authorColorMap$;
     this.selectedCommit$ = this.visualizationQuery.selectedCommit$;
-    this.selectedCommitTimeInterval$ = this.visualizationQuery.selectedCommitInterval$;
-    this.selectedCommitTimeIntervalWithAuthorColor$ = this.visualizationQuery.selectedCommitTimeIntervalWithAuthorColor$;
     this.selectedCommitWithAuthorColor$ = this.visualizationQuery.selectedCommitWithAuthorColor$;
 
     this.commitPreviewSubscription = this.commitPreview$.subscribe((commit) => {
@@ -77,12 +71,6 @@ export class SelectionPopoverComponent implements OnInit {
       } else {
         this.mode = SelectionState.Selected;
         this.hasSelectedCommit = true;
-      }
-    });
-
-    this.selectedCommitTimeInterval$.subscribe(interval => {
-      if (interval != null && interval.start != null && interval.end != null) {
-        this.mode = SelectionState.Interval;
       }
     });
 

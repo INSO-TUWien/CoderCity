@@ -13,6 +13,7 @@ export interface VisualizationState {
   selectedCommit: Commit;
   selectedCommitInterval: CommitTimeInterval;
   authorColorMap: Map<string, string>;
+  isFilterViewActive: boolean;
 }
 
 export function createInitialState(): VisualizationState {
@@ -25,7 +26,8 @@ export function createInitialState(): VisualizationState {
       start: null,
       end: null
     },
-    authorColorMap: new Map<string, string>()
+    authorColorMap: new Map<string, string>(),
+    isFilterViewActive: false
   };
 }
 

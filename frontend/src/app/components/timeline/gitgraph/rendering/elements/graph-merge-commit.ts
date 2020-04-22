@@ -18,7 +18,7 @@ export class GraphMergeCommit extends AbstractGraphCommit {
         public commit: Commit,
         public color: string = CIRCLE_COLOR
     ) {
-        super(callbacks);
+        super(callbacks,commit);
         if (gridPosition.x < 0 && gridPosition.y < 0) {
             console.error(`GraphMergeCommit: Invalid parameters graphPosition are null or undefined`);
             return;

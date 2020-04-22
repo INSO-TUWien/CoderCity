@@ -32,6 +32,13 @@ export class VisualizationService {
     }));
   }
 
+  setIsFilterViewActive(value: boolean): void {
+    this.visualizationStore.update(state  => ({
+      ...state,
+      isFilterViewActive: value
+    }));
+  }
+
   setProjectFiles(directory: Directory): void {
     this.visualizationStore.update(state => ({
       ...state,

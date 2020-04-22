@@ -4,15 +4,13 @@ import { GraphCommit } from "./graph-commit";
 import { GraphMergeCommit } from "./graph-merge-commit";
 import { AbstractGraphCommit, GraphCommitState } from "./abstract-graph-commit";
 import { getBranchColor } from "../graph-colors";
+import { brightenColor } from 'src/app/util/color-scheme';
 
 export const STROKE_WIDTH = 3;
 
 // Offsets due to bounding boxes of commit circles
 export const OFFSET_X = 15 / 2;
 export const OFFSET_Y = 20 / 2;
-
-export const BRANCH_IN_COLOR = "#4D7CE8";
-export const BRANCH_OUT_COLOR = "#3BC4C7";
 
 export function generateGraphLineKey(commitId: string, parentCommitId: string): string {
   return `${commitId}_${parentCommitId}`;
@@ -28,6 +26,7 @@ export class GraphLine implements RenderElement {
 
   state: GraphCommitState = GraphCommitState.Default;
   shape: Shape;
+  private color: string;
 
   render(svg: Svg): void {
     if (this.startElement == null || this.endElement == null) {
@@ -47,25 +46,26 @@ export class GraphLine implements RenderElement {
     if (state === GraphCommitState.Default) {
         this.shape.stroke({
             width: STROKE_WIDTH,
-            color: getBranchColor(this.endElement.graphPositionY),
+            color: this.color,
         });
       this.state = state;
     } else if (state === GraphCommitState.Selected) {
         this.shape.stroke({
-            width: STROKE_WIDTH + 1,
-            color: getBranchColor(this.endElement.graphPositionY),
+            width: STROKE_WIDTH + 3,
+            color: brightenColor(this.color, 0.5),
           });
         this.state = state;
     } else if (state === GraphCommitState.Highlight) {
       // Do not persist state for highlight state. (Hover state).
       this.shape.stroke({
-        width: STROKE_WIDTH + 1,
-        color: getBranchColor(this.endElement.graphPositionY),
+        width: STROKE_WIDTH + 3,
+        color: brightenColor(this.color, 0.5),
       });
     }
   }
 
   private renderBranchIn(svg: Svg): void {
+    this.color = getBranchColor(this.startElement.graphPositionY);
     const startX = this.startElement.x + OFFSET_X;
     const startY = this.startElement.y + OFFSET_Y;
     const endX = this.endElement.x + OFFSET_X;
@@ -102,19 +102,13 @@ export class GraphLine implements RenderElement {
         )
         .stroke({
           width: STROKE_WIDTH,
-          color: getBranchColor(this.startElement.graphPositionY),
+          color: this.color,
         })
         .on("mouseover", () => {
-          this.shape.stroke({
-            width: STROKE_WIDTH + 1,
-            color: getBranchColor(this.startElement.graphPositionY),
-          });
+          this.handleOnMouseOver();
         })
         .on("mouseout", () => {
-          this.shape.stroke({
-            width: STROKE_WIDTH,
-            color: getBranchColor(this.startElement.graphPositionY),
-          });
+          this.handleOnMouseOut();
         })
         .fill("transparent")
         .back();
@@ -133,16 +127,10 @@ export class GraphLine implements RenderElement {
           linecap: "round",
         })
         .on("mouseover", () => {
-            this.shape.stroke({
-            width: STROKE_WIDTH + 1,
-            color: getBranchColor(this.startElement.graphPositionY),
-          });
+          this.handleOnMouseOver();
         })
         .on("mouseout", () => {
-            this.shape.stroke({
-            width: STROKE_WIDTH,
-            color: getBranchColor(this.startElement.graphPositionY),
-          });
+          this.handleOnMouseOut();
         })
         .back();
     } else {
@@ -175,19 +163,13 @@ export class GraphLine implements RenderElement {
         )
         .stroke({
           width: STROKE_WIDTH,
-          color: getBranchColor(this.startElement.graphPositionY),
+          color: this.color,
         })
         .on("mouseover", () => {
-          this.shape.stroke({
-            width: STROKE_WIDTH + 1,
-            color: getBranchColor(this.startElement.graphPositionY),
-          });
+          this.handleOnMouseOver();
         })
         .on("mouseout", () => {
-          this.shape.stroke({
-            width: STROKE_WIDTH,
-            color: getBranchColor(this.startElement.graphPositionY),
-          });
+          this.handleOnMouseOut();
         })
         .fill("transparent")
         .back();
@@ -195,6 +177,7 @@ export class GraphLine implements RenderElement {
   }
 
   private renderBranchOut(svg: Svg): void {
+    this.color = getBranchColor(this.endElement.graphPositionY);
     const startX = this.startElement.x + OFFSET_X;
     const startY = this.startElement.y + OFFSET_Y;
     const endX = this.endElement.x + OFFSET_X;
@@ -232,19 +215,13 @@ export class GraphLine implements RenderElement {
         )
         .stroke({
           width: STROKE_WIDTH,
-          color: getBranchColor(this.endElement.graphPositionY),
+          color: this.color,
         })
         .on("mouseover", () => {
-          this.shape.stroke({
-            width: STROKE_WIDTH + 1,
-            color: getBranchColor(this.endElement.graphPositionY),
-          });
+          this.handleOnMouseOver();
         })
         .on("mouseout", () => {
-          this.shape.stroke({
-            width: STROKE_WIDTH,
-            color: getBranchColor(this.endElement.graphPositionY),
-          });
+          this.handleOnMouseOut();
         })
         .fill("transparent")
         .back();
@@ -259,20 +236,14 @@ export class GraphLine implements RenderElement {
         )
         .stroke({
           width: STROKE_WIDTH,
-          color: getBranchColor(this.startElement.graphPositionY),
+          color: this.color,
           linecap: "round",
         })
         .on("mouseover", () => {
-          this.shape.stroke({
-            width: STROKE_WIDTH + 1,
-            color: getBranchColor(this.startElement.graphPositionY),
-          });
+          this.handleOnMouseOver();
         })
         .on("mouseout", () => {
-          this.shape.stroke({
-            width: STROKE_WIDTH,
-            color: getBranchColor(this.startElement.graphPositionY),
-          });
+          this.handleOnMouseOut();
         })
         .back();
     } else {
@@ -306,22 +277,34 @@ export class GraphLine implements RenderElement {
         )
         .stroke({
           width: STROKE_WIDTH,
-          color: getBranchColor(this.endElement.graphPositionY),
+          color: this.color,
         })
         .on("mouseover", () => {
-          this.shape.stroke({
-            width: STROKE_WIDTH + 1,
-            color: getBranchColor(this.endElement.graphPositionY),
-          });
+          this.handleOnMouseOver();
         })
         .on("mouseout", () => {
-          this.shape.stroke({
-            width: STROKE_WIDTH,
-            color: getBranchColor(this.endElement.graphPositionY),
-          });
+          this.handleOnMouseOut();
         })
         .fill("transparent")
         .back();
+    }
+  }
+
+  private handleOnMouseOver() {
+    if (this.state === GraphCommitState.Default) {
+      this.shape.stroke({
+        width: STROKE_WIDTH + 1,
+        color: this.color,
+      });
+    }
+  }
+
+  private handleOnMouseOut() {
+    if (this.state === GraphCommitState.Default) {
+      this.shape.stroke({
+        width: STROKE_WIDTH,
+        color: this.color,
+      });
     }
   }
 }

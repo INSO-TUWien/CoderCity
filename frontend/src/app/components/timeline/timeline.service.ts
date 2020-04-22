@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { TimelineStore } from 'src/app/state/timeline.store';
 import { TimeInterval } from './timeinterval';
 import { CommitMessageIndicatorStatus } from "./gitgraph/commit-message-container/indicator-bar/commit-message-indicator/CommitMessageIndicatorStatus";
+import { Commit } from 'src/app/model/commit.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,13 @@ export class TimelineService {
     this.timelineStore.update(state => ({
       ...state,
       indicatorStatus: indicatorStatus
+    }));
+  }
+
+  setSelectedIntervalCommits(commitIds: string[]) {
+    this.timelineStore.update(state => ({
+      ...state,
+      selectedIntervalCommits: commitIds
     }));
   }
 
