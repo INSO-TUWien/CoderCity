@@ -29,6 +29,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthorLabelComponent } from './components/author-panel/author-label/author-label.component';
 import { TooltipComponent } from './components/timeline/gitgraph/tooltip/tooltip.component';
 import { FilterPanelComponent } from './components/side-panel/filter-panel/filter-panel.component';
+import { ProjectChooserComponent } from './components/project-chooser/project-chooser.component';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -54,10 +55,12 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     IndicatorBarComponent,
     AuthorLabelComponent,
     TooltipComponent,
-    FilterPanelComponent
+    FilterPanelComponent,
+    ProjectChooserComponent
   ],
   entryComponents: [
-    SettingsPanelComponent
+    SettingsPanelComponent,
+    ProjectChooserComponent
   ],
   imports: [
     NgbModule,

@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h4 class="modal-title">Select a project</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <h3>Projects</h3>
+  <div class="list-group">
+    <div (click)="onSelectedItem(project)" *ngFor="let project of projects$ | async" class="list-group-item list-group-item-action">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{project.name}}</h5>
+      </div>
+      <small>{{project.fullPath}}</small>
+    </div>
+  </div>
+</div>

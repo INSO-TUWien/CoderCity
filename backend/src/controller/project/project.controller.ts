@@ -7,7 +7,7 @@ export class ProjectController {
     constructor(private projectService: ProjectService) {}
 
     @Get()
-    getProject() {
-        return this.projectService.project;
+    findAll() {
+        return this.projectService.findAll();
     }
 }

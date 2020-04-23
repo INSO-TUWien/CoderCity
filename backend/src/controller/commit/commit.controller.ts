@@ -31,7 +31,7 @@ export class CommitController {
             }
         } else if (startCommitId != null && endCommitId != null) {
             // Apply filter
-            const result = await this.gitService.repo.getCommitsBetween(startCommitId, endCommitId);
+            const result = await this.gitService.repo.getConnectedCommitsBetweenCommits(startCommitId, endCommitId);
             return result;
         }
         return result;

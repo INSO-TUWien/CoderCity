@@ -35,7 +35,7 @@ export class Repository {
      * @param startCommitId
      * @param endCommitId
      */
-    async getCommitsBetween(startCommitId: string, endCommitId: string) {
+    async getConnectedCommitsBetweenCommits(startCommitId: string, endCommitId: string) {
         const walker = Revwalk.create(this.repository);
         walker.reset();
         const result = [];

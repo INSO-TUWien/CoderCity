@@ -4,7 +4,6 @@ import { Commit as CommitModel } from '../../model/commit.model';
 import { GitModel } from 'src/datastore/git-model';
 import { Logger } from '@nestjs/common';
 import { Repository } from 'src/services/git/repo';
-import { Signature } from 'src/model/signature.model';
 
 export class GitIndexer {
     private readonly logger = new Logger(GitIndexer.name);
