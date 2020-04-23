@@ -1,5 +1,5 @@
 import { RenderElement } from './render-element';
-import { Svg } from '@svgdotjs/svg.js';
+import { Svg, SVG } from '@svgdotjs/svg.js';
 import { GitModel } from 'src/app/model/git-model';
 import { Commit } from 'src/app/model/commit.model';
 import { GraphLine, generateGraphLineKey } from './elements/graph-line';
@@ -23,9 +23,15 @@ export function isMergeCommit(commit: Commit): boolean {
 export class GitGraphRenderer {
 
   constructor(
-    private svg: Svg,
+    private htmlElement: HTMLElement,
     private callbacks: GitGraphCallbacks
-  ) {}
+  ) {
+    if (this.svg == null) {
+      this.svg = SVG().addTo(this.htmlElement);
+    }
+  }
+
+  private svg: Svg;
   private renderElements: RenderElement[] = [];
   private gitModel: GitModel;
 
@@ -49,6 +55,8 @@ export class GitGraphRenderer {
     // TODO Fix clear function
     this.renderElements = [];
     this.svg.clear();
+    this.grid_x = 0;
+    this.grid_y = 0;
   }
 
   setGraphCommitState(commitId: string, state: GraphCommitState) {

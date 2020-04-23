@@ -4,7 +4,8 @@ import { VisualizationComponent } from './components/visualization/visualization
 
 
 const routes: Routes = [
-  { path: '**', component: VisualizationComponent},
+  { path: 'project/:id', component: VisualizationComponent},
+  { path: '**', redirectTo: 'project/'}
 ];
 
 @NgModule({

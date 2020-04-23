@@ -75,8 +75,6 @@ export class CommitMessageContainerComponent implements OnInit {
     this.timelineService.changeIndicatorStatus();
   }
 
-  onCommitsClick() {
-    this.gitService.getBranches();
-    this.gitService.getCommits();
+  onPlayClicked() {
   }
 }

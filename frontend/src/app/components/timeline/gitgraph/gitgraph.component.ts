@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Svg, SVG } from '@svgdotjs/svg.js';
 import { Observable, combineLatest, Subscription } from 'rxjs';
 import { Commit } from 'src/app/model/commit.model';
 import { map } from 'rxjs/operators';
@@ -79,11 +78,7 @@ export class GitgraphComponent implements OnInit {
     );
 
     this.branchesCommitSubscription = combineLatest([this.branches$, this.commits$]).subscribe(
-      (val) => {
-        // Create deep copy of branches and commits
-        const branches = cloneDeep(val[0]);
-        const commits = cloneDeep(val[1]);
-
+      ([branches, commits]) => {
         if (branches.length > 0 && commits.length > 0) {
           this.drawGraph(branches, commits);
         }
@@ -108,7 +103,6 @@ export class GitgraphComponent implements OnInit {
   // Element is active when mouse is hovering above it.
   active: boolean;
 
-  private svg: Svg;
   private renderer: GitGraphRenderer;
 
   private visualizationSubscription: Subscription;
@@ -164,9 +158,7 @@ export class GitgraphComponent implements OnInit {
   }
 
   private initGitGraph(): void {
-    this.svg = SVG()
-      .addTo(this.graphElement.nativeElement);
-    this.renderer = new GitGraphRenderer(this.svg,
+    this.renderer = new GitGraphRenderer(this.graphElement.nativeElement,
       {
         onGraphCommitMouseOver: (commit) => {
           this.commitService.setPreviewCommit(commit);

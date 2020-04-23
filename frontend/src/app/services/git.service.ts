@@ -20,6 +20,11 @@ export class GitService {
     private gitStore: GitStore
   ) { }
 
+  loadData(): void {
+    this.getBranches();
+    this.getCommits();
+  }
+
   getCommits() {
     return this.httpClient
     .get<Commit[]>(environment.apiUrl + '/commit')

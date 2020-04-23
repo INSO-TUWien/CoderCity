@@ -13,6 +13,9 @@ import { Preferences, BuildingColorMapperPreference } from '../settings-panel/st
 import { BuildingRandomColorMapper } from 'src/app/3d/util/color/building-random-color-mapper';
 import { Author } from 'src/app/model/author.model';
 import { withLatestFrom } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { ProjectQuery } from '../project-chooser/state/project.query';
+import { GitService } from 'src/app/services/git.service';
 
 @Component({
   selector: 'cc-visualization',
@@ -27,25 +30,37 @@ export class VisualizationComponent implements OnInit {
   private authors: Author[];
   private filesSubscription: Subscription;
   private settingsSubscription: Subscription;
-
-  private authors$;
-  private preferences$;
+  private authors$ = this.gitQuery.authors$;
+  private preferences$ = this.settingsQuery.preferences$;
 
   constructor(
     private visualizationService: VisualizationService,
     private visualizationQuery: VisualizationQuery,
+    private projectQuery: ProjectQuery,
     private gitQuery: GitQuery,
-    private settingsQuery: SettingsQuery
+    private gitService: GitService,
+    private settingsQuery: SettingsQuery,
+    private route: ActivatedRoute
   ) {
   }
 
   ngOnInit() {
+    let id = this.route.snapshot.paramMap.get('id');
+    if (id == null || id.length <= 0) {
+      this.visualizationService.openProject();
+    }
+
     this.engine = new Engine();
     this.engine.start();
     this.initEventBus();
 
-    this.authors$ = this.gitQuery.authors$;
-    this.preferences$ = this.settingsQuery.preferences$;
+    this.projectQuery.selectActive().subscribe(project => {
+      if (project == null) {
+        this.visualizationService.openProject();
+      } else {
+        this.gitService.loadData();
+      }
+    });
 
     this.visualizationQuery.selectedCommit$.subscribe(
       (commit) => {

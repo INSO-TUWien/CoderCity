@@ -4,7 +4,7 @@ import { ProjectStore, ProjectState } from './project.store';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectQuery extends QueryEntity<ProjectState> {
-  
+
   constructor(protected store: ProjectStore) {
     super(store);
   }

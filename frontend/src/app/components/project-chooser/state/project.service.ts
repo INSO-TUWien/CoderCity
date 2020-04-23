@@ -30,4 +30,9 @@ export class ProjectService {
   remove(id: ID) {
     this.projectStore.remove(id);
   }
+
+  setActive(id: ID) {
+    this.projectStore.setActive(id);
+  }
+
 }

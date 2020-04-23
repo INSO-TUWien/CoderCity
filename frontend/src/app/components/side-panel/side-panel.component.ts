@@ -32,7 +32,7 @@ export class SidePanelComponent implements OnInit {
   }
 
   openProject() {
-    this.modalService.open(ProjectChooserComponent);
+    this.visualizationService.openProject();
   }
 
   onTriggerFilter() {

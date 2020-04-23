@@ -6,6 +6,8 @@ import { Directory } from '../model/directory.model';
 import { Commit } from '../model/commit.model';
 import { CommitService } from './commit.service';
 import { CommitTimeInterval } from '../components/timeline/commit-timeinterval';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ProjectChooserComponent } from '../components/project-chooser/project-chooser.component';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +16,13 @@ export class VisualizationService {
 
   constructor(
     private visualizationStore: VisualizationStore,
-    private commitService: CommitService
+    private commitService: CommitService,
+    private modalService: NgbModal,
   ) { }
+
+  openProject() {
+    this.modalService.open(ProjectChooserComponent);
+  }
 
   // Sets selected object in the codecity.
   setSelectedObject(object: BlameHunk): void {
