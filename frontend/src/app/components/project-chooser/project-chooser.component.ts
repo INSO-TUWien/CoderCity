@@ -25,8 +25,8 @@ export class ProjectChooserComponent implements OnInit {
   }
 
   onSelectedItem(project: Project) {
-    this.router.navigate(['/project', project.id]);
     this.projectService.setActive(project.id);
+    this.router.navigate(['/project', project.id]);
     this.activeModal.close();
   }
 }

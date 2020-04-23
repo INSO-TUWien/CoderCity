@@ -54,7 +54,6 @@ export class GitgraphComponent implements OnInit {
      */
     combineLatest([this.commitsMap$, this.selectedCommitInterval$]).subscribe(
       ([commits, interval]) => {
-
         if (this.selectedLineKeys != null) {
           // Reset prior interval selection if exists
           this.selectedLineKeys.forEach((lineKey) => {

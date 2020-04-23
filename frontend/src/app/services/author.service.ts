@@ -6,6 +6,7 @@ import { tap, map } from 'rxjs/operators';
 import { getAuthorColor } from '../util/color-scheme';
 import { environment } from 'src/environments/environment';
 import { VisualizationStore } from '../state/visualization.store';
+import { ProjectQuery } from '../components/project-chooser/state/project.query';
 
 export const HOST = '/api';
 export const AUTHOR_ENDPOINT = 'author/';
@@ -15,14 +16,23 @@ export const AUTHOR_ENDPOINT = 'author/';
 })
 export class AuthorService {
 
+  private projectId;
+
   constructor(
     private http: HttpClient,
     private gitStore: GitStore,
-    private visualizationStore: VisualizationStore
-  ) { }
+    private visualizationStore: VisualizationStore,
+    private projectQuery: ProjectQuery
+  ) {
+    projectQuery.selectActiveId().subscribe(id => {
+      if (id != null) {
+        this.projectId = id;
+      }
+    });
+  }
 
   getAuthors() {
-    this.http.get<Author[]>(environment.apiUrl + AUTHOR_ENDPOINT)
+    this.http.get<Author[]>(environment.apiUrl + `project/${this.projectId}/` + AUTHOR_ENDPOINT)
     .pipe(
       map(authors => {
         return authors.map((a, index) => ({ color: getAuthorColor(index), email: a.email, name: a.name }));

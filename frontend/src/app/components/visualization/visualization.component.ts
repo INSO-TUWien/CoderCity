@@ -30,8 +30,9 @@ export class VisualizationComponent implements OnInit {
   private authors: Author[];
   private filesSubscription: Subscription;
   private settingsSubscription: Subscription;
-  private authors$ = this.gitQuery.authors$;
-  private preferences$ = this.settingsQuery.preferences$;
+  private projectSubscription: Subscription;
+
+  private selectedProjectId = null;
 
   constructor(
     private visualizationService: VisualizationService,
@@ -54,11 +55,15 @@ export class VisualizationComponent implements OnInit {
     this.engine.start();
     this.initEventBus();
 
-    this.projectQuery.selectActive().subscribe(project => {
-      if (project == null) {
-        this.visualizationService.openProject();
+    this.projectSubscription = this.projectQuery.selectActive().subscribe(project => {
+      if (project != null) {
+        if (this.selectedProjectId !== project.id) {
+          this.gitService.loadData();
+        }
+
+        this.selectedProjectId = project.id;
       } else {
-        this.gitService.loadData();
+        this.visualizationService.openProject();
       }
     });
 
@@ -116,6 +121,7 @@ export class VisualizationComponent implements OnInit {
   ngOnDestroy(): void {
     this.filesSubscription.unsubscribe();
     this.settingsSubscription.unsubscribe();
+    this.projectSubscription.unsubscribe();
   }
 
   private initEventBus(): void {

@@ -64,7 +64,7 @@ export class MousePicker extends Entity {
 
         // calculate objects intersecting the picking ray
         const intersects = this.raycaster.intersectObjects(this.scene.children, true);
-        console.debug(`intersect: ${intersects.length}`);
+        //console.debug(`intersect: ${intersects.length}`);
 
         if (intersects.length > 0) {
             // Highlight nearest intersecting object.

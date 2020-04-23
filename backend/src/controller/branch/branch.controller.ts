@@ -1,7 +1,7 @@
 import { Controller, Get, Logger } from '@nestjs/common';
 import { GitService } from 'src/services/git/git.service';
 
-@Controller('branch')
+@Controller('project/:id/branch')
 export class BranchController {
     private readonly logger = new Logger(BranchController.name);
 

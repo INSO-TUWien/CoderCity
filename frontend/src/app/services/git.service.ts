@@ -7,18 +7,28 @@ import { GitStore } from '../state/git.store';
 import { AuthorService } from './author.service';
 import { environment } from 'src/environments/environment';
 import { TimelineService } from '../components/timeline/timeline.service';
+import { ProjectQuery } from '../components/project-chooser/state/project.query';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GitService {
 
+  private projectId;
+
   constructor(
     private httpClient: HttpClient,
     private authorService: AuthorService,
     private timelineServie: TimelineService,
-    private gitStore: GitStore
-  ) { }
+    private gitStore: GitStore,
+    private projectQuery: ProjectQuery
+  ) {
+    projectQuery.selectActiveId().subscribe(id => {
+      if (id != null) {
+        this.projectId = id;
+      }
+    });
+  }
 
   loadData(): void {
     this.getBranches();
@@ -27,7 +37,7 @@ export class GitService {
 
   getCommits() {
     return this.httpClient
-    .get<Commit[]>(environment.apiUrl + '/commit')
+    .get<Commit[]>(environment.apiUrl + `project/${this.projectId}/commit`)
     .pipe(
       map(val =>
         val.map((commit) => {
@@ -68,7 +78,7 @@ export class GitService {
 
   getBranches() {
     return this.httpClient.get<Branch[]>(
-      environment.apiUrl  + '/branch'
+      environment.apiUrl  + `project/${this.projectId}/branch`
     ).subscribe((branches) => {
       this.gitStore.update(state => ({
         ...state,

@@ -20,7 +20,6 @@ export class TimelineComponent implements OnInit {
   projectInterval$: Observable<TimeInterval>;
 
   constructor(
-    private gitService: GitService,
     private timelineQuery: TimelineQuery
   ) {
     this.projectInterval$ = this.timelineQuery.projectInterval$;
