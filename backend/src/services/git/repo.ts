@@ -4,12 +4,16 @@ import { Logger } from '@nestjs/common';
 import { File, calculateLinecount } from "src/model/file.model";
 import { BlameHunk as BlameHunkModel } from "src/model/blamehunk.model";
 import { Directory } from 'src/model/directory.model';
+import { GitModel } from 'src/datastore/git-model';
 import { Signature } from 'src/model/signature.model';
+import { GitIndexer } from 'src/services/git/git-indexer';
 
 export class Repository {
 
     private readonly logger = new Logger(Repository.name);
     private repository: NodeGitRepository;
+    public gitModel: GitModel;
+    private gitIndexer: GitIndexer;
 
     constructor(
         public readonly folderPath: string,
@@ -18,6 +22,12 @@ export class Repository {
 
     async openRepo(): Promise<void> {
         this.repository = await NodeGitRepository.open(this.folderPath);
+    }
+
+    async startIndexing(): void {
+        this.gitModel = new GitModel();
+        this.gitIndexer = new GitIndexer(this.folderPath, this.gitModel, this);
+        this.gitIndexer.startIndexing();
     }
 
     isOpen(): boolean {

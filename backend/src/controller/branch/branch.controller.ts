@@ -11,7 +11,7 @@ export class BranchController {
     getBranches() {
         this.logger.log(`GET: branches`);
         const branches = [];
-        for (let [key, value] of this.gitService.gitModel.branches) {
+        for (let [key, value] of this.gitService.repo.gitModel.branches) {
             this.logger.log(`Branch ${value}`);
             branches.push(value);
         }

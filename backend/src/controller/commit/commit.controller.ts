@@ -26,7 +26,7 @@ export class CommitController {
         const result = [];
         if (startCommitId == null && endCommitId == null) {
             // Retrieve all commits
-            for (let [key, value] of this.gitService.gitModel.commits) {
+            for (let [key, value] of this.gitService.repo.gitModel.commits) {
                 result.push(value);
             }
         } else if (startCommitId != null && endCommitId != null) {

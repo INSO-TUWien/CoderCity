@@ -8,7 +8,7 @@ export class AuthorService {
 
     getAllAuthors(): Signature[] {
         const authors: Signature[] = [];
-        this.gitService.gitModel.commits.forEach((commit) => {
+        this.gitService.repo.gitModel.commits.forEach((commit) => {
             // Check whether author already is in array
             const authorExists = authors.map((author) =>
                 author.name === commit.authorName &&

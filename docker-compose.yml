@@ -7,7 +7,6 @@ services:
         - 3000:3000
     volumes: 
         - '/Users/yikaiyang/Projects/BA2/projects/ue2_github/:/.git'
-  # Angular frontend project deployed on nginx.
   # frontend:
   #   image: cc-frontend
   #   build:
