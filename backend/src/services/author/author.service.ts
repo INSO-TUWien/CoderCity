@@ -6,9 +6,10 @@ import { Signature } from 'src/model/signature.model';
 export class AuthorService {
     constructor(private gitService: GitService) {}
 
-    getAllAuthors(): Signature[] {
+    async getAllAuthors(projectId: string): Promise<Signature[]> {
         const authors: Signature[] = [];
-        this.gitService.repo.gitModel.commits.forEach((commit) => {
+        const repo = await this.gitService.getRepoByProjectId(projectId);
+        repo.gitModel.commits.forEach((commit) => {
             // Check whether author already is in array
             const authorExists = authors.map((author) =>
                 author.name === commit.authorName &&

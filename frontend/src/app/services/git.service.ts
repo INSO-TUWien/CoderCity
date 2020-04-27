@@ -37,7 +37,7 @@ export class GitService {
 
   getCommits() {
     return this.httpClient
-    .get<Commit[]>(environment.apiUrl + `project/${this.projectId}/commit`)
+    .get<Commit[]>(environment.apiUrl + `/project/${this.projectId}/commit`)
     .pipe(
       map(val =>
         val.map((commit) => {
@@ -78,7 +78,7 @@ export class GitService {
 
   getBranches() {
     return this.httpClient.get<Branch[]>(
-      environment.apiUrl  + `project/${this.projectId}/branch`
+      environment.apiUrl  + `/project/${this.projectId}/branch`
     ).subscribe((branches) => {
       this.gitStore.update(state => ({
         ...state,

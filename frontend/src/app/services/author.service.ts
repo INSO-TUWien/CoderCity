@@ -32,7 +32,7 @@ export class AuthorService {
   }
 
   getAuthors() {
-    this.http.get<Author[]>(environment.apiUrl + `project/${this.projectId}/` + AUTHOR_ENDPOINT)
+    this.http.get<Author[]>(environment.apiUrl + `/project/${this.projectId}/` + AUTHOR_ENDPOINT)
     .pipe(
       map(authors => {
         return authors.map((a, index) => ({ color: getAuthorColor(index), email: a.email, name: a.name }));

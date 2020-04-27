@@ -32,7 +32,7 @@ export class CommitService {
   }
 
   getFilesAtCommit(commit: Commit): Observable<File[]> {
-    return this.http.get<File[]>(environment.apiUrl  + 'project/' + this.projectId + '/' + COMMIT_ENDPOINT + '/' + commit.commitId);
+    return this.http.get<File[]>(environment.apiUrl  + '/project/' + this.projectId + '/' + COMMIT_ENDPOINT + '/' + commit.commitId);
   }
 
   getProjectFilesAtCommit(commit: Commit): Observable<Directory> {

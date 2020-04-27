@@ -41,9 +41,7 @@ export class GitIndexer {
                         this.logger.error(`Could not add commits to git model ${e}`);
                     }
             });
-            this.logger.error(`getAllCommits ${cmts.length}`);
         });
-        this.logger.error(`getAllCommits ${cmts.length}`);
         return cmts;
     }
 

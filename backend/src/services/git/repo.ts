@@ -27,7 +27,7 @@ export class Repository {
     async startIndexing(): void {
         this.gitModel = new GitModel();
         this.gitIndexer = new GitIndexer(this.folderPath, this.gitModel, this);
-        this.gitIndexer.startIndexing();
+        await this.gitIndexer.startIndexing();
     }
 
     isOpen(): boolean {
@@ -38,35 +38,35 @@ export class Repository {
         return this.repository;
     }
 
-    /**
-     * Retrieves commits, which are reachable from endCommitId
-     * between a interval of startCommitId (inclusive), endCommitId (inclusive).
-     * See: https://libgit2.org/libgit2/#HEAD/group/revwalk/git_revwalk_push_range
-     * @param startCommitId
-     * @param endCommitId
-     */
-    async getConnectedCommitsBetweenCommits(startCommitId: string, endCommitId: string) {
-        const walker = Revwalk.create(this.repository);
-        walker.reset();
-        const result = [];
-        walker.pushRange(`${startCommitId}..${endCommitId}`);
-        walker.sorting(Revwalk.SORT.TIME, Revwalk.SORT.REVERSE);
-        let hasNext = true;
-        while (hasNext) {
-            try {
-                const oid = await walker.next();
-                result.push(oid.tostrS());
-                this.logger.log(oid.tostrS());
-            } catch (err) {
-                hasNext = false;
-            }
-        }
-        // Add start commit id at index 0, since libgit interval is (exclusive, inclusive)
-        if (result.length > 0) {
-            result.splice(0, 0, startCommitId);
-        }
-        return result;
-    }
+    // /**
+    //  * Retrieves commits, which are reachable from endCommitId
+    //  * between a interval of startCommitId (inclusive), endCommitId (inclusive).
+    //  * See: https://libgit2.org/libgit2/#HEAD/group/revwalk/git_revwalk_push_range
+    //  * @param startCommitId
+    //  * @param endCommitId
+    //  */
+    // async getConnectedCommitsBetweenCommits(startCommitId: string, endCommitId: string) {
+    //     const walker = Revwalk.create(this.repository);
+    //     walker.reset();
+    //     const result = [];
+    //     walker.pushRange(`${startCommitId}..${endCommitId}`);
+    //     walker.sorting(Revwalk.SORT.TIME, Revwalk.SORT.REVERSE);
+    //     let hasNext = true;
+    //     while (hasNext) {
+    //         try {
+    //             const oid = await walker.next();
+    //             result.push(oid.tostrS());
+    //             this.logger.log(oid.tostrS());
+    //         } catch (err) {
+    //             hasNext = false;
+    //         }
+    //     }
+    //     // Add start commit id at index 0, since libgit interval is (exclusive, inclusive)
+    //     if (result.length > 0) {
+    //         result.splice(0, 0, startCommitId);
+    //     }
+    //     return result;
+    // }
 
     /**
      * Retrieves project files in directory folder structure (including directories) at a specified commit.
