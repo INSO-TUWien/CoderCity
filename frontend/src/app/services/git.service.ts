@@ -7,7 +7,7 @@ import { GitStore } from '../state/git.store';
 import { AuthorService } from './author.service';
 import { environment } from 'src/environments/environment';
 import { TimelineService } from '../components/timeline/timeline.service';
-import { ProjectQuery } from '../components/project-chooser/state/project.query';
+import { ProjectQuery } from '../store/project/project.query';
 
 @Injectable({
   providedIn: 'root'

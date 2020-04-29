@@ -13,12 +13,7 @@ export class BranchController {
     ) {
         try {
             this.logger.log(`GET: branches`);
-            const branches = [];
-            const repo = await this.gitService.getRepoByProjectId(projectId);
-            for (let [key, value] of repo.gitModel.branches) {
-                this.logger.log(`Branch ${value}`);
-                branches.push(value);
-            }
+            const branches = await this.gitService.getBranches(projectId);
             return branches;
         } catch (error) {
             throw new HttpException(`Requested ressource is not ready yet.`, HttpStatus.ACCEPTED);

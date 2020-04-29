@@ -14,8 +14,8 @@ import { BuildingRandomColorMapper } from 'src/app/3d/util/color/building-random
 import { Author } from 'src/app/model/author.model';
 import { withLatestFrom } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { ProjectQuery } from '../project-chooser/state/project.query';
 import { GitService } from 'src/app/services/git.service';
+import { ProjectQuery } from 'src/app/store/project/project.query';
 
 @Component({
   selector: 'cc-visualization',

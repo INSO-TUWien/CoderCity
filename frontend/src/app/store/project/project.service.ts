@@ -5,6 +5,7 @@ import { ProjectStore } from './project.store';
 import { Project } from './project.model';
 import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { ProjectData } from './projectdata';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -16,6 +17,14 @@ export class ProjectService {
   get() {
     return this.http.get<Project[]>(`${environment.apiUrl}/project`).pipe(tap(entities => {
       this.projectStore.set(entities);
+    }));
+  }
+
+  getProjectData(projectId: string) {
+    const projectData = this.http.get<ProjectData>(`${environment.apiUrl}/project/${projectId}`);
+    this.projectStore.update(state => ({
+      ...state,
+      projectData
     }));
   }
 
@@ -33,6 +42,8 @@ export class ProjectService {
 
   setActive(id: ID) {
     this.projectStore.setActive(id);
+    if (id  !== null) {
+      this.getProjectData(id as string);
+    }
   }
-
 }

@@ -6,7 +6,7 @@ import { tap, map } from 'rxjs/operators';
 import { getAuthorColor } from '../util/color-scheme';
 import { environment } from 'src/environments/environment';
 import { VisualizationStore } from '../state/visualization.store';
-import { ProjectQuery } from '../components/project-chooser/state/project.query';
+import { ProjectQuery } from '../store/project/project.query';
 
 export const HOST = '/api';
 export const AUTHOR_ENDPOINT = 'author/';

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ProjectQuery } from './state/project.query';
-import { ProjectService } from './state/project.service';
 import { Router } from '@angular/router';
-import { Project } from './state/project.model';
+import { ProjectService } from 'src/app/store/project/project.service';
+import { Project } from 'src/app/store/project/project.model';
 
 @Component({
   selector: 'cc-project-chooser',

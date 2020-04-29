@@ -4,10 +4,9 @@ import { Commit } from '../model/commit.model';
 import { File } from '../model/file.model';
 import { Observable } from 'rxjs';
 import { GitStore } from '../state/git.store';
-import { VisualizationService } from './visualization.service';
 import { Directory } from '../model/directory.model';
 import { environment } from 'src/environments/environment';
-import { ProjectQuery } from '../components/project-chooser/state/project.query';
+import { ProjectQuery } from '../store/project/project.query';
 
 export const HOST = '/api';
 export const COMMIT_ENDPOINT = 'commit';

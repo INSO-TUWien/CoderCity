@@ -2,6 +2,8 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Repository } from './repo';
 import { ConfigService } from '@nestjs/config';
 import { ProjectService } from '../project/project.service';
+import { Signature } from 'src/model/signature.model';
+
 
 @Injectable()
 export class GitService {
@@ -28,6 +30,42 @@ export class GitService {
         } else {
             throw new NotFoundException(`The project with ${projectId} does not exist`);
         }
+    }
+    
+    public async getCommits(projectId: string) {
+        const result = [];
+        const repo = await this.getRepoByProjectId(projectId);
+        for (let [key, value] of repo.gitModel.commits) {
+          result.push(value);
+        }
+        return result;
+    }
+
+    public async getBranches(projectId: string) {
+        const branches = [];
+        const repo = await this.getRepoByProjectId(projectId);
+        for (let [key, value] of repo.gitModel.branches) {
+            this.logger.log(`Branch ${value}`);
+            branches.push(value);
+        }
+        return branches;
+    }
+
+    public async getAuthors(projectId: string) {
+        const authors = [];
+        const repo = await this.getRepoByProjectId(projectId);
+        repo.gitModel.commits.forEach((commit) => {
+            // Check whether author already is in array
+            const authorExists = authors.map((author) =>
+                author.name === commit.authorName &&
+                author.email === commit.mail
+            ).reduce((prev, cur) => prev || cur, false);
+
+            if (!authorExists) {
+                authors.push(new Signature(commit.authorName, commit.mail));
+            }
+        });
+        return authors;
     }
 
     public async getRepo(projectPath: string): Promise<Repository> {
