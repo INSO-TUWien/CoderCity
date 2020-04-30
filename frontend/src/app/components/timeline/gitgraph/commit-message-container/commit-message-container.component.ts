@@ -3,10 +3,10 @@ import { Observable } from 'rxjs';
 import { Commit } from 'src/app/model/commit.model';
 import { GitgraphService } from '../gitgraph.service';
 import { faPlay, faUser } from '@fortawesome/free-solid-svg-icons';
-import { GitService } from 'src/app/services/git.service';
 import { GitQuery } from 'src/app/state/git.query';
 import { Branch } from 'src/app/model/branch.model';
 import { TimelineService } from '../../timeline.service';
+import { ProjectQuery } from 'src/app/store/project/project.query';
 
 @Component({
   selector: 'cc-commit-message-container',
@@ -28,12 +28,11 @@ export class CommitMessageContainerComponent implements OnInit {
   branches$: Observable<Branch[]>;
 
   constructor(
-    private gitService: GitService,
-    private gitQuery: GitQuery,
+    private projectQuery: ProjectQuery,
     private gitGraphService: GitgraphService,
     private timelineService: TimelineService
   ) {
-    this.commits$ = this.gitQuery.sortedCommits$;
+    this.commits$ = this.projectQuery.sortedCommits$;
   }
 
   ngOnInit() {

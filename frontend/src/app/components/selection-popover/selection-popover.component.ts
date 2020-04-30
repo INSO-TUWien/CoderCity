@@ -4,6 +4,7 @@ import { Observable, Subject, BehaviorSubject, of, combineLatest } from "rxjs";
 import { tap, map, timeInterval } from "rxjs/operators";
 import { GitQuery } from "src/app/state/git.query";
 import { VisualizationQuery } from "src/app/state/visualization.query";
+import { ProjectQuery } from 'src/app/store/project/project.query';
 
 export enum SelectionState {
   None,
@@ -44,11 +45,12 @@ export class SelectionPopoverComponent implements OnInit {
 
   constructor(
     private gitQuery: GitQuery,
-    private visualizationQuery: VisualizationQuery
+    private visualizationQuery: VisualizationQuery,
+    private projectQuery: ProjectQuery,
   ) {
     // this.commitPreview$ = of(MOCK_COMMIT);
     this.commitPreview$ = this.gitQuery.commitPreview$;
-    this.authorColorMap$ = this.visualizationQuery.authorColorMap$;
+    this.authorColorMap$ = this.projectQuery.authorColorMap$;
     this.selectedCommit$ = this.visualizationQuery.selectedCommit$;
     this.selectedCommitWithAuthorColor$ = this.visualizationQuery.selectedCommitWithAuthorColor$;
 

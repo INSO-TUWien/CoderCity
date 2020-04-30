@@ -1,21 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Engine } from '../../3d/engine';
-import { Observable, Subscription, combineLatest } from 'rxjs';
 import { EventBus } from 'src/app/3d/util/eventbus';
 import * as EventEmitter from 'eventemitter3';
 import { VisualizationService } from 'src/app/services/visualization.service';
 import { VisualizationQuery } from 'src/app/state/visualization.query';
 import { Directory } from 'src/app/model/directory.model';
-import { GitQuery } from 'src/app/state/git.query';
 import { BuildingAuthorColorMapper } from 'src/app/3d/util/color/building-author-color-mapper';
 import { SettingsQuery } from '../settings-panel/state/settings.query';
 import { Preferences, BuildingColorMapperPreference } from '../settings-panel/state/preferences.model';
 import { BuildingRandomColorMapper } from 'src/app/3d/util/color/building-random-color-mapper';
 import { Author } from 'src/app/model/author.model';
-import { withLatestFrom } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { GitService } from 'src/app/services/git.service';
 import { ProjectQuery } from 'src/app/store/project/project.query';
+import { Subscription, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'cc-visualization',
@@ -38,7 +36,6 @@ export class VisualizationComponent implements OnInit {
     private visualizationService: VisualizationService,
     private visualizationQuery: VisualizationQuery,
     private projectQuery: ProjectQuery,
-    private gitQuery: GitQuery,
     private gitService: GitService,
     private settingsQuery: SettingsQuery,
     private route: ActivatedRoute
@@ -58,7 +55,7 @@ export class VisualizationComponent implements OnInit {
     this.projectSubscription = this.projectQuery.selectActive().subscribe(project => {
       if (project != null) {
         if (this.selectedProjectId !== project.id) {
-          this.gitService.loadData();
+          // this.gitService.loadData();
         }
 
         this.selectedProjectId = project.id;
@@ -86,10 +83,8 @@ export class VisualizationComponent implements OnInit {
     );
 
     // Handle preference changes. Wait for author data before rendering.
-    combineLatest(this.gitQuery.authors$, this.settingsQuery.preferences$).subscribe(
-      (val) => {
-        const authors  = val[0];
-        const preferences = val[1];
+    combineLatest(this.projectQuery.authors$, this.settingsQuery.preferences$).subscribe(
+      ([authors, preferences]) => {
         this.authors = authors;
         if (authors != null && preferences != null) {
             this.handlePreferences(preferences);

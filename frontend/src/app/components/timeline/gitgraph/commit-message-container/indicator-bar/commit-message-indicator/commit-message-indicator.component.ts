@@ -3,7 +3,6 @@ import { Commit } from 'src/app/model/commit.model';
 import { TimelineQuery } from 'src/app/state/timeline.query';
 import { Observable } from 'rxjs';
 import { CommitMessageIndicatorStatus } from './CommitMessageIndicatorStatus';
-import { GitQuery } from 'src/app/state/git.query';
 import { darkenColor } from 'src/app/util/color-scheme';
 
 @Component({

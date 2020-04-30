@@ -3,9 +3,16 @@ import { Query } from '@datorama/akita';
 import { VisualizationStore, VisualizationState } from './visualization.store';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ProjectQuery } from '../store/project/project.query';
 
 @Injectable({ providedIn: 'root' })
 export class VisualizationQuery extends Query<VisualizationState> {
+
+  constructor(
+    protected store: VisualizationStore,
+    private projectQuery: ProjectQuery) {
+    super(store);
+  }
 
   isFilterPanelActive$ = this.select(state => state.isFilterViewActive);
 
@@ -14,7 +21,7 @@ export class VisualizationQuery extends Query<VisualizationState> {
   selectedCommitInterval$ = this.select(state => state.selectedCommitInterval);
   files$ = this.select(state => state.files);
   projectFiles$ = this.select(state => state.projectFiles);
-  authorColorMap$ = this.select(state => state.authorColorMap);
+  authorColorMap$ = this.projectQuery.authorColorMap$;
 
   selectedCommitTimeIntervalWithAuthorColor$ = combineLatest(
     this.selectedCommitInterval$,
@@ -53,9 +60,5 @@ export class VisualizationQuery extends Query<VisualizationState> {
       return result;
     })
   );
-
-  constructor(protected store: VisualizationStore) {
-    super(store);
-  }
 
 }

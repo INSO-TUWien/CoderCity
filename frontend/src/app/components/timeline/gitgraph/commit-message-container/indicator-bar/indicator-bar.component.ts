@@ -4,6 +4,7 @@ import { Observable, combineLatest } from 'rxjs';
 import { GitQuery } from 'src/app/state/git.query';
 import { VisualizationQuery } from 'src/app/state/visualization.query';
 import { withLatestFrom, tap, map } from 'rxjs/operators';
+import { ProjectQuery } from 'src/app/store/project/project.query';
 
 @Component({
   selector: 'cc-indicator-bar',
@@ -18,11 +19,10 @@ export class IndicatorBarComponent implements OnInit {
   commitsWithAuthorColor$;
 
   constructor(
-    private gitQuery: GitQuery,
-    private visualizationQuery: VisualizationQuery
+    private projectQuery: ProjectQuery,
   ) {
-    this.commits$ = this.gitQuery.sortedCommits$;
-    this.authorColorMap$ = this.visualizationQuery.authorColorMap$;
+    this.commits$ = this.projectQuery.sortedCommits$;
+    this.authorColorMap$ = this.projectQuery.authorColorMap$;
 
     this.commitsWithAuthorColor$ = combineLatest(this.commits$, this.authorColorMap$)
       .pipe(

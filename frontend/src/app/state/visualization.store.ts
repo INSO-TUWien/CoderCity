@@ -12,7 +12,6 @@ export interface VisualizationState {
   projectFiles: Directory;
   selectedCommit: Commit;
   selectedCommitInterval: CommitTimeInterval;
-  authorColorMap: Map<string, string>;
   isFilterViewActive: boolean;
 }
 
@@ -26,7 +25,6 @@ export function createInitialState(): VisualizationState {
       start: null,
       end: null
     },
-    authorColorMap: new Map<string, string>(),
     isFilterViewActive: false
   };
 }
