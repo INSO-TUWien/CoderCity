@@ -40,11 +40,6 @@ export class CommitService {
       + '/' + commit.commitId + `?mode=directory`);
   }
 
-  getCommitIdsBetween(firstCommitId: string, endCommitId: string): Observable<string[]> {
-    return this.http.get<string[]>(environment.apiUrl
-      + `/project/${this.projectId}/` + COMMIT_ENDPOINT + `?start=${firstCommitId}&end=${endCommitId}` );
-  }
-
   setPreviewCommit(commit: Commit): void {
     this.gitStore.update((state) => ({
       ...state,

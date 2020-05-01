@@ -11,7 +11,6 @@ import { Preferences, BuildingColorMapperPreference } from '../settings-panel/st
 import { BuildingRandomColorMapper } from 'src/app/3d/util/color/building-random-color-mapper';
 import { Author } from 'src/app/model/author.model';
 import { ActivatedRoute } from '@angular/router';
-import { GitService } from 'src/app/services/git.service';
 import { ProjectQuery } from 'src/app/store/project/project.query';
 import { Subscription, combineLatest } from 'rxjs';
 
@@ -36,7 +35,6 @@ export class VisualizationComponent implements OnInit {
     private visualizationService: VisualizationService,
     private visualizationQuery: VisualizationQuery,
     private projectQuery: ProjectQuery,
-    private gitService: GitService,
     private settingsQuery: SettingsQuery,
     private route: ActivatedRoute
   ) {
