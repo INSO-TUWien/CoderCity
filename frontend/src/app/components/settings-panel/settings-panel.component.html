@@ -70,7 +70,8 @@
             formControlName="districtColor"
             class="form-control form-control-sm"
           >
-            <option>Random</option>
+            <option *ngFor="let option of DistrictColorMapper | keyvalue" [ngValue]="option.value">
+              {{ option.value }}</option>
           </select>
         </div>
       </div>

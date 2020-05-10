@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store, StoreConfig } from '@datorama/akita';
-import { Preferences, BuildingColorMapperPreference, SizeMapperPreference } from './preferences.model';
+import { Preferences, BuildingColorMapperPreference, SizeMapperPreference, DistrictColorMapperPreference } from './preferences.model';
 
 export interface SettingsPanelState {
    preferences: Preferences;
@@ -16,7 +16,7 @@ export function createInitialState(): SettingsPanelState {
       },
       colorMapping: {
         buildingColor: BuildingColorMapperPreference.author,
-        districtColor: 'Random'
+        districtColor: DistrictColorMapperPreference.depth
       }
     }
   };

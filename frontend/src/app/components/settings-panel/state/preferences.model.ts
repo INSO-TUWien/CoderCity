@@ -23,3 +23,8 @@ export enum BuildingColorMapperPreference {
     author = 'Author',
     random = 'Random'
 }
+
+export enum DistrictColorMapperPreference {
+    depth = 'Folder - Depth',
+    random = 'Random'
+}

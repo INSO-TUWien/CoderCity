@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsQuery } from './state/settings.query';
-import { Preferences, SizeMapperPreference, BuildingColorMapperPreference } from './state/preferences.model';
+import { Preferences, SizeMapperPreference, BuildingColorMapperPreference, DistrictColorMapperPreference } from './state/preferences.model';
 import { FormGroup, FormControl } from '@angular/forms';
 import { SettingsPanelService } from './state/settings.service';
 
@@ -20,12 +20,13 @@ export class SettingsPanelComponent implements OnInit {
     }),
     colorMapping: new FormGroup({
       buildingColor: new FormControl(BuildingColorMapperPreference.author),
-      districtColor: new FormControl('Random')
+      districtColor: new FormControl(DistrictColorMapperPreference.depth)
     })
   });
 
   SizeMapper = SizeMapperPreference;
   BuildingColorMapper = BuildingColorMapperPreference;
+  DistrictColorMapper = DistrictColorMapperPreference;
 
   constructor(
     public activeModal: NgbActiveModal,

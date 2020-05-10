@@ -8,6 +8,8 @@ import { Directory } from '../model/directory.model';
 import { BuildingColorMapper } from './util/color/building-color-mapper';
 import { BuildingRandomColorMapper } from './util/color/building-random-color-mapper';
 import { Preferences, BuildingColorMapperPreference } from '../components/settings-panel/state/preferences.model';
+import { DistrictColorMapper } from './util/color/district-color-mapper';
+import { DistrictRandomColorMapper } from './util/color/district-random-color-mapper';
 
 export class Engine {
     private canvasElement: HTMLCanvasElement;
@@ -20,6 +22,7 @@ export class Engine {
     private controls: any;
     private city: City;
     private buildingColorMapper: BuildingColorMapper = new BuildingRandomColorMapper();
+    private districtColorMapper: DistrictColorMapper = new DistrictRandomColorMapper();
 
     private entities: Entity[] = [];
 
@@ -100,7 +103,11 @@ export class Engine {
     generateCity(directory: Directory): void {
         this.deleteCity();
 
-        this.city = new City({buildingColorMapper: this.buildingColorMapper});
+        this.city = new City(
+            {
+                buildingColorMapper: this.buildingColorMapper,
+                districtColorMapper: this.districtColorMapper
+            });
         //this.city.generateExampleCity();
         this.city.generateCity(
             directory
@@ -112,6 +119,12 @@ export class Engine {
     setBuildingColorMapper(buildingColorMapper: BuildingColorMapper) {
         if (buildingColorMapper != null) {
             this.buildingColorMapper = buildingColorMapper;
+        }
+    }
+
+    setDistrictColorMapper(districtColorMapper: DistrictColorMapper) {
+        if (districtColorMapper != null) {
+            this.districtColorMapper = districtColorMapper;
         }
     }
 

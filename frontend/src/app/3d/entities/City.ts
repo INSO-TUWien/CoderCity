@@ -2,13 +2,13 @@ import { Entity } from '../entity';
 import { District } from './District';
 import { Directory } from 'src/app/model/directory.model';
 import { BuildingColorMapper } from '../util/color/building-color-mapper';
-import { CityGeneratorOptions } from '../util/city-generator-options';
+import { CityOptions } from '../util/city-options';
 
 export class City extends Entity {
 
     rootDistrict: District;
 
-    constructor(private options: CityGeneratorOptions){
+    constructor(private options: CityOptions){
         super();
     }
 
@@ -54,7 +54,12 @@ export class City extends Entity {
         this.rootDistrict.addToScene();
     }
 
-    private generateCityElement(directory: Directory, district: District): void {
+    /**
+     * Builds city recursively
+     */
+    private generateCityElement(directory: Directory, district: District, depth: number = 0): void {
+        district.depth = depth;
+
         directory.files.forEach(file => {
             // Create building for each file
             district.addBuilding(file);
@@ -63,7 +68,7 @@ export class City extends Entity {
         directory.directories.forEach(d => {
             // Create district for each sub district
             const subDistrict = new District(d, this.options);
-            this.generateCityElement(d, subDistrict);
+            this.generateCityElement(d, subDistrict, depth + 1);
             district.addCityElement(subDistrict);
         });
     }

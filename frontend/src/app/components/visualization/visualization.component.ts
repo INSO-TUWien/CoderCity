@@ -7,12 +7,14 @@ import { VisualizationQuery } from 'src/app/state/visualization.query';
 import { Directory } from 'src/app/model/directory.model';
 import { BuildingAuthorColorMapper } from 'src/app/3d/util/color/building-author-color-mapper';
 import { SettingsQuery } from '../settings-panel/state/settings.query';
-import { Preferences, BuildingColorMapperPreference } from '../settings-panel/state/preferences.model';
+import { Preferences, BuildingColorMapperPreference, DistrictColorMapperPreference } from '../settings-panel/state/preferences.model';
 import { BuildingRandomColorMapper } from 'src/app/3d/util/color/building-random-color-mapper';
 import { Author } from 'src/app/model/author.model';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectQuery } from 'src/app/store/project/project.query';
 import { Subscription, combineLatest } from 'rxjs';
+import { DistrictDepthColorMapper } from 'src/app/3d/util/color/district-depth-color-mapper';
+import { DistrictRandomColorMapper } from 'src/app/3d/util/color/district-random-color-mapper';
 
 @Component({
   selector: 'cc-visualization',
@@ -28,8 +30,6 @@ export class VisualizationComponent implements OnInit {
   private filesSubscription: Subscription;
   private settingsSubscription: Subscription;
   private projectSubscription: Subscription;
-
-  private selectedProjectId = null;
 
   constructor(
     private visualizationService: VisualizationService,
@@ -52,11 +52,6 @@ export class VisualizationComponent implements OnInit {
 
     this.projectSubscription = this.projectQuery.selectActive().subscribe(project => {
       if (project != null) {
-        if (this.selectedProjectId !== project.id) {
-          // this.gitService.loadData();
-        }
-
-        this.selectedProjectId = project.id;
       } else {
         this.visualizationService.openProject();
       }
@@ -108,6 +103,14 @@ export class VisualizationComponent implements OnInit {
         this.engine.setBuildingColorMapper(new BuildingAuthorColorMapper(this.authors));
     } else if (buildingColorPreference === BuildingColorMapperPreference.random) {
         this.engine.setBuildingColorMapper(new BuildingRandomColorMapper());
+    }
+
+    // Handle district color mapper
+    const districtColorPreference = preferences.colorMapping.districtColor;
+    if (districtColorPreference === DistrictColorMapperPreference.depth) {
+      this.engine.setDistrictColorMapper(new DistrictDepthColorMapper());
+    } else if (districtColorPreference === DistrictColorMapperPreference.random) {
+      this.engine.setDistrictColorMapper(new DistrictRandomColorMapper());
     }
   }
 
