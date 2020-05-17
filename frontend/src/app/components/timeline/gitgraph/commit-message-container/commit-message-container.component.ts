@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Commit } from 'src/app/model/commit.model';
-import { GitgraphService } from '../gitgraph.service';
 import { faPlay, faUser } from '@fortawesome/free-solid-svg-icons';
-import { GitQuery } from 'src/app/state/git.query';
 import { Branch } from 'src/app/model/branch.model';
 import { TimelineService } from '../../timeline.service';
 import { ProjectQuery } from 'src/app/store/project/project.query';
+import { GitgraphService } from '../state/gitgraph.service';
 
 @Component({
   selector: 'cc-commit-message-container',

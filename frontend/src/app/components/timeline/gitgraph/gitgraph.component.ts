@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { Observable, combineLatest, Subscription } from "rxjs";
 import { GitModel } from "../../../model/git-model";
 import { Branch } from "src/app/model/branch.model";
-import { GitGraphRenderer } from "./rendering/gitgraph-renderer";
-import { GitgraphService } from "./gitgraph.service";
+import { GitGraph } from "./rendering/gitgraph";
 import { CommitService } from "src/app/services/commit.service";
 import { VisualizationService } from "src/app/services/visualization.service";
 import { VisualizationQuery } from "src/app/state/visualization.query";
@@ -18,6 +17,8 @@ import { CommitTimeInterval } from "../commit-timeinterval";
 import { Util } from "./rendering/util/util";
 import { ProjectQuery } from "src/app/store/project/project.query";
 import { Commit } from 'src/app/model/commit.model';
+import { GitgraphService } from './state/gitgraph.service';
+import { GitgraphQuery, BranchTag } from './state/gitgraph.query';
 
 @Component({
   selector: "cc-gitgraph",
@@ -25,18 +26,49 @@ import { Commit } from 'src/app/model/commit.model';
   styleUrls: ["./gitgraph.component.scss"],
 })
 export class GitgraphComponent implements OnInit {
+
   private selectedLineKeys: string[];
+  @ViewChild("gitgraph", { static: true })
+  graphElement: ElementRef<HTMLElement>;
+
+  @ViewChild(TooltipComponent, { static: true })
+  tooltip: TooltipComponent;
+
+  @ViewChild("popover", { static: true })
+  popover: ElementRef<HTMLElement>;
+
+  branches$: Observable<Branch[]>;
+  branchTags$: Observable<BranchTag[]>;
+
+  commits$: Observable<Commit[]>;
+  commitMap$: Observable<Map<string, Commit>>;
+  selectedCommitInterval$: Observable<CommitTimeInterval>;
+
+  // Element is active when mouse is hovering above it.
+  active: boolean;
+
+  private gitGraph: GitGraph;
+  private visualizationSubscription: Subscription;
+  private branchesCommitSubscription: Subscription;
+  private selectedCommit: Commit;
 
   constructor(
     private commitService: CommitService,
     private projectQuery: ProjectQuery,
     private gitGraphService: GitgraphService,
+    private gitGraphQuery: GitgraphQuery,
     private visualizationQuery: VisualizationQuery,
     private visualizationService: VisualizationService
   ) {
     // Retrieve commits and sort them by time. (Oldest first)
     this.commitMap$ = this.projectQuery.commitMap$;
+    this.branches$ = this.projectQuery.branches$;
+    this.branchTags$ = this.gitGraphQuery.branchTags$;
     this.selectedCommitInterval$ = this.visualizationQuery.selectedCommitInterval$;
+
+    this.gitGraphQuery.branchTags$.subscribe(tags => {
+      alert(`Branch tags: ${JSON.stringify(Array.from(tags.entries()))}`);
+    });
 
     // Set selected commit to 'selected' state
     this.visualizationSubscription = this.visualizationQuery.selectedCommit$.subscribe(
@@ -44,7 +76,7 @@ export class GitgraphComponent implements OnInit {
         // Deselect previous selected commit if existing
         this.deselectSelectedCommit();
         if (selectedCommit != null) {
-          this.renderer.setGraphCommitState(
+          this.gitGraph.setCommitDisplayState(
             selectedCommit.commitId,
             GraphCommitState.Selected
           );
@@ -61,7 +93,7 @@ export class GitgraphComponent implements OnInit {
         if (this.selectedLineKeys != null) {
           // Reset prior interval selection if exists
           this.selectedLineKeys.forEach((lineKey) => {
-            this.renderer.setGraphLineState(lineKey, GraphCommitState.Default);
+            this.gitGraph.setGraphLineState(lineKey, GraphCommitState.Default);
           });
         }
 
@@ -79,7 +111,7 @@ export class GitgraphComponent implements OnInit {
           );
 
           result.lineCommitKeys.forEach((lineKey) => {
-            this.renderer.setGraphLineState(lineKey, GraphCommitState.Selected);
+            this.gitGraph.setGraphLineState(lineKey, GraphCommitState.Selected);
           });
           this.selectedLineKeys = result.lineCommitKeys;
         }
@@ -100,32 +132,9 @@ export class GitgraphComponent implements OnInit {
     });
   }
 
-  @ViewChild("gitgraph", { static: true })
-  graphElement: ElementRef<HTMLElement>;
-
-  @ViewChild(TooltipComponent, { static: true })
-  tooltip: TooltipComponent;
-
-  @ViewChild("popover", { static: true })
-  popover: ElementRef<HTMLElement>;
-
-  branches$: Observable<Branch[]>;
-  commits$: Observable<Commit[]>;
-  commitMap$: Observable<Map<string, Commit>>;
-  selectedCommitInterval$: Observable<CommitTimeInterval>;
-
-  // Element is active when mouse is hovering above it.
-  active: boolean;
-
-  private renderer: GitGraphRenderer;
-  private visualizationSubscription: Subscription;
-  private branchesCommitSubscription: Subscription;
-
-  private selectedCommit: Commit;
-
   private deselectSelectedCommit() {
     if (this.selectedCommit != null) {
-      this.renderer.setGraphCommitState(
+      this.gitGraph.setCommitDisplayState(
         this.selectedCommit.commitId,
         GraphCommitState.Default
       );
@@ -174,7 +183,7 @@ export class GitgraphComponent implements OnInit {
   }
 
   private initGitGraph(): void {
-    this.renderer = new GitGraphRenderer(this.graphElement.nativeElement, {
+    this.gitGraph = new GitGraph(this.graphElement.nativeElement, {
       onGraphCommitMouseOver: (commit) => {
         this.commitService.setPreviewCommit(commit);
         const element = document.getElementById(commit.commitId);
@@ -248,6 +257,7 @@ export class GitgraphComponent implements OnInit {
 
   private drawGraph(branches: Branch[], commits: Commit[]) {
     const gitModel = new GitModel(branches, commits);
-    this.renderer.drawGraph(gitModel);
+    this.gitGraph.drawGraph(gitModel);
+    this.gitGraphService.setBranchTags(this.gitGraph);
   }
 }

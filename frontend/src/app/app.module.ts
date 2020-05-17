@@ -30,7 +30,7 @@ import { AuthorLabelComponent } from './components/author-panel/author-label/aut
 import { TooltipComponent } from './components/timeline/gitgraph/tooltip/tooltip.component';
 import { FilterPanelComponent } from './components/side-panel/filter-panel/filter-panel.component';
 import { ProjectChooserComponent } from './components/project-chooser/project-chooser.component';
-
+import { BranchTagComponent } from './components/timeline/gitgraph/branch-tag/branch-tag.component';
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
 @NgModule({
@@ -56,7 +56,8 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     AuthorLabelComponent,
     TooltipComponent,
     FilterPanelComponent,
-    ProjectChooserComponent
+    ProjectChooserComponent,
+    BranchTagComponent
   ],
   entryComponents: [
     SettingsPanelComponent,

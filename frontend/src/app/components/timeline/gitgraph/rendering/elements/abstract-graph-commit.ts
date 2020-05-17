@@ -14,6 +14,7 @@ export abstract class AbstractGraphCommit implements RenderElement {
 
     graphPositionX: number;
     graphPositionY: number;
+    color: string;
 
     gridPosition: GridPosition;
     pixelPosition: PixelPosition;
@@ -23,7 +24,7 @@ export abstract class AbstractGraphCommit implements RenderElement {
     y: number;
 
     constructor(
-        public callbacks: GitGraphCallbacks, 
+        public callbacks: GitGraphCallbacks,
         public commit: Commit) {
     }
 

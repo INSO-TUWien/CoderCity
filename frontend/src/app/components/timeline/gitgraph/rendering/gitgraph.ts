@@ -1,27 +1,29 @@
-import { RenderElement } from './render-element';
-import { Svg, SVG } from '@svgdotjs/svg.js';
-import { GitModel } from 'src/app/model/git-model';
-import { Commit } from 'src/app/model/commit.model';
-import { GraphLine, generateGraphLineKey } from './elements/graph-line';
-import { GraphMergeCommit } from './elements/graph-merge-commit';
-import { GraphCommit } from './elements/graph-commit';
-import { AbstractGraphCommit, GraphCommitState } from './elements/abstract-graph-commit';
-import { GitGraphGrid } from './gitgraph-grid';
-import { GitGraphCallbacks } from './callback/callback';
+import { RenderElement } from "./render-element";
+import { Svg, SVG } from "@svgdotjs/svg.js";
+import { GitModel } from "src/app/model/git-model";
+import { Commit } from "src/app/model/commit.model";
+import { GraphLine, generateGraphLineKey } from "./elements/graph-line";
+import { GraphMergeCommit } from "./elements/graph-merge-commit";
+import { GraphCommit } from "./elements/graph-commit";
+import {
+  AbstractGraphCommit,
+  GraphCommitState,
+} from "./elements/abstract-graph-commit";
+import { GitGraphGrid } from "./gitgraph-grid";
+import { GitGraphCallbacks } from "./callback/callback";
 
 /**
  * Checks whether given commit is a merge commit. (Has 2 or more parent commits)
  */
 export function isMergeCommit(commit: Commit): boolean {
-    if (commit.parentCommitIDs.length >= 2) {
-      return true;
-    } else {
-      return false;
-    }
+  if (commit.parentCommitIDs.length >= 2) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
-export class GitGraphRenderer {
-
+export class GitGraph {
   constructor(
     private htmlElement: HTMLElement,
     private callbacks: GitGraphCallbacks
@@ -40,7 +42,7 @@ export class GitGraphRenderer {
 
   // Stores which branches are active at index i of array. Used when drawing lines between commits.
   private branchChildrenIDs: Set<string> = new Set();
-  private graphCommits: Map<string, AbstractGraphCommit> = new Map();
+  graphCommits: Map<string, AbstractGraphCommit> = new Map();
   private lines: Map<string, GraphLine> = new Map();
   private gitGraphGrid: GitGraphGrid = new GitGraphGrid();
 
@@ -59,7 +61,7 @@ export class GitGraphRenderer {
     this.grid_y = 0;
   }
 
-  setGraphCommitState(commitId: string, state: GraphCommitState) {
+  setCommitDisplayState(commitId: string, state: GraphCommitState) {
     if (this.graphCommits.has(commitId)) {
       const graphCommit = this.graphCommits.get(commitId);
       graphCommit.setState(state);
@@ -90,10 +92,23 @@ export class GitGraphRenderer {
     this.svg.size(dimensions.width, dimensions.height);
   }
 
+  getHeight(): number {
+    const dimensions = this.gitGraphGrid.getDimensions();
+    return dimensions.height;
+  }
+
+  getWidth(): number {
+    const dimensions = this.gitGraphGrid.getDimensions();
+    return dimensions.width;
+  }
+
   private computeBranchChildren(): void {
     // Get all branch children
     this.gitModel.commitsSortedByTime.forEach((commit) => {
-      if (Array.isArray(commit.childCommitIDs) && commit.childCommitIDs.length > 1) {
+      if (
+        Array.isArray(commit.childCommitIDs) &&
+        commit.childCommitIDs.length > 1
+      ) {
         commit.childCommitIDs.forEach((childCommitID) => {
           // Ignore merge commits (commits which have > 2 parents)
           const childCommit = this.gitModel.commits.get(childCommitID);
@@ -127,21 +142,32 @@ export class GitGraphRenderer {
   private createCommitCircle(commit: Commit): void {
     // Get active branches snapshot of current commit
     const activeBranches = this.gitGraphGrid.getActiveBranches(
-      (this.grid_x === 0) ? 0 : this.grid_x - 1
+      this.grid_x === 0 ? 0 : this.grid_x - 1
     );
     console.debug(`----------\n`);
-    console.debug(`Drawing commit: ${commit.message} \nsha: ${commit.commitId}. \n Active Branches: ${JSON.stringify(activeBranches)}`);
+    console.debug(
+      `Drawing commit: ${commit.message} \nsha: ${
+        commit.commitId
+      }. \n Active Branches: ${JSON.stringify(activeBranches)}`
+    );
     console.debug(`Forbidden paths: \n`);
     this.forbiddenPaths.forEach((f) => console.debug(`[${f}],`));
     // Check whether a commit can replace a commit in the active branches array
-    const activeBranchReplacement = this.gitGraphGrid.getReplacementInActiveBranches(commit, activeBranches);
+    const activeBranchReplacement = this.gitGraphGrid.getReplacementInActiveBranches(
+      commit,
+      activeBranches
+    );
     const isForbidden = this.isForbiddenPath(activeBranchReplacement[0]);
     if (activeBranchReplacement.length >= 1 && isForbidden === false) {
       this.grid_y = activeBranchReplacement[0];
-      console.warn(`Commit ${commit.message} sha: ${commit.commitId} replaces ${activeBranches[activeBranchReplacement[0]]}`);
+      console.warn(
+        `Commit ${commit.message} sha: ${commit.commitId} replaces ${
+          activeBranches[activeBranchReplacement[0]]
+        }`
+      );
     } else if (
-      activeBranchReplacement.length === 0
-      || this.branchChildrenIDs.has(commit.commitId)
+      activeBranchReplacement.length === 0 ||
+      this.branchChildrenIDs.has(commit.commitId)
     ) {
       // No replacement for an existing active branch could be found.
       // Or commit is a branch children which branches out from the parent node.
@@ -154,10 +180,16 @@ export class GitGraphRenderer {
         }
       });
       // Replace as a merge commit
-      let selectedSlot = activeBranchReplacement.find((value) => (!this.isForbiddenPath(value)));
+      let selectedSlot = activeBranchReplacement.find(
+        (value) => !this.isForbiddenPath(value)
+      );
       if (selectedSlot !== undefined) {
         this.grid_y = selectedSlot;
-        console.error(`MergeCommit ${commit.message} sha: ${commit.commitId} replaces ${activeBranches[activeBranchReplacement[0]]}`);
+        console.error(
+          `MergeCommit ${commit.message} sha: ${commit.commitId} replaces ${
+            activeBranches[activeBranchReplacement[0]]
+          }`
+        );
       } else {
         this.placeInEmptyOrCreateSlot(commit, activeBranches);
       }
@@ -173,18 +205,22 @@ export class GitGraphRenderer {
     console.debug(`No replacement found`);
     // The commit can not replace an existing commit in the active branches array.
     // Find an empty slot in the active branches array or create a new branch (append commit to the active branches array).
-    const emptySlots = this.gitGraphGrid.getEmptySlotsInActiveBranches(activeBranches);
+    const emptySlots = this.gitGraphGrid.getEmptySlotsInActiveBranches(
+      activeBranches
+    );
     let validSlots = [];
     if (emptySlots.length > 0) {
       // Check whether empty slot is valid (does not overlap with other commits)
-      validSlots = emptySlots.filter((slot) => this.isValidPlacement(commit, slot));
+      validSlots = emptySlots.filter((slot) =>
+        this.isValidPlacement(commit, slot)
+      );
     }
 
     if (validSlots.length > 0) {
       this.grid_y = validSlots[0];
     } else {
       // Absolutely no free slot is available. Append in new slot.
-      this.grid_y = (this.grid_x === 0) ? 0 : activeBranches.length;
+      this.grid_y = this.grid_x === 0 ? 0 : activeBranches.length;
     }
   }
 
@@ -194,16 +230,24 @@ export class GitGraphRenderer {
    */
   private isValidPlacement(commit, slotIndex: number): boolean {
     // Check whether empty slot is valid (does not overlap with other commits)
-    const valid = commit.parentCommitIDs.map((parentCommitID) => {
-      const parentCommit = this.graphCommits.get(parentCommitID);
-      return this.gitGraphGrid.isValidBranchPath(parentCommit, this.grid_x, slotIndex) && !this.isForbiddenPath(slotIndex);
-    }).reduce((prev, cur) => prev && cur, true);
+    const valid = commit.parentCommitIDs
+      .map((parentCommitID) => {
+        const parentCommit = this.graphCommits.get(parentCommitID);
+        return (
+          this.gitGraphGrid.isValidBranchPath(
+            parentCommit,
+            this.grid_x,
+            slotIndex
+          ) && !this.isForbiddenPath(slotIndex)
+        );
+      })
+      .reduce((prev, cur) => prev && cur, true);
     return valid;
   }
 
   private getBranchChildrenCount(commit: Commit): number {
     let count = 0;
-    commit.childCommitIDs.forEach(childCommitId => {
+    commit.childCommitIDs.forEach((childCommitId) => {
       const childCommit = this.gitModel.getCommit(childCommitId);
       if (!Commit.isMergeCommit(childCommit)) {
         count++;
@@ -225,17 +269,27 @@ export class GitGraphRenderer {
     return result;
   }
 
-  private addForbiddenPathsForMergeChildren(commit: Commit, grid_x: number, grid_y: number) {
+  private addForbiddenPathsForMergeChildren(
+    commit: Commit,
+    grid_x: number,
+    grid_y: number
+  ) {
     commit.childCommitIDs.forEach((childCommitId) => {
       const childCommit = this.gitModel.getCommit(childCommitId);
       if (Commit.isMergeCommit(childCommit)) {
-        const mergeChildX = this.gitModel.commitsSortedByTime.findIndex((c) => c.commitId === childCommit.commitId);
+        const mergeChildX = this.gitModel.commitsSortedByTime.findIndex(
+          (c) => c.commitId === childCommit.commitId
+        );
         this.forbiddenPaths.add([grid_y, childCommit.commitId]);
       }
     });
   }
 
-  private updateActiveBranches(commit: Commit, grid_y: number, activeBranches: string[]) {
+  private updateActiveBranches(
+    commit: Commit,
+    grid_y: number,
+    activeBranches: string[]
+  ) {
     // Update occupiedBranches array which tracks active branches.
     if (commit.childCommitIDs.length === 0) {
       // If commit has no children, then the branch ends here. Remove the current branch from active branches array.
@@ -264,10 +318,16 @@ export class GitGraphRenderer {
             // Incoming commit has no other child commits. The incoming commit branch completely merges into different commit branch.
             // Release slot of the parent commit
             activeBranches[candidateCommit[1].graphPositionY] = null;
-          } else if (this.getBranchChildrenCount(parentCommit) === 0 && !this.isForbiddenPath(candidateCommit[1].graphPositionY)) {
+          } else if (
+            this.getBranchChildrenCount(parentCommit) === 0 &&
+            !this.isForbiddenPath(candidateCommit[1].graphPositionY)
+          ) {
             // Release slot if there are no sucessor nodes and all merge commits are already merged. ( no fobidden paths)
             activeBranches[candidateCommit[1].graphPositionY] = null;
-          } else if (this.getBranchChildrenCount(parentCommit) >= 1 && this.areAllBranchChildrenBeforeDate(parentCommit, commit.date)) {
+          } else if (
+            this.getBranchChildrenCount(parentCommit) >= 1 &&
+            this.areAllBranchChildrenBeforeDate(parentCommit, commit.date)
+          ) {
             //
             activeBranches[candidateCommit[1].graphPositionY] = null;
           }
@@ -286,17 +346,34 @@ export class GitGraphRenderer {
         const startElement = this.graphCommits.get(commit.commitId);
         const endElement = this.graphCommits.get(childCommitID);
         const line = new GraphLine(startElement, endElement);
-        this.lines.set(generateGraphLineKey(childCommitID, commit.commitId), line);
+        this.lines.set(
+          generateGraphLineKey(childCommitID, commit.commitId),
+          line
+        );
         this.addElement(line);
       });
     });
   }
 
-  private createCommit(
-    x: number,
-    y: number,
-    commit: Commit
-  ) {
+  /**
+   * Render line connecting commit to branch label
+   */
+  private renderBranchTagLines(): void {
+    this.gitModel.branches.forEach((branch) => {
+      const commitID = branch.commit.commitId;
+      const graphCommit = this.graphCommits.get(commitID);
+      if (graphCommit?.x != null && graphCommit?.y != null) {
+        const x = graphCommit.x + graphCommit.shape.width() / 2;
+        const y = graphCommit.y + graphCommit.shape.width() / 2;
+        this.svg
+          .line(x, y, x, this.getHeight())
+          .stroke({ color: graphCommit.color, width: 1 })
+          .back();
+      }
+    });
+  }
+
+  private createCommit(x: number, y: number, commit: Commit) {
     // Render commit circle or merge commit circle if commit has more than 1 parents
     const graphCommit =
       commit.parentCommitIDs.length >= 2
@@ -315,7 +392,7 @@ export class GitGraphRenderer {
       this.callbacks,
       {
         x,
-        y
+        y,
       },
       commit,
       undefined
@@ -333,7 +410,7 @@ export class GitGraphRenderer {
       this.callbacks,
       {
         x,
-        y
+        y,
       },
       commit,
       undefined
@@ -347,6 +424,7 @@ export class GitGraphRenderer {
    */
   render(): void {
     this.resizeSVG();
-    this.renderElements.forEach(e => e.render(this.svg));
+    this.renderElements.forEach((e) => e.render(this.svg));
+    this.renderBranchTagLines();
   }
 }
