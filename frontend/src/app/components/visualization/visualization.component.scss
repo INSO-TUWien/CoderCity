@@ -10,6 +10,7 @@
 
 .timeline-container {
     position: absolute;
+    pointer-events: none;
     bottom: 0;
     margin-bottom: 20px;
     width: 100%;

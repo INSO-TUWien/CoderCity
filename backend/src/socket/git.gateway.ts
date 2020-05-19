@@ -11,7 +11,8 @@ export class GitGateway implements OnGatewayInit {
   constructor(private readonly service: GitService) {
   }
 
-  @WebSocketServer() server: Server;
+  @WebSocketServer()
+  server: Server;
 
   afterInit(server: Server) {
     this.logger.log(`init`);
@@ -20,7 +21,6 @@ export class GitGateway implements OnGatewayInit {
   @SubscribeMessage('message')
   handleMessage(client: Socket, payload: string): string {
     this.logger.log(`Received message over socket ${client} message: ${payload}`);
-
     return 'Hello world!';
   }
 

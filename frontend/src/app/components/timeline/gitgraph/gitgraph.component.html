@@ -1,7 +1,8 @@
-<div class="d-flex flex-column">
-    <cc-commit-message-container></cc-commit-message-container>
-    <div class="d-flex flex-row">
-        <cc-branch-name-container></cc-branch-name-container>
-        <div id="gitgraph" #gitgraph class="overflow-auto"></div>
-    </div>
+<div id="gitgraph" #gitgraph class="overflow-auto">
+    <cc-tooltip
+        (mouseleave)="deselectPreviewCommit()"
+        (menuItemSelected)="tooltipMenuItemSelected($event)"
+    >
+    </cc-tooltip>
+    <cc-branch-tag [branch]="branch" *ngFor="let branch of branchTags$ | async"></cc-branch-tag>
 </div>

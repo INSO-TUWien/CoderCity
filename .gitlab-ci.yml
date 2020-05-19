@@ -13,20 +13,20 @@ build-frontend:amd64:
       - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
       - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/$CI_PROJECT_PATH/frontend:amd64 ./frontend
       - docker push $CI_REGISTRY/$CI_PROJECT_PATH/frontend:amd64
-build-frontend:armv7:
-    stage: build-frontend
-    when: on_success
-    only:
-      - master
-    image: docker:stable
-    tags:
-      - armv7
-    services:
-      - docker:dind
-    script:
-      - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-      - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/$CI_PROJECT_PATH/frontend:armv7 ./frontend
-      - docker push $CI_REGISTRY/$CI_PROJECT_PATH/frontend:armv7
+# build-frontend:armv7:
+#     stage: build-frontend
+#     when: on_success
+#     only:
+#       - master
+#     image: docker:stable
+#     tags:
+#       - armv7
+#     services:
+#       - docker:dind
+#     script:
+#       - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+#       - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/$CI_PROJECT_PATH/frontend:armv7 ./frontend
+#       - docker push $CI_REGISTRY/$CI_PROJECT_PATH/frontend:armv7
 build-backend:amd64:
     stage: build-backend
     when: on_success
@@ -39,17 +39,17 @@ build-backend:amd64:
       - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
       - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/$CI_PROJECT_PATH/backend:amd64 ./backend
       - docker push $CI_REGISTRY/$CI_PROJECT_PATH/backend:amd64
-build-backend:armv7:
-    stage: build-backend
-    when: on_success
-    only:
-      - master
-    image: docker:stable
-    tags:
-      - armv7
-    services:
-      - docker:dind
-    script:
-      - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-      - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/$CI_PROJECT_PATH/backend:armv7 ./backend
-      - docker push $CI_REGISTRY/$CI_PROJECT_PATH/backend:armv7
+# build-backend:armv7:
+#     stage: build-backend
+#     when: on_success
+#     only:
+#       - master
+#     image: docker:stable
+#     tags:
+#       - armv7
+#     services:
+#       - docker:dind
+#     script:
+#       - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+#       - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/$CI_PROJECT_PATH/backend:armv7 ./backend
+#       - docker push $CI_REGISTRY/$CI_PROJECT_PATH/backend:armv7

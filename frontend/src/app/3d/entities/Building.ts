@@ -9,7 +9,7 @@ import { File } from '../../model/file.model';
 import { ValueMapper } from '../util/mapper/value-mapper';
 import { SquareRootValueMapper } from '../util/mapper/squareroot-value-mapper';
 import { BlameHunk } from 'src/app/model/blamehunk.model';
-import { CityGeneratorOptions } from '../util/city-generator-options';
+import { CityOptions } from '../util/city-options';
 
 export class Building extends Entity implements CityElement {
 
@@ -18,7 +18,7 @@ export class Building extends Entity implements CityElement {
     /**
      * Creates an empty building slot width the width and height. (reserved for the building)
      */
-    constructor(public bounds: Bounds, private options: CityGeneratorOptions) {
+    constructor(public bounds: Bounds, private options: CityOptions) {
         super();
         this.mapper = new SquareRootValueMapper();
     }

@@ -1,9 +1,18 @@
 <div class="container d-flex flex-column">
     <div class="d-flex flex-row justify-content-between">
-        <h3>Timeline</h3>
-        <button class="btn btn-light btn-sm">
+        <div class="timeline-header d-flex justify-content-between">
+            <div class="d-flex flex-row">
+                <h3>Timeline</h3>
+                <span *ngIf="(projectInterval$ | async).start != null" class="ml-2 mr-2 time-label">|</span>
+                <cc-time-interval-label [interval]="projectInterval$ | async"></cc-time-interval-label>
+            </div>
+        </div>
+        <button class="btn btn-light btn-xs">
             <fa-icon [icon]="faChevronUp"></fa-icon>
         </button>
     </div>
-    <cc-gitgraph></cc-gitgraph>
+    <div class="d-flex flex-column">
+        <cc-commit-message-container></cc-commit-message-container>
+    </div>
+    
 </div>

@@ -4,30 +4,40 @@ import { Commit } from '../model/commit.model';
 import { File } from '../model/file.model';
 import { Observable } from 'rxjs';
 import { GitStore } from '../state/git.store';
-import { VisualizationService } from './visualization.service';
 import { Directory } from '../model/directory.model';
 import { environment } from 'src/environments/environment';
+import { ProjectQuery } from '../store/project/project.query';
 
 export const HOST = '/api';
-export const COMMIT_ENDPOINT = 'commit/';
+export const COMMIT_ENDPOINT = 'commit';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommitService {
 
+  private projectId;
+
   constructor(
     private http: HttpClient,
     private gitStore: GitStore,
-    private visualizationService: VisualizationService
-  ) { }
+    private projectQuery: ProjectQuery
+  ) {
+    projectQuery.selectActiveId().subscribe(id => {
+      if (id != null) {
+        this.projectId = id;
+      }
+    });
+  }
 
   getFilesAtCommit(commit: Commit): Observable<File[]> {
-    return this.http.get<File[]>(environment.apiUrl  + COMMIT_ENDPOINT + commit.commitId);
+    return this.http.get<File[]>(environment.apiUrl  + '/project/' + this.projectId + '/' + COMMIT_ENDPOINT + '/' + commit.commitId);
   }
 
   getProjectFilesAtCommit(commit: Commit): Observable<Directory> {
-    return this.http.get<Directory>(environment.apiUrl  + COMMIT_ENDPOINT + commit.commitId + `?mode=directory`);
+    return this.http.get<Directory>(environment.apiUrl
+      + `/project/${this.projectId}/` + COMMIT_ENDPOINT
+      + '/' + commit.commitId + `?mode=directory`);
   }
 
   setPreviewCommit(commit: Commit): void {
@@ -35,18 +45,5 @@ export class CommitService {
       ...state,
       commitPreview: commit
     }));
-
-    if (commit != null) {
-      this.getProjectFilesAtCommit(commit).subscribe(
-        directory => {
-          this.visualizationService.setProjectFiles(directory);
-        }
-      );
-      // this.getFilesAtCommit(commit).subscribe(
-      //   files => {
-      //     this.visualizationService.setFiles(files);
-      //   }
-      // )
-    }
   }
 }

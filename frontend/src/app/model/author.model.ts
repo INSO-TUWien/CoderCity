@@ -10,5 +10,9 @@ export class Author {
             return false;
         }
     }
+
+    static hashCode(a: Author): string {
+        return '' + a.name + a.email;
+    }
 }
 

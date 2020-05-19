@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Branch } from 'src/app/model/branch.model';
 import { GitQuery } from 'src/app/state/git.query';
+import { ProjectQuery } from 'src/app/store/project/project.query';
 
 @Component({
   selector: 'cc-branch-name-container',
@@ -13,8 +14,8 @@ export class BranchNameContainerComponent implements OnInit {
   branches: string[] = ['master', 'dev', 'feature/12321' ];
   branches$: Observable<Branch[]>;
 
-  constructor(private gitQuery: GitQuery) {
-    this.branches$ = this.gitQuery.branches$;
+  constructor(private projectQuery: ProjectQuery) {
+    this.branches$ = this.projectQuery.branches$;
   }
 
   ngOnInit() {

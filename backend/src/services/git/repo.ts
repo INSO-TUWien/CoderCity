@@ -1,23 +1,33 @@
 // @ts-nocheck
-import { Repository as NodeGitRepository, Tree, Blame, Oid } from 'nodegit';
+import { Repository as NodeGitRepository, Tree, Blame, Oid, Revwalk } from 'nodegit';
 import { Logger } from '@nestjs/common';
 import { File, calculateLinecount } from "src/model/file.model";
 import { BlameHunk as BlameHunkModel } from "src/model/blamehunk.model";
 import { Directory } from 'src/model/directory.model';
+import { GitModel } from 'src/datastore/git-model';
 import { Signature } from 'src/model/signature.model';
+import { GitIndexer } from 'src/services/git/git-indexer';
 
 export class Repository {
 
     private readonly logger = new Logger(Repository.name);
     private repository: NodeGitRepository;
+    public gitModel: GitModel;
+    private gitIndexer: GitIndexer;
 
     constructor(
-        public readonly folderPath: string
+        public readonly folderPath: string,
     ) {
     }
 
     async openRepo(): Promise<void> {
         this.repository = await NodeGitRepository.open(this.folderPath);
+    }
+
+    async startIndexing(): void {
+        this.gitModel = new GitModel();
+        this.gitIndexer = new GitIndexer(this.folderPath, this.gitModel, this);
+        await this.gitIndexer.startIndexing();
     }
 
     isOpen(): boolean {
@@ -27,6 +37,36 @@ export class Repository {
     getRepo(): NodeGitRepository {
         return this.repository;
     }
+
+    // /**
+    //  * Retrieves commits, which are reachable from endCommitId
+    //  * between a interval of startCommitId (inclusive), endCommitId (inclusive).
+    //  * See: https://libgit2.org/libgit2/#HEAD/group/revwalk/git_revwalk_push_range
+    //  * @param startCommitId
+    //  * @param endCommitId
+    //  */
+    // async getConnectedCommitsBetweenCommits(startCommitId: string, endCommitId: string) {
+    //     const walker = Revwalk.create(this.repository);
+    //     walker.reset();
+    //     const result = [];
+    //     walker.pushRange(`${startCommitId}..${endCommitId}`);
+    //     walker.sorting(Revwalk.SORT.TIME, Revwalk.SORT.REVERSE);
+    //     let hasNext = true;
+    //     while (hasNext) {
+    //         try {
+    //             const oid = await walker.next();
+    //             result.push(oid.tostrS());
+    //             this.logger.log(oid.tostrS());
+    //         } catch (err) {
+    //             hasNext = false;
+    //         }
+    //     }
+    //     // Add start commit id at index 0, since libgit interval is (exclusive, inclusive)
+    //     if (result.length > 0) {
+    //         result.splice(0, 0, startCommitId);
+    //     }
+    //     return result;
+    // }
 
     /**
      * Retrieves project files in directory folder structure (including directories) at a specified commit.
@@ -52,8 +92,8 @@ export class Repository {
         // If directory is null, then directory is the root directory
         if (directory == null) {
             directory = new Directory();
-            directory.name = '';
-            directory.fullPath = '';
+            directory.name = '/';
+            directory.fullPath = '/';
         }
         const entries = tree.entries();
         this.logger.log(`getFilesWithDirectories: ${entries.length}`);

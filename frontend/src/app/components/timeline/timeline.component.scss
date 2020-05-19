@@ -1,18 +1,33 @@
+$TIMELINE_HEIGHT: 300px;
+
 :host {
     z-index: 400;
+    font-size: 12pt;
+    pointer-events: all;
+}
+
+.timeline-header {
+    margin-bottom: 4px;
+    line-height: 1.2;
 }
 
 .container {
     padding: 16px;
-    height: 280px;
+    height: $TIMELINE_HEIGHT;
     min-width: 600px;
     border-radius: 4px;
     box-shadow: 4px 4px 4px 0 rgba(226,226,226,0.50);
     background-color: white;
 }
 
+
 #gitgraph {
     margin-left: 20px;
+}
+
+.time-label {
+    font-size: 11pt;
+    color: rgb(134, 134, 134);
 }
 
 h3 {

@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Commit } from 'src/app/model/commit.model';
-import { GitgraphService } from '../gitgraph.service';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import { GitService } from 'src/app/services/git.service';
-import { GitQuery } from 'src/app/state/git.query';
+import { faPlay, faUser } from '@fortawesome/free-solid-svg-icons';
 import { Branch } from 'src/app/model/branch.model';
+import { TimelineService } from '../../timeline.service';
+import { ProjectQuery } from 'src/app/store/project/project.query';
+import { GitgraphService } from '../state/gitgraph.service';
 
 @Component({
   selector: 'cc-commit-message-container',
@@ -15,6 +15,7 @@ import { Branch } from 'src/app/model/branch.model';
 export class CommitMessageContainerComponent implements OnInit {
 
   faPlay = faPlay;
+  faUser = faUser;
 
   @ViewChild('messageContainer', {static: true})
   messageContainer: ElementRef<HTMLElement>;
@@ -26,11 +27,11 @@ export class CommitMessageContainerComponent implements OnInit {
   branches$: Observable<Branch[]>;
 
   constructor(
-    private gitService: GitService,
-    private gitQuery: GitQuery,
-    private gitGraphService: GitgraphService
+    private projectQuery: ProjectQuery,
+    private gitGraphService: GitgraphService,
+    private timelineService: TimelineService
   ) {
-    this.commits$ = this.gitQuery.sortedCommits$;
+    this.commits$ = this.projectQuery.sortedCommits$;
   }
 
   ngOnInit() {
@@ -68,8 +69,10 @@ export class CommitMessageContainerComponent implements OnInit {
     this.gitGraphService.scrollLeft.next(value);
   }
 
-  onCommitsClick() {
-    this.gitService.getBranches();
-    this.gitService.getCommits();
+  changeIndicatorStatus() {
+    this.timelineService.changeIndicatorStatus();
+  }
+
+  onPlayClicked() {
   }
 }
