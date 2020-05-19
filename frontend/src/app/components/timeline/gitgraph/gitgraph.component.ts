@@ -2,11 +2,11 @@ import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { Observable, combineLatest, Subscription } from "rxjs";
 import { GitModel } from "../../../model/git-model";
 import { Branch } from "src/app/model/branch.model";
-import { GitGraph } from "./rendering/gitgraph";
+import { GitGraph } from "./gitgraph/gitgraph";
 import { CommitService } from "src/app/services/commit.service";
 import { VisualizationService } from "src/app/services/visualization.service";
 import { VisualizationQuery } from "src/app/state/visualization.query";
-import { GraphCommitState } from "./rendering/elements/abstract-graph-commit";
+import { GraphCommitState } from "./gitgraph/elements/abstract-graph-commit";
 import {
   TooltipComponent,
   TooltipState,
@@ -14,7 +14,7 @@ import {
   TooltipMenuItem,
 } from "./tooltip/tooltip.component";
 import { CommitTimeInterval } from "../commit-timeinterval";
-import { Util } from "./rendering/util/util";
+import { Util } from "./gitgraph/util/util";
 import { ProjectQuery } from "src/app/store/project/project.query";
 import { Commit } from 'src/app/model/commit.model';
 import { GitgraphService } from './state/gitgraph.service';
@@ -65,10 +65,6 @@ export class GitgraphComponent implements OnInit {
     this.branches$ = this.projectQuery.branches$;
     this.branchTags$ = this.gitGraphQuery.branchTags$;
     this.selectedCommitInterval$ = this.visualizationQuery.selectedCommitInterval$;
-
-    this.gitGraphQuery.branchTags$.subscribe(tags => {
-      alert(`Branch tags: ${JSON.stringify(Array.from(tags.entries()))}`);
-    });
 
     // Set selected commit to 'selected' state
     this.visualizationSubscription = this.visualizationQuery.selectedCommit$.subscribe(
@@ -121,15 +117,18 @@ export class GitgraphComponent implements OnInit {
     /**
      * React to project data changes and rerender graph.
      */
-    this.projectQuery.projectData$.subscribe((projectData) => {
-      if (
-        projectData?.authors != null &&
-        projectData?.branches != null &&
-        projectData?.commits != null
-      ) {
-        this.drawGraph(projectData.branches, projectData.commits);
-      }
-    });
+    combineLatest(this.projectQuery.commitMap$, this.projectQuery.projectData$)
+      .subscribe(([commitMap, projectData]) => {
+        if (
+          commitMap != null &&
+          commitMap.size > 0 &&
+          projectData?.authors != null &&
+          projectData?.branches != null &&
+          projectData?.commits != null
+        ) {
+          this.drawGraph(projectData.branches, projectData.commits, commitMap);
+        }
+      });
   }
 
   private deselectSelectedCommit() {
@@ -255,9 +254,9 @@ export class GitgraphComponent implements OnInit {
     this.commitService.setPreviewCommit(null);
   }
 
-  private drawGraph(branches: Branch[], commits: Commit[]) {
+  private drawGraph(branches: Branch[], commits: Commit[], commitMap: Map<string, Commit>) {
     const gitModel = new GitModel(branches, commits);
-    this.gitGraph.drawGraph(gitModel);
+    this.gitGraph.drawGraph(gitModel, commits, commitMap, branches);
     this.gitGraphService.setBranchTags(this.gitGraph);
   }
 }

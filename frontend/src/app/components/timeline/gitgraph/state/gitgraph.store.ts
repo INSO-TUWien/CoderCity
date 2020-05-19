@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store, StoreConfig } from '@datorama/akita';
-import { AbstractGraphCommit } from '../rendering/elements/abstract-graph-commit';
+import { AbstractGraphCommit } from '../gitgraph/elements/abstract-graph-commit';
 import { BranchTag } from './gitgraph.query';
 
 export interface GitgraphState {

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { GitgraphStore } from './gitgraph.store';
 import { BehaviorSubject } from 'rxjs';
-import { AbstractGraphCommit } from '../rendering/elements/abstract-graph-commit';
+import { AbstractGraphCommit } from '../gitgraph/elements/abstract-graph-commit';
 import { ProjectQuery } from 'src/app/store/project/project.query';
 import { tap } from 'rxjs/operators';
-import { GitGraph } from '../rendering/gitgraph';
+import { GitGraph } from '../gitgraph/gitgraph';
 
 @Injectable({ providedIn: 'root' })
 export class GitgraphService {

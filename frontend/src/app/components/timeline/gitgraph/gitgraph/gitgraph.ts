@@ -11,6 +11,7 @@ import {
 } from "./elements/abstract-graph-commit";
 import { GitGraphGrid } from "./gitgraph-grid";
 import { GitGraphCallbacks } from "./callback/callback";
+import { Branch } from 'src/app/model/branch.model';
 
 /**
  * Checks whether given commit is a merge commit. (Has 2 or more parent commits)
@@ -36,6 +37,9 @@ export class GitGraph {
   private svg: Svg;
   private renderElements: RenderElement[] = [];
   private gitModel: GitModel;
+  private commits: Commit[];
+  private branches: Branch[];
+  private commitMap: Map<string, Commit>;
 
   private grid_x: number = 0;
   private grid_y: number = 0;
@@ -79,9 +83,12 @@ export class GitGraph {
    * Computes positions of git graph elements using a given git model
    * and renders them subsequently.
    */
-  drawGraph(gitModel: GitModel) {
+  drawGraph(gitModel: GitModel, commits: Commit[], commitMap: Map<string, Commit>, branches: Branch[]) {
     this.clear();
     this.gitModel = gitModel;
+    this.commits = commits;
+    this.branches = branches;
+    this.commitMap = commitMap;
     this.createCommitCircles();
     this.createLines();
     this.render();
@@ -104,14 +111,14 @@ export class GitGraph {
 
   private computeBranchChildren(): void {
     // Get all branch children
-    this.gitModel.commitsSortedByTime.forEach((commit) => {
+    this.commits.forEach((commit) => {
       if (
         Array.isArray(commit.childCommitIDs) &&
         commit.childCommitIDs.length > 1
       ) {
         commit.childCommitIDs.forEach((childCommitID) => {
           // Ignore merge commits (commits which have > 2 parents)
-          const childCommit = this.gitModel.commits.get(childCommitID);
+          const childCommit = this.commitMap.get(childCommitID);
           if (!Commit.isMergeCommit(childCommit)) {
             // Commit is not merge commit
             this.branchChildrenIDs.add(childCommitID);
@@ -123,7 +130,7 @@ export class GitGraph {
 
   private createCommitCircles(): void {
     this.computeBranchChildren();
-    this.gitModel.commitsSortedByTime.forEach((commit) => {
+    this.commits.forEach((commit) => {
       this.createCommitCircle(commit);
     });
   }
@@ -248,7 +255,7 @@ export class GitGraph {
   private getBranchChildrenCount(commit: Commit): number {
     let count = 0;
     commit.childCommitIDs.forEach((childCommitId) => {
-      const childCommit = this.gitModel.getCommit(childCommitId);
+      const childCommit = this.commitMap.get(childCommitId);
       if (!Commit.isMergeCommit(childCommit)) {
         count++;
       }
@@ -259,7 +266,7 @@ export class GitGraph {
   private areAllBranchChildrenBeforeDate(commit: Commit, date: Date): boolean {
     let result = true;
     for (let childCommitId of commit.childCommitIDs) {
-      const childCommit = this.gitModel.getCommit(childCommitId);
+      const childCommit = this.commitMap.get(childCommitId);
       if (!Commit.isMergeCommit(childCommit)) {
         if (childCommit.date >= date) {
           result = false;
@@ -275,9 +282,9 @@ export class GitGraph {
     grid_y: number
   ) {
     commit.childCommitIDs.forEach((childCommitId) => {
-      const childCommit = this.gitModel.getCommit(childCommitId);
+      const childCommit = this.commitMap.get(childCommitId);
       if (Commit.isMergeCommit(childCommit)) {
-        const mergeChildX = this.gitModel.commitsSortedByTime.findIndex(
+        const mergeChildX = this.commits.findIndex(
           (c) => c.commitId === childCommit.commitId
         );
         this.forbiddenPaths.add([grid_y, childCommit.commitId]);
@@ -307,13 +314,17 @@ export class GitGraph {
         // Find eligible candidates. Parent commits which are not aligned with the current commit
         commit.parentCommitIDs.forEach((parentCommitID) => {
           const parentCommit = this.graphCommits.get(parentCommitID);
+          if (parentCommit === undefined || parentCommit.graphPositionY === undefined) {
+            console.error(`updateActiveBranches: Commit ${commit.commitId} ParentCommit ${parentCommitID} not in map.`)
+            return;
+          }
           if (parentCommit.graphPositionY !== grid_y) {
             candidates.push([parentCommitID, parentCommit]);
           }
         });
 
         candidates.forEach((candidateCommit) => {
-          const parentCommit = this.gitModel.commits.get(candidateCommit[0]);
+          const parentCommit = this.commitMap.get(candidateCommit[0]);
           if (parentCommit.childCommitIDs.length <= 1) {
             // Incoming commit has no other child commits. The incoming commit branch completely merges into different commit branch.
             // Release slot of the parent commit
@@ -340,7 +351,7 @@ export class GitGraph {
   }
 
   private createLines(): void {
-    this.gitModel.commitsSortedByTime.forEach((commit) => {
+    this.commits.forEach((commit) => {
       commit.childCommitIDs.forEach((childCommitID) => {
         // Create lines to all child commits.
         const startElement = this.graphCommits.get(commit.commitId);
@@ -359,7 +370,7 @@ export class GitGraph {
    * Render line connecting commit to branch label
    */
   private renderBranchTagLines(): void {
-    this.gitModel.branches.forEach((branch) => {
+    this.branches.forEach((branch) => {
       const commitID = branch.commit.commitId;
       const graphCommit = this.graphCommits.get(commitID);
       if (graphCommit?.x != null && graphCommit?.y != null) {
