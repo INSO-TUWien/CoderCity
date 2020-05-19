@@ -7,6 +7,9 @@ import { MousePicker } from './controls/MousePicker';
 import { Directory } from '../model/directory.model';
 import { BuildingColorMapper } from './util/color/building-color-mapper';
 import { BuildingRandomColorMapper } from './util/color/building-random-color-mapper';
+import { Preferences, BuildingColorMapperPreference } from '../components/settings-panel/state/preferences.model';
+import { DistrictColorMapper } from './util/color/district-color-mapper';
+import { DistrictRandomColorMapper } from './util/color/district-random-color-mapper';
 
 export class Engine {
     private canvasElement: HTMLCanvasElement;
@@ -19,6 +22,7 @@ export class Engine {
     private controls: any;
     private city: City;
     private buildingColorMapper: BuildingColorMapper = new BuildingRandomColorMapper();
+    private districtColorMapper: DistrictColorMapper = new DistrictRandomColorMapper();
 
     private entities: Entity[] = [];
 
@@ -38,20 +42,11 @@ export class Engine {
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.set( 0, 50,60);
+        this.camera.position.set( 0, 50, 60);
 
         this.light = new THREE.HemisphereLight( 0xffffff, 0x8f8f8f, 1);
         this.light.position.set( 0, 50, 10);
 
-        /**
-         * An axis object to visualize the 3 axes in a simple way.
-         * The X axis is red. The Y axis is green. The Z axis is blue.
-         */
-        this.axesHelper = new THREE.AxesHelper(30);
-        this.gridHelper = new THREE.GridHelper(100, 100);
-
-        //this.scene.add(this.gridHelper);
-        //this.scene.add(this.axesHelper);
         this.scene.add(this.light);
         this.scene.background = new THREE.Color('#EEEEEE');
 
@@ -66,6 +61,17 @@ export class Engine {
     private init() {
         //document.body.appendChild(this.stats.dom);
         this.setupScene();
+    }
+
+    private initHelpers() {
+        /**
+         * An axis object to visualize the 3 axes in a simple way.
+         * The X axis is red. The Y axis is green. The Z axis is blue.
+         */
+        this.axesHelper = new THREE.AxesHelper(30);
+        this.gridHelper = new THREE.GridHelper(100, 100);
+        this.scene.add(this.gridHelper);
+        this.scene.add(this.axesHelper);
     }
 
     private handleWindowResize() {
@@ -84,16 +90,24 @@ export class Engine {
         this.addEntity(mousePicker);
     }
 
+    deleteCity(): void {
+        console.log(`Deleting city`);
+        if (this.city != null) {
+            this.deleteEntity(this.city);
+        }
+    }
+
     /**
      * Generates a city based on git snapshot
      */
     generateCity(directory: Directory): void {
-        if (this.city != null) {
-            console.log(`generateCity: Deleting city`);
-            this.deleteEntity(this.city);
-        }
+        this.deleteCity();
 
-        this.city = new City({buildingColorMapper: this.buildingColorMapper});
+        this.city = new City(
+            {
+                buildingColorMapper: this.buildingColorMapper,
+                districtColorMapper: this.districtColorMapper
+            });
         //this.city.generateExampleCity();
         this.city.generateCity(
             directory
@@ -105,6 +119,12 @@ export class Engine {
     setBuildingColorMapper(buildingColorMapper: BuildingColorMapper) {
         if (buildingColorMapper != null) {
             this.buildingColorMapper = buildingColorMapper;
+        }
+    }
+
+    setDistrictColorMapper(districtColorMapper: DistrictColorMapper) {
+        if (districtColorMapper != null) {
+            this.districtColorMapper = districtColorMapper;
         }
     }
 

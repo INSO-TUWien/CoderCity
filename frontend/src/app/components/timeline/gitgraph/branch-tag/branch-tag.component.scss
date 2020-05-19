@@ -1,0 +1,16 @@
+.branch-tag {
+  position: relative;
+  background: #333;
+  color: white;
+  font-weight: bold;
+  padding: 4px 8px;
+  font-size: 9pt;
+  text-align: left;
+  border-radius: 4px;
+  z-index: 500;
+}
+
+.branch-tag-container {
+    position: absolute;
+    transform:  translate(-50%);
+}

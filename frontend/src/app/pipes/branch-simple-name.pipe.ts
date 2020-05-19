@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-const REFERENCE_BRANCH_REPLACE_REGEX = new RegExp('refs\/|heads\/|remotes\/', 'g');
+const REFERENCE_BRANCH_REPLACE_REGEX = new RegExp('refs\/|heads\/|remotes\/|origin\/', 'g');
 
 @Pipe({
   name: 'branchSimpleName'

@@ -1,13 +1,18 @@
 version: "3.7"
 services:
-  cc-backend:
-    container_name: cc-backend
-    image: codecity-backend:latest
-    ports: 
-        - 3000:3000
-    volumes: 
-        - '/Users/yikaiyang/Projects/BA2/projects/ue2_github/:/.git'
-  # Angular frontend project deployed on nginx.
+  cc-mongodb:
+    container_name: cc-mongodb
+    image: mongo
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+  # cc-backend:
+  #   container_name: cc-backend
+  #   image: codecity-backend:latest
+  #   ports: 
+  #       - 3000:3000
+  #   volumes: 
+  #       - '/Users/yikaiyang/Projects/BA2/projects/ue2_github/:/.git'
   # frontend:
   #   image: cc-frontend
   #   build:

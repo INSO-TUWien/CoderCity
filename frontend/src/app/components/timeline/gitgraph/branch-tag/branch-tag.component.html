@@ -1,0 +1,17 @@
+<div
+  class="branch-tag-container"
+  [ngStyle]="{
+    left: branch.x + 'px',
+    top: branch.y + 'px'
+  }"
+>
+  <div
+    #label
+    class="branch-tag"
+    [ngStyle]="{
+      background: branch.color
+    }"
+  >
+    {{ branch.name | branchSimpleName }}
+  </div>
+</div>

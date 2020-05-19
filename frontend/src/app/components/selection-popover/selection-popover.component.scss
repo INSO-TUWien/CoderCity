@@ -1,17 +1,36 @@
 :host {
     min-width: 260px;
-    height: 80px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .selection-container {
-    border-radius: 10px;
+    min-width: 320px;
+    max-width: 540px;
+    min-height: 80px;
+    border-radius: 6px;
     box-shadow: 4px 4px 4px 0 #E9E9E9;
     background-color: white;
+    position: relative;
+    pointer-events: all;
+    font-size: 10pt;
     padding: 12px;
+}
+
+.selected-commit-container {
+    background: #F8F9FC;
+    border-radius: 4px;
+    padding: 8px;
 }
 
 .commit-id-label {
     font-size: x-small;
+}
+
+.commit-date {
+    color: #6A6A6A;
+}
+
+.flex-even {
+    flex: 1;
 }

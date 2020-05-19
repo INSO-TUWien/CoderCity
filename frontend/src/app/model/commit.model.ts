@@ -41,12 +41,10 @@ export class Commit {
     }
   }
 
-  outputConsole() {
-    console.log('SHA: ' + this.commitId);
-    console.log('Author:', this.authorName + ' <' + this.mail + '>');
-    console.log('Date:', this.date);
-    console.log('\n    ' + this.message);
-    console.log(`Parent Commits: ${this.parentCommitIDs}\n`);
+  static isCommitBeforeOtherCommit(firstCommitId: string, secondCommitId: string, commits: Map<string, Commit>): boolean {
+    const firstCommit = commits.get(firstCommitId);
+    const secondCommit = commits.get(secondCommitId);
+    return firstCommit.date < secondCommit.date;
   }
 
   toString() {

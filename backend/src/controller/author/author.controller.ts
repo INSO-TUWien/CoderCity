@@ -1,8 +1,8 @@
-import { Controller, Logger, Get } from '@nestjs/common';
+import { Controller, Logger, Get, Param } from '@nestjs/common';
 import { AuthorService } from 'src/services/author/author.service';
 import { Signature } from 'src/model/signature.model';
 
-@Controller('author')
+@Controller('project/:projectId/author')
 export class AuthorController {
     private readonly logger = new Logger(AuthorController.name);
 
@@ -12,7 +12,9 @@ export class AuthorController {
     }
 
     @Get()
-    getAuthors(): Signature[] {
-        return this.authorService.getAllAuthors();
+    async getAuthors(
+        @Param('projectId') projectId
+    ): Promise<Signature[]> {
+        return this.authorService.getAllAuthors(projectId);
     }
 }

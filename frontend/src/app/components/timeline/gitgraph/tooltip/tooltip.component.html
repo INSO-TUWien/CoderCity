@@ -1,0 +1,54 @@
+<div
+  #popover
+  id="tooltip"
+  [style.visibility]="active ? 'visible' : 'hidden'"
+  role="tooltip"
+  (mouseenter)="onTooltipMouseEnter()"
+  (mouseleave)="onTooltipMouseLeave()"
+>
+  <div class="d-flex flex-column">
+    <button
+      *ngIf="
+        tooltipState === TooltipState.Select ||
+        tooltipState === TooltipState.SelectBegin ||
+        tooltipState === TooltipState.SelectEnd
+      "
+      class="btn btn-dark btn-xs tooltip-btn"
+      (click)="onMenuItemClicked(TooltipMenuItem.View)"
+    >
+      <fa-icon [icon]="faEye" size="sm"></fa-icon>
+      {{ TooltipMenuItem.View }}
+    </button>
+    <button
+      *ngIf="tooltipState === TooltipState.Deselect"
+      class="btn btn-dark btn-xs tooltip-btn"
+      (click)="onMenuItemClicked(TooltipMenuItem.Deselect)"
+    >
+      <fa-icon [icon]="faEyeSlash" size="sm"></fa-icon>
+      {{ TooltipMenuItem.Deselect }}
+    </button>
+    <button
+      *ngIf="
+        tooltipState === TooltipState.Select ||
+        tooltipState === TooltipState.SelectBegin
+      "
+      class="btn btn-dark btn-xs tooltip-btn"
+      (click)="onMenuItemClicked(TooltipMenuItem.Begin)"
+    >
+      <fa-icon [icon]="faArrowRight" size="sm"></fa-icon>
+      <span class="ml-1">{{ TooltipMenuItem.Begin }}</span>
+    </button>
+    <button
+      *ngIf="
+        tooltipState === TooltipState.Select ||
+        tooltipState === TooltipState.SelectEnd
+      "
+      class="btn btn-dark btn-xs tooltip-btn"
+      (click)="onMenuItemClicked(TooltipMenuItem.End)"
+    >
+      <fa-icon [icon]="faArrowRight" size="sm"></fa-icon>
+      <span class="ml-1">{{ TooltipMenuItem.End }}</span>
+    </button>
+  </div>
+  <div id="arrow" data-popper-arrow></div>
+</div>

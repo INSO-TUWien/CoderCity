@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Author } from '../../model/author.model';
 import { getAuthorColor } from '../../util/color-scheme';
-import { GitQuery } from 'src/app/state/git.query';
 import { Observable, of } from 'rxjs';
+import { ProjectQuery } from 'src/app/store/project/project.query';
 
 @Component({
   selector: 'cc-author-panel',
@@ -14,9 +14,9 @@ export class AuthorPanelComponent implements OnInit {
   authors$: Observable<Author[]>;
 
   constructor(
-    private gitQuery: GitQuery
+    private projectQuery: ProjectQuery
   ) {
-    this.authors$ = this.gitQuery.authors$;
+    this.authors$ = this.projectQuery.authors$;
     //this.initSampleAuthors();
   }
 

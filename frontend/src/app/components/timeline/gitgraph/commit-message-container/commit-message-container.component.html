@@ -1,16 +1,19 @@
 <div class="d-flex flex-row">
-    <div class="left-pane d-flex flex-column justify-content-between">
-        <button class="btn btn-primary btn-sm" (click)="onCommitsClick()">
-            <fa-icon [icon]="faPlay"></fa-icon>
+    <div class="left-pane d-flex flex-column">
+        <cc-play-button (isPlaying)="onPlayClicked($event)" style="z-index: 12;"></cc-play-button>
+        <button class="btn-indicator btn-xs btn btn-light" (click)="changeIndicatorStatus()">
+            <fa-icon [icon]="faUser" size="xs"></fa-icon>
         </button>
-        <div class="ci-status-label d-flex align-items-center justify-content-center">
-            Author
-        </div>
     </div>
-    <div #messageContainer class="commit-message-container overflow-auto" style="white-space: nowrap">
-        <div class="commit-message" *ngFor="let commit of commits$ | async">
-            <span class="branch-indicator"></span>
-            <span class="commit-message-text">{{commit.message}}</span>
+    <div class="commit-graph-container d-flex flex-column">
+        <div #messageContainer class="commit-message-container overflow-auto" style="white-space: nowrap">
+            <span class="commit-messages">
+                <div class="commit-message" *ngFor="let commit of commits$ | async">
+                    {{commit.message}}
+                </div>
+            </span>
+            <cc-indicator-bar></cc-indicator-bar>
         </div>
+        <cc-gitgraph></cc-gitgraph>
     </div>
 </div>

@@ -13,7 +13,9 @@ import { DISTRICT_MARGIN } from '../constants';
 import { File } from '../../model/file.model';
 import { CityElement } from '../layout/city-element';
 import { SquareRootValueMapper } from '../util/mapper/squareroot-value-mapper';
-import { CityGeneratorOptions } from '../util/city-generator-options';
+import { CityOptions } from '../util/city-options';
+import { Directory } from 'src/app/model/directory.model';
+import { IntersectableDirectory } from 'src/app/model/intersectable/intersectable-directory';
 
 export interface PreserverNode {
     node: KDTreeNode;
@@ -46,7 +48,7 @@ export function calculcateMaxAreaForElements(elements: CityElement[]): Bounds {
     return new Bounds(x, y);
 }
 
-export function generateRandomBuildings(count: number, options: CityGeneratorOptions): Building[] {
+export function generateRandomBuildings(count: number, options: CityOptions): Building[] {
     const elements: Building[] = [];
     for (let i = 0; i < count; i++) {
         const bounds = RandomRectangleGenerator.generateBounds();
@@ -58,6 +60,8 @@ export function generateRandomBuildings(count: number, options: CityGeneratorOpt
 
 export class District extends Entity implements Element {
 
+    /** Depth level of the current district. With the root district node being 0. */
+    depth: number = 0;
     districtElements: CityElement[] = [];
     gridPosition: Vector2 = new Vector2(0, 0);
 
@@ -70,12 +74,16 @@ export class District extends Entity implements Element {
     }
 
     private tree: KDTree;
+    private name: string;
 
     // Currently covered area by the elements.
     private coveredArea: Area;
 
-    constructor(public name: string, private options: CityGeneratorOptions) {
+    constructor(
+        public directory: Directory,
+        private options: CityOptions) {
         super();
+        this.name = directory.name;
         this.computeCity();
     }
 
@@ -89,7 +97,6 @@ export class District extends Entity implements Element {
 
 
     init() {
-        // this.addToScene();
     }
 
     addBuilding(file: File) {
@@ -250,10 +257,14 @@ export class District extends Entity implements Element {
                 }
             }
         });
+
+        const districtColor = this.options.districtColorMapper.mapValue(this);
+
         // Add this district to scene
-        const cube = new Cube(this.bounds.x, 0.2, this.bounds.y, new THREE.Color(getRandomDistrictColor()));
+        const cube = new Cube(this.bounds.x, 0.2, this.bounds.y, districtColor);
         const bboxCenter = cube.calculateBoundingBoxCenterOffset();
         cube.setPosition(bboxCenter.x, 0, bboxCenter.z);
+        cube.setUserData(IntersectableDirectory.fromObject(this.directory));
         this.addEntity(cube);
     }
 

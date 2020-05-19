@@ -1,0 +1,89 @@
+<div class="modal-header">
+  <h4 class="modal-title">Settings</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="settingsForm" (ngSubmit)="onSubmit(settingsForm)">
+  <div class="modal-body">
+    <div formGroupName="sizeMapping">
+      <h3 class="font-weight-bold">Mapping - Size</h3>
+      <hr />
+      <div class="form-group row">
+        <label class="col-sm-6 col-form-label col-form-label-sm">Height</label>
+        <div class="col-sm-6">
+          <select formControlName="height" class="form-control form-control-sm">
+            <option
+              *ngFor="let item of SizeMapper | keyvalue"
+              [ngValue]="item.value"
+              >{{ item.value }}</option
+            >
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-6 col-form-label col-form-label-sm">Width</label>
+        <div class="col-sm-6">
+          <select formControlName="width" class="form-control form-control-sm">
+            <option>3</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-6 col-form-label col-form-label-sm">Depth</label>
+        <div class="col-sm-6">
+          <select formControlName="depth" class="form-control form-control-sm">
+            <option>3</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div formGroupName="colorMapping">
+      <h3 class="font-weight-bold">Mapping - Color</h3>
+      <hr />
+      <div class="form-group row">
+        <label class="col-sm-6 col-form-label col-form-label-sm"
+          >Building color</label
+        >
+        <div class="col-sm-6">
+          <select
+            formControlName="buildingColor"
+            class="form-control form-control-sm"
+          >
+            <option *ngFor="let option of BuildingColorMapper | keyvalue" [ngValue]="option.value">
+              {{ option.value }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-6 col-form-label col-form-label-sm"
+          >District color</label
+        >
+        <div class="col-sm-6">
+          <select
+            formControlName="districtColor"
+            class="form-control form-control-sm"
+          >
+            <option *ngFor="let option of DistrictColorMapper | keyvalue" [ngValue]="option.value">
+              {{ option.value }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Save</button>
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="activeModal.close('Close click')"
+    >Close
+    </button>
+  </div>
+</form>

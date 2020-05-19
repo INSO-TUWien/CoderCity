@@ -22,14 +22,12 @@ export class GitModel {
 
     authors: Set<Signature> = new Set();
 
-    addCommit(commit: Commit) {
+    private addCommit(commit: Commit) {
         this.commits.set(commit.commitId, commit);
         if (!Array.isArray(commit.parentCommitIDs)) {
             // Commit does not have any parent commits. Add to root commits
             this.rootCommits.add(commit.commitId);
         }
-
-        this.rebuild();
     }
 
     addCommits(commits: Commit[]) {
@@ -42,7 +40,6 @@ export class GitModel {
                 this.addCommit(commit);
             }
         });
-
         this.rebuild();
     }
 
