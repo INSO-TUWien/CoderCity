@@ -36,7 +36,6 @@ export class GitGraph {
 
   private svg: Svg;
   private renderElements: RenderElement[] = [];
-  private gitModel: GitModel;
   private commits: Commit[];
   private branches: Branch[];
   private commitMap: Map<string, Commit>;
@@ -83,9 +82,8 @@ export class GitGraph {
    * Computes positions of git graph elements using a given git model
    * and renders them subsequently.
    */
-  drawGraph(gitModel: GitModel, commits: Commit[], commitMap: Map<string, Commit>, branches: Branch[]) {
+  drawGraph(commits: Commit[], commitMap: Map<string, Commit>, branches: Branch[]) {
     this.clear();
-    this.gitModel = gitModel;
     this.commits = commits;
     this.branches = branches;
     this.commitMap = commitMap;

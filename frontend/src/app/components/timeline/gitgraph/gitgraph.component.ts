@@ -255,8 +255,7 @@ export class GitgraphComponent implements OnInit {
   }
 
   private drawGraph(branches: Branch[], commits: Commit[], commitMap: Map<string, Commit>) {
-    const gitModel = new GitModel(branches, commits);
-    this.gitGraph.drawGraph(gitModel, commits, commitMap, branches);
+    this.gitGraph.drawGraph(commits, commitMap, branches);
     this.gitGraphService.setBranchTags(this.gitGraph);
   }
 }
