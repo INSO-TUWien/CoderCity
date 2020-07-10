@@ -5,7 +5,7 @@ import { Directory } from 'src/model/directory.model';
 import { GitService } from 'src/services/git/git.service';
 import { ProjectService } from 'src/services/project/project.service';
 
-@Controller('project/:projectId/commit')
+@Controller('api/project/:projectId/commit')
 export class CommitController {
   private readonly logger = new Logger(CommitController.name);
 
