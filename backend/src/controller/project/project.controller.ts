@@ -4,7 +4,7 @@ import { ProjectData } from 'src/model/projectdata.model.';
 import { AuthorService } from 'src/services/author/author.service';
 import { GitService } from 'src/services/git/git.service';
 
-@Controller('project')
+@Controller('api/project')
 export class ProjectController {
 
     constructor(
