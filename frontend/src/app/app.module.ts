@@ -13,7 +13,6 @@ import { CommitMessageContainerComponent } from './components/timeline/gitgraph/
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { BranchSimpleNamePipe } from './pipes/branch-simple-name.pipe';
 import { SelectionPopoverComponent } from './components/selection-popover/selection-popover.component';
 import { AuthorPanelComponent } from './components/author-panel/author-panel.component';
@@ -31,8 +30,6 @@ import { TooltipComponent } from './components/timeline/gitgraph/tooltip/tooltip
 import { FilterPanelComponent } from './components/side-panel/filter-panel/filter-panel.component';
 import { ProjectChooserComponent } from './components/project-chooser/project-chooser.component';
 import { BranchTagComponent } from './components/timeline/gitgraph/branch-tag/branch-tag.component';
-const SOCKET_HOST = 'http://localhost:3000';
-const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
 @NgModule({
   declarations: [
     AppComponent,
@@ -69,8 +66,7 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     ReactiveFormsModule,
     AppRoutingModule,
     FontAwesomeModule,
-    HttpClientModule,
-    SocketIoModule.forRoot(config),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

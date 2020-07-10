@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { GitGateway } from './socket/git.gateway';
 import { GitService } from './services/git/git.service';
 import { CommitController } from './controller/commit/commit.controller';
 import { CommitService } from './services/commit/commit.service';
@@ -17,6 +16,6 @@ import { BranchController } from './controller/branch/branch.controller';
     envFilePath: ['.env.development', '.env'],
   })],
   controllers: [AppController, AuthorController, BranchController, CommitController, ProjectController],
-  providers: [AppService, GitService, AuthorService, CommitService, ProjectService, GitGateway],
+  providers: [AppService, GitService, AuthorService, CommitService, ProjectService],
 })
 export class AppModule {}
