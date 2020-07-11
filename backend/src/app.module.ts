@@ -7,15 +7,16 @@ import { ProjectController } from './controller/project.controller';
 import { ProjectService } from './services/project/project.service';
 import { AuthorService } from './services/author/author.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProjectCommitData, ProjectCommitDataSchema } from './entities/project-commit-data';
-import { Project } from './model/project.model';
+import { ProjectCommitData, ProjectCommitDataSchema } from './module/commit-data/commit-data';
+import { ProjectCommitDataService } from './module/commit-data/commit-data.service';
+import { ProjectCommitDataModule } from './module/commit-data/commit-data.module';
 
 
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/nest'),
-    MongooseModule.forFeature([{ name: ProjectCommitData.name, schema: ProjectCommitDataSchema}], 'project-commit-data'), 
+    MongooseModule.forRoot('mongodb://root:example@localhost:27017'),
+    ProjectCommitDataModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.development', '.env'],
     })],
