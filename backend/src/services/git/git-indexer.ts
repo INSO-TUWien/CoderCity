@@ -28,10 +28,36 @@ export class GitIndexer {
     await this.indexBranches(this.repo.getRepo());
   }
 
+  /**
+   * Indexes all project data of all commits in a repository and saves it to the database.
+   * @param repo 
+   */
+  private async indexCommitData(repo: NodeGitRepository) {
+    const branchNames = await GitIndexer.getAllBranchNames(repo);
+    let result = [];
+    await branchNames.forEach(async branch => {
+      this.logger.log(`Indexing commits of branch ${branch}`);
+      const walker = Revwalk.create(repo);
+      const branchCommit = await repo.getBranchCommit(branch);
+      if (branchCommit != null) {
+        walker.push(branchCommit.id());
+        walker.sorting(Revwalk.SORT.TOPOLOGICAL);
+        await walker
+          .getCommitsUntil(() => true)
+          .then(async (commits: Commit[]) => {
+            // Get all commit ids (sha) and proceed with indexing all project files at that commit and saving result to the mongodb database
+            commits.forEach(commit => {
+              commit.sha()
+            })
+          });
+      }
+    });
+  }
+
   private async indexCommits(repo: NodeGitRepository) {
     const branchNames = await GitIndexer.getAllBranchNames(repo);
     this.logger.log(`getAllCommits: Detected branches: ${branchNames}`);
-    let cmts = [];
+    let result = [];
     await branchNames.forEach(async branch => {
       this.logger.log(`Indexing commits of branch ${branch}`);
       const walker = Revwalk.create(repo);
@@ -42,18 +68,18 @@ export class GitIndexer {
         await walker
           .getCommitsUntil(() => true)
           .then(async commits => {
-            cmts = await Promise.all(
+            result = await Promise.all(
               commits.map(GitIndexer.nodeGitCommitToCommitModel),
             );
             try {
-              this.gitModel.addCommits(cmts);
+              this.gitModel.addCommits(result);
             } catch (e) {
               this.logger.error(`Could not add commits to git model ${e}`);
             }
           });
       }
     });
-    return cmts;
+    return result;
   }
 
   private async indexBranches(repo: NodeGitRepository) {

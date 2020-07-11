@@ -9,9 +9,7 @@ import { Signature } from 'src/model/signature.model';
 export class GitService {
     private readonly logger = new Logger(GitService.name);
 
-    private repo: Repository;
     private projectPath: string;
-
     public repositories: Map<string, Repository> = new Map();
 
     constructor(
@@ -41,6 +39,10 @@ export class GitService {
         return result;
     }
 
+    /**
+     * Returns a list of all branches of a project given it's project id.
+     * @param projectId 
+     */
     public async getBranches(projectId: string) {
         const branches = [];
         const repo = await this.getRepoByProjectId(projectId);
@@ -73,7 +75,7 @@ export class GitService {
             return this.repositories.get(projectPath);
         } else {
             // Repository not initialized
-            const repo = await this.initRepo(projectPath);
+            await this.initRepo(projectPath);
             throw new Error('Requested ressource is not ready.');
         }
     }
@@ -83,7 +85,6 @@ export class GitService {
      */
     private async initRepo(projectPath: string): Promise<void> {
         const repo = new Repository(projectPath);
-        this.repo = repo;
         await repo.openRepo();
         await repo.startIndexing();
         this.repositories.set(projectPath, repo);

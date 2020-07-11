@@ -21,6 +21,18 @@ export class CommitDataService {
         return this.dataModel.find().exec();
     }
 
+    /**
+     * Returns whether an entry with the given projectId and commitId exists in the database.
+     * @param projectId 
+     * @param commitId 
+     */
+    async exists(projectId: string, commitId: string) {
+        return this.dataModel.exists({
+            'projectId': projectId,
+            'commitId': commitId
+        });
+    }
+
     async findByCommitId(projectId: string, commitId: string) {
         return this.dataModel.findOne({
             'projectId': projectId,

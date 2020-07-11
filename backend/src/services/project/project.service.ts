@@ -30,7 +30,7 @@ export class ProjectService {
     }
 
     /**
-     * Retrieves a list of all git projects
+     * Retrieves a list of all git projects given a folder path.
      */
     private indexProjects(): void {
         this.logger.log(`Started indexProjects`);
@@ -39,9 +39,12 @@ export class ProjectService {
             const base = path.basename(dir);
             if (base === 'node_modules') {
                 stop();
+                // Skip looking inside the node_modules folder.
             } else if (base === '.git') {
                 this.logger.log(`Found project ${dir}`);
                 const projectName = path.dirname(dir).split(path.sep).pop();
+
+                // Project id is md5 hash of projectName without prior directories.
                 const hash = crypto.createHash(`md5`).update(projectName).digest(`hex`);
 
                 const project = new Project();

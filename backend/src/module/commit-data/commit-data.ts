@@ -7,6 +7,9 @@ export class CommitData extends Document {
     projectId: string;
 
     @Prop()
+    commitId: string;
+
+    @Prop()
     data: string;
 }
 
