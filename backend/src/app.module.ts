@@ -7,8 +7,8 @@ import { ProjectController } from './controller/project.controller';
 import { ProjectService } from './services/project/project.service';
 import { AuthorService } from './services/author/author.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProjectCommitData, ProjectCommitDataSchema } from './module/commit-data/commit-data';
-import { ProjectCommitDataService } from './module/commit-data/commit-data.service';
+import { CommitData, ProjectCommitDataSchema } from './module/commit-data/commit-data';
+import { CommitDataService } from './module/commit-data/commit-data.service';
 import { ProjectCommitDataModule } from './module/commit-data/commit-data.module';
 
 

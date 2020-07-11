@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProjectCommitDataService } from './commit-data.service';
-import { ProjectCommitDataSchema, ProjectCommitData } from './commit-data';
+import { CommitDataService as CommitDataService } from './commit-data.service';
+import { ProjectCommitDataSchema, CommitData } from './commit-data';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: ProjectCommitData.name, schema: ProjectCommitDataSchema }])],
-  providers: [ProjectCommitDataService],
-  exports: [ProjectCommitDataService]
+  imports: [MongooseModule.forFeature([{ name: CommitData.name, schema: ProjectCommitDataSchema }])],
+  providers: [CommitDataService],
+  exports: [CommitDataService]
 })
 export class ProjectCommitDataModule {}
