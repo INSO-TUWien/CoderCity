@@ -28,10 +28,10 @@ export class RepoIndexer {
   }
 
   /**
-   * Indexes all project data of all commits in a repository and saves it to the database.
+   * Executes a given operation on all traversed commits.
    * @param repo 
    */
-  private async indexCommitData(repo: NodeGitRepository) {
+  async foreachCommit(repo: NodeGitRepository, operation: (commitData: { projectId: string; commitId: string }) => void) {
     const branchNames = await RepoIndexer.getAllBranchNames(repo);
     const projectId = ProjectUtil.getProjectId(this.gitFolderPath);
     await branchNames.forEach(async branch => {
@@ -47,8 +47,12 @@ export class RepoIndexer {
             // Get all commit ids (sha) and proceed with indexing all project files at that commit and saving result to the mongodb database
             commits.forEach(commit => {
               const commitId = commit.sha();
+              // Execute externally provided operation
+              operation({
+                projectId: projectId,
+                commitId: commitId
+              });
             })
-            
           });
       }
     });

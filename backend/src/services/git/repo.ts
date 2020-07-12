@@ -13,7 +13,7 @@ export class Repository {
     private readonly logger = new Logger(Repository.name);
     private repository: NodeGitRepository;
     public gitModel: GitModel;
-    private gitIndexer: RepoIndexer;
+    private repoIndexer: RepoIndexer;
 
     constructor(
         public readonly folderPath: string,
@@ -26,8 +26,8 @@ export class Repository {
 
     async startIndexing(): void {
         this.gitModel = new GitModel();
-        this.gitIndexer = new RepoIndexer(this.folderPath, this.gitModel, this);
-        await this.gitIndexer.startIndexing();
+        this.repoIndexer = new RepoIndexer(this.folderPath, this.gitModel, this);
+        await this.repoIndexer.startIndexing();
     }
 
     isOpen(): boolean {
@@ -49,8 +49,8 @@ export class Repository {
         return directory;
     }
 
-    foreachCommit(operation) {
-
+    foreachCommit(operation: (commitData: { projectId: string; commitId: string }) => void ) {
+        this.repoIndexer.foreachCommit(this.getRepo(), operation);
     }
 
     /**

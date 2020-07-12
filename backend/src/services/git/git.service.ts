@@ -31,12 +31,12 @@ export class GitService {
             throw new NotFoundException(`The project with ${projectId} does not exist`);
         }
     }
-    
+
     public async getCommits(projectId: string) {
         const result = [];
         const repo = await this.getRepoByProjectId(projectId);
         for (let [key, value] of repo.gitModel.commits) {
-          result.push(value);
+            result.push(value);
         }
         return result;
     }
@@ -89,6 +89,24 @@ export class GitService {
         const repo = new Repository(projectPath);
         await repo.openRepo();
         await repo.startIndexing();
+        // Index project files
+        this.indexProjectFilesForEachCommit(repo);
         this.repositories.set(projectPath, repo);
+    }
+
+    private indexProjectFilesForEachCommit(repo: Repository) {
+        this.logger.log(`Starting indexing project files for each commit of the project`)
+        // Index all project files for each commit of the project
+        repo.foreachCommit(async (commit) => {
+            if (!this.commitDataService.exists(commit.projectId, commit.commitId)) {
+                this.logger.log(`Indexing project files: ProjectId: ${commit.projectId} CommitId ${commit.commitId}`);
+                const result = await repo.getFilesWithDirectoriesOfCommit(commit.commitId);
+                this.commitDataService.create({
+                    projectId: commit.projectId,
+                    commitId: commit.commitId,
+                    data: JSON.stringify(result)
+                });
+            }
+        })
     }
 }
