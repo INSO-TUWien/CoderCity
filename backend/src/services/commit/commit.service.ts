@@ -42,11 +42,11 @@ export class CommitService {
   }
 
   /**
-   * Create a database entry of a commit of a project if it does not exist.
+   * Create a database entry of project snapshot (the state of the project at a given commit) if it does not exist.
    * @param projectId 
    * @param commitId 
    */
-  private async createDBEntryForCommit(projectId: string, commitId: string) {
+  private async createProjectSnapshotEntryForCommit(projectId: string, commitId: string) {
     if (!this.commitDataService.exists(projectId, commitId)) {
       this.logger.log(`createDBEntryForCommit: ${projectId}, ${commitId} does not exist in database. Creating database entry.`);
       const repo = await this.gitService.getRepoByProjectId(projectId);
