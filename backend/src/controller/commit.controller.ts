@@ -3,7 +3,6 @@ import { CommitService } from 'src/services/commit/commit.service';
 import { File } from 'src/model/file.model';
 import { Directory } from 'src/model/directory.model';
 import { GitService } from 'src/services/git/git.service';
-import { ProjectService } from 'src/services/project/project.service';
 
 @Controller('api/project/:projectId/commit')
 export class CommitController {
