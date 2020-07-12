@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { GitService } from '../git/git.service';
 import { File } from 'src/model/file.model';
 import { Directory } from 'src/model/directory.model';
-import { CommitDataService } from 'src/module/commit-data/commit-data.service';
+import { ProjectSnapshotService } from 'src/module/projectsnapshot/project-snapshot.service';
 
 @Injectable()
 export class CommitService {
@@ -10,7 +10,7 @@ export class CommitService {
 
   constructor(
     private gitService: GitService,
-    private commitDataService: CommitDataService
+    private commitDataService: ProjectSnapshotService
   ) {}
 
   async getFilesOfCommit(projectId: string, commitId: string): Promise<File[]> {

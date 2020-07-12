@@ -2,7 +2,7 @@ import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from 'mongoose';
 
 @Schema()
-export class CommitData extends Document {
+export class ProjectSnapshot extends Document {
     @Prop()
     projectId: string;
 
@@ -13,4 +13,4 @@ export class CommitData extends Document {
     data: string;
 }
 
-export const ProjectCommitDataSchema = SchemaFactory.createForClass(CommitData);
+export const ProjectSnapshotDataSchema = SchemaFactory.createForClass(ProjectSnapshot);

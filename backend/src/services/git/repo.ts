@@ -49,8 +49,31 @@ export class Repository {
         return directory;
     }
 
-    foreachCommit(operation: (commitData: { projectId: string; commitId: string }) => void ) {
-        this.repoIndexer.foreachCommit(this.getRepo(), operation);
+    async foreachCommit(operation: (commitData: { projectId: string; commitId: string }) => void ) {
+        const branchNames = await RepoIndexer.getAllBranchNames(repo);
+        const projectId = ProjectUtil.getProjectId(this.gitFolderPath);
+        await branchNames.forEach(async branch => {
+          this.logger.log(`Indexing commits of branch ${branch}`);
+          const walker = Revwalk.create(repo);
+          const branchCommit = await repo.getBranchCommit(branch);
+          if (branchCommit != null) {
+            walker.push(branchCommit.id());
+            walker.sorting(Revwalk.SORT.TOPOLOGICAL);
+            await walker
+              .getCommitsUntil(() => true)
+              .then(async (commits: Commit[]) => {
+                // Get all commit ids (sha) and proceed with indexing all project files at that commit and saving result to the mongodb database
+                commits.forEach(commit => {
+                  const commitId = commit.sha();
+                  // Execute externally provided operation
+                  operation({
+                    projectId: projectId,
+                    commitId: commitId
+                  });
+                })
+              });
+          }
+        });
     }
 
     /**

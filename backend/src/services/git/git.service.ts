@@ -3,7 +3,7 @@ import { Repository } from './repo';
 import { ConfigService } from '@nestjs/config';
 import { ProjectService } from '../project/project.service';
 import { Signature } from 'src/model/signature.model';
-import { CommitDataService } from 'src/module/commit-data/commit-data.service';
+import { ProjectSnapshotService } from 'src/module/projectsnapshot/project-snapshot.service';
 
 
 @Injectable()
@@ -16,7 +16,7 @@ export class GitService {
     constructor(
         private configService: ConfigService,
         private projectService: ProjectService,
-        private commitDataService: CommitDataService
+        private commitDataService: ProjectSnapshotService
     ) {
         this.logger.log(`Initializing GitService`);
         this.projectPath = this.configService.get<string>('GIT_PROJECT_PATH');
@@ -97,16 +97,16 @@ export class GitService {
     private indexProjectFilesForEachCommit(repo: Repository) {
         this.logger.log(`Starting indexing project files for each commit of the project`)
         // Index all project files for each commit of the project
-        repo.foreachCommit(async (commit) => {
-            if (!this.commitDataService.exists(commit.projectId, commit.commitId)) {
-                this.logger.log(`Indexing project files: ProjectId: ${commit.projectId} CommitId ${commit.commitId}`);
-                const result = await repo.getFilesWithDirectoriesOfCommit(commit.commitId);
-                this.commitDataService.create({
-                    projectId: commit.projectId,
-                    commitId: commit.commitId,
-                    data: JSON.stringify(result)
-                });
-            }
-        })
+        // repo.foreachCommit(async (commit) => {
+        //     if (!this.commitDataService.exists(commit.projectId, commit.commitId)) {
+        //         this.logger.log(`Indexing project files: ProjectId: ${commit.projectId} CommitId ${commit.commitId}`);
+        //         const result = await repo.getFilesWithDirectoriesOfCommit(commit.commitId);
+        //         this.commitDataService.create({
+        //             projectId: commit.projectId,
+        //             commitId: commit.commitId,
+        //             data: JSON.stringify(result)
+        //         });
+        //     }
+        // })
     }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CommitData } from './commit-data';
+import { ProjectSnapshot } from './project-snapshot';
 
 /**
  * Repository for project commit data.
@@ -9,15 +9,15 @@ import { CommitData } from './commit-data';
  */
 
 @Injectable()
-export class CommitDataService {
-    constructor(@InjectModel(CommitData.name) private dataModel: Model<CommitData>) {}
+export class ProjectSnapshotService {
+    constructor(@InjectModel(ProjectSnapshot.name) private dataModel: Model<ProjectSnapshot>) {}
 
-    async create(createDataModel: { projectId: string, commitId: string, data: string }): Promise<CommitData> {
+    async create(createDataModel: { projectId: string, commitId: string, data: string }): Promise<ProjectSnapshot> {
         const created = new this.dataModel(createDataModel);
         return created.save();
     }
 
-    async findAll(): Promise<CommitData[]> {
+    async findAll(): Promise<ProjectSnapshot[]> {
         return this.dataModel.find().exec();
     }
 
