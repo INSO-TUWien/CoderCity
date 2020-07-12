@@ -9,18 +9,17 @@ import { Commit as CommitModel } from '../../model/commit.model';
 import { GitModel } from 'src/datastore/git-model';
 import { Logger } from '@nestjs/common';
 import { Repository } from 'src/services/git/repo';
+import { ProjectUtil } from 'src/model/project.model';
 
-export class GitIndexer {
-  private readonly logger = new Logger(GitIndexer.name);
-  private gitModel: GitModel;
+export class RepoIndexer {
+  private readonly logger = new Logger(RepoIndexer.name);
 
   constructor(
     private gitFolderPath: string,
-    gitModel: GitModel,
+    private gitModel: GitModel,
     private repo: Repository,
   ) {
-    this.gitModel = gitModel;
-    this.logger.debug(`FOLDER_PATH ${this.gitFolderPath}`);
+    this.logger.debug(`Created Git Indexer for FOLDER_PATH: ${this.gitFolderPath}`);
   }
 
   async startIndexing(): Promise<void> {
@@ -33,8 +32,8 @@ export class GitIndexer {
    * @param repo 
    */
   private async indexCommitData(repo: NodeGitRepository) {
-    const branchNames = await GitIndexer.getAllBranchNames(repo);
-    let result = [];
+    const branchNames = await RepoIndexer.getAllBranchNames(repo);
+    const projectId = ProjectUtil.getProjectId(this.gitFolderPath);
     await branchNames.forEach(async branch => {
       this.logger.log(`Indexing commits of branch ${branch}`);
       const walker = Revwalk.create(repo);
@@ -47,15 +46,16 @@ export class GitIndexer {
           .then(async (commits: Commit[]) => {
             // Get all commit ids (sha) and proceed with indexing all project files at that commit and saving result to the mongodb database
             commits.forEach(commit => {
-              commit.sha()
+              const commitId = commit.sha();
             })
+            
           });
       }
     });
   }
 
   private async indexCommits(repo: NodeGitRepository) {
-    const branchNames = await GitIndexer.getAllBranchNames(repo);
+    const branchNames = await RepoIndexer.getAllBranchNames(repo);
     this.logger.log(`getAllCommits: Detected branches: ${branchNames}`);
     let result = [];
     await branchNames.forEach(async branch => {
@@ -69,7 +69,7 @@ export class GitIndexer {
           .getCommitsUntil(() => true)
           .then(async commits => {
             result = await Promise.all(
-              commits.map(GitIndexer.nodeGitCommitToCommitModel),
+              commits.map(RepoIndexer.nodeGitCommitToCommitModel),
             );
             try {
               this.gitModel.addCommits(result);
@@ -83,7 +83,7 @@ export class GitIndexer {
   }
 
   private async indexBranches(repo: NodeGitRepository) {
-    const branchNames = await GitIndexer.getAllBranchNames(repo);
+    const branchNames = await RepoIndexer.getAllBranchNames(repo);
     this.logger.log(`branch names: ${branchNames}`);
     // TODO FIX
     const branches = await this.getBranches(repo, branchNames);
@@ -102,7 +102,7 @@ export class GitIndexer {
           const branch = new Branch();
           branch.name = branchRef;
           const branchCommit = await repo.getBranchCommit(branchRef);
-          branch.commit = await GitIndexer.nodeGitCommitToCommitModel(
+          branch.commit = await RepoIndexer.nodeGitCommitToCommitModel(
             branchCommit,
           );
           this.logger.debug(`branch: ${JSON.stringify(branch)}`);

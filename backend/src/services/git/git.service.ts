@@ -3,6 +3,7 @@ import { Repository } from './repo';
 import { ConfigService } from '@nestjs/config';
 import { ProjectService } from '../project/project.service';
 import { Signature } from 'src/model/signature.model';
+import { CommitDataService } from 'src/module/commit-data/commit-data.service';
 
 
 @Injectable()
@@ -14,9 +15,10 @@ export class GitService {
 
     constructor(
         private configService: ConfigService,
-        private projectService: ProjectService
+        private projectService: ProjectService,
+        private commitDataService: CommitDataService
     ) {
-        this.logger.log(`Initializing GitController`);
+        this.logger.log(`Initializing GitService`);
         this.projectPath = this.configService.get<string>('GIT_PROJECT_PATH');
         this.logger.log(`Set project path: ${this.projectPath}`);
     }

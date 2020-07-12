@@ -6,14 +6,14 @@ import { BlameHunk as BlameHunkModel } from "src/model/blamehunk.model";
 import { Directory } from 'src/model/directory.model';
 import { GitModel } from 'src/datastore/git-model';
 import { Signature } from 'src/model/signature.model';
-import { GitIndexer } from 'src/services/git/git-indexer';
+import { RepoIndexer } from 'src/services/git/repo-indexer';
 
 export class Repository {
 
     private readonly logger = new Logger(Repository.name);
     private repository: NodeGitRepository;
     public gitModel: GitModel;
-    private gitIndexer: GitIndexer;
+    private gitIndexer: RepoIndexer;
 
     constructor(
         public readonly folderPath: string,
@@ -26,7 +26,7 @@ export class Repository {
 
     async startIndexing(): void {
         this.gitModel = new GitModel();
-        this.gitIndexer = new GitIndexer(this.folderPath, this.gitModel, this);
+        this.gitIndexer = new RepoIndexer(this.folderPath, this.gitModel, this);
         await this.gitIndexer.startIndexing();
     }
 
@@ -47,6 +47,10 @@ export class Repository {
         const tree = await commit.getTree();
         const directory = await this.buildProjectModel(tree, null, commitId);
         return directory;
+    }
+
+    foreachCommit(operation) {
+
     }
 
     /**

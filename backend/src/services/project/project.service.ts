@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Project } from 'src/model/project.model';
+import { Project, ProjectUtil } from 'src/model/project.model';
 import * as find from 'findit';
 import * as path from 'path';
 import * as crypto from 'crypto';
@@ -43,14 +43,10 @@ export class ProjectService {
             } else if (base === '.git') {
                 this.logger.log(`Found project ${dir}`);
                 const projectName = path.dirname(dir).split(path.sep).pop();
-
-                // Project id is md5 hash of projectName without prior directories.
-                const hash = crypto.createHash(`md5`).update(projectName).digest(`hex`);
-
                 const project = new Project();
                 project.fullPath = dir;
                 project.name = projectName;
-                project.id = hash;
+                project.id = ProjectUtil.getProjectId(dir);
                 this.projects.push(project);
                 stop();
             }
