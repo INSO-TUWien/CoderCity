@@ -1,10 +1,12 @@
 import * as path from 'path';
 import * as crypto from 'crypto';
+import { ProjectData } from './projectdata.model.';
 
 export class Project {
     id: string = '';
     name: string = '';
     fullPath: string = '';
+    projectData: ProjectData;
 }
 
 export class ProjectUtil {

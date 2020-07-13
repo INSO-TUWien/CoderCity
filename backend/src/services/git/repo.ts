@@ -4,7 +4,7 @@ import { Logger } from '@nestjs/common';
 import { File, calculateLinecount } from "src/model/file.model";
 import { BlameHunk as BlameHunkModel } from "src/model/blamehunk.model";
 import { Directory } from 'src/model/directory.model';
-import { GitModel } from 'src/datastore/git-model';
+import { GitProject } from 'src/services/git/git-project';
 import { Signature } from 'src/model/signature.model';
 import { RepoIndexer } from 'src/services/git/repo-indexer';
 
@@ -12,7 +12,7 @@ export class Repository {
 
     private readonly logger = new Logger(Repository.name);
     private repository: NodeGitRepository;
-    public gitModel: GitModel;
+    public gitModel: GitProject;
     private repoIndexer: RepoIndexer;
 
     constructor(
@@ -25,7 +25,7 @@ export class Repository {
     }
 
     async startIndexing(): void {
-        this.gitModel = new GitModel();
+        this.gitModel = new GitProject();
         this.repoIndexer = new RepoIndexer(this.folderPath, this.gitModel, this);
         await this.repoIndexer.startIndexing();
     }

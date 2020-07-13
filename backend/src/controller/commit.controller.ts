@@ -2,7 +2,7 @@ import { Controller, Param, Get, Post, Logger, Query, Res, HttpException, HttpSt
 import { CommitService } from 'src/services/commit/commit.service';
 import { File } from 'src/model/file.model';
 import { Directory } from 'src/model/directory.model';
-import { GitService } from 'src/services/git/git.service';
+import { GitProjectService } from 'src/services/git/git-project.service';
 
 @Controller('api/project/:projectId/commit')
 export class CommitController {
@@ -10,7 +10,7 @@ export class CommitController {
 
   constructor(
     private commitService: CommitService,
-    private gitService: GitService,
+    private gitService: GitProjectService,
   ) {}
 
   /**

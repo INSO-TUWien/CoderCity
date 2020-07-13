@@ -1,10 +1,13 @@
-import { Branch } from '../model/branch.model';
-import { Commit } from '../model/commit.model';
+import { Branch } from '../../model/branch.model';
+import { Commit } from '../../model/commit.model';
 import { Logger } from '@nestjs/common';
 import { Signature } from 'src/model/signature.model';
 
-export class GitModel {
-    private readonly logger = new Logger(GitModel.name);
+/**
+ * Data representation for a git repository.
+ */
+export class GitProject {
+    private readonly logger = new Logger(GitProject.name);
 
     constructor() {}
 
@@ -17,7 +20,7 @@ export class GitModel {
     // Commits with no parent
     rootCommits: Set<string> = new Set();
 
-    // heads of all available branches
+    // Heads of all available branches
     branches: Map<string, Branch> = new Map();
 
     authors: Set<Signature> = new Set();

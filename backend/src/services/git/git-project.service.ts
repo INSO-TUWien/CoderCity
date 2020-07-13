@@ -1,30 +1,76 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Repository } from './repo';
 import { ConfigService } from '@nestjs/config';
-import { ProjectService } from '../project/project.service';
 import { Signature } from 'src/model/signature.model';
 import { ProjectSnapshotService } from 'src/module/projectsnapshot/project-snapshot.service';
-
+import { Project, ProjectUtil } from 'src/model/project.model';
+import * as path from 'path';
+import * as find from 'findit';
 
 @Injectable()
-export class GitService {
-    private readonly logger = new Logger(GitService.name);
+export class GitProjectService {
+    private readonly logger = new Logger(GitProjectService.name);
 
-    private projectPath: string;
+    private projectFolderPath: string;
     public repositories: Map<string, Repository> = new Map();
+    private projects: Project[] = []; // Stores git projects
 
     constructor(
         private configService: ConfigService,
-        private projectService: ProjectService,
         private commitDataService: ProjectSnapshotService
     ) {
         this.logger.log(`Initializing GitService`);
-        this.projectPath = this.configService.get<string>('GIT_PROJECT_PATH');
-        this.logger.log(`Set project path: ${this.projectPath}`);
+        this.projectFolderPath = this.configService.get<string>('GIT_PROJECTS_FOLDER');
+        this.logger.log(`Set project path: ${this.projectFolderPath}`);
+        this.indexGitProjects();
+    }
+
+    findProject(id: string) {
+        const result = this.projects.find((project) => project.id === id);
+        if (result === undefined) {
+            return {};
+        } else {
+            return result;
+        }
+    }
+
+    findAll(): Project[] {
+        return this.projects;
+    }
+
+    /**
+     * Retrieves a list of all git projects given a folder path.
+     */
+    private indexGitProjects(): void {
+        this.logger.log(`Started indexProjects`);
+        const finder = find(this.projectFolderPath);
+        // find all git directories
+        finder.on('directory', (dir, stat, stop) => {
+            const base = path.basename(dir);
+            if (base === 'node_modules') {
+                stop();
+                // Skip looking inside the node_modules folder.
+            } else if (base === '.git') {
+                this.logger.log(`Found project ${dir}`);
+                const projectName = path.dirname(dir).split(path.sep).pop();
+                const project = new Project();
+                project.fullPath = dir;
+                project.name = projectName;
+                project.id = ProjectUtil.getProjectId(dir);
+                this.projects.push(project);
+                // Initialize repo
+                this.initRepo(dir);
+                stop();
+            }
+        });
+        finder.on('end', () => {
+            // All folders traversed
+
+        });
     }
 
     public async getRepoByProjectId(projectId: string): Promise<Repository> {
-        const project = this.projectService.projects.find(project => project.id === projectId);
+        const project = this.projects.find(project => project.id === projectId);
         if (project != undefined) {
             return this.getRepo(project.fullPath);
         } else {
@@ -47,7 +93,7 @@ export class GitService {
      */
     public async getBranches(projectId: string) {
         const branches = [];
-        const repo = await this.getRepoByProjectId(projectId);
+        const repo = await this.getRepoByProjectId  (projectId);
         for (let [key, value] of repo.gitModel.branches) {
             this.logger.log(`Branch ${value}`);
             branches.push(value);
@@ -107,6 +153,6 @@ export class GitService {
         //             data: JSON.stringify(result)
         //         });
         //     }
-        // })
+        // });
     }
 }

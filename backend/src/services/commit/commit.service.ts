@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { GitService } from '../git/git.service';
+import { GitProjectService } from '../git/git-project.service';
 import { File } from 'src/model/file.model';
 import { Directory } from 'src/model/directory.model';
 import { ProjectSnapshotService } from 'src/module/projectsnapshot/project-snapshot.service';
@@ -9,7 +9,7 @@ export class CommitService {
   private readonly logger = new Logger(CommitService.name);
 
   constructor(
-    private gitService: GitService,
+    private gitService: GitProjectService,
     private commitDataService: ProjectSnapshotService
   ) {}
 

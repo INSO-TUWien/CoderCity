@@ -1,16 +1,15 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ProjectService } from 'src/services/project/project.service';
 import { ProjectData } from 'src/model/projectdata.model.';
 import { AuthorService } from 'src/services/author/author.service';
-import { GitService } from 'src/services/git/git.service';
+import { GitProjectService } from 'src/services/git/git-project.service';
 
 @Controller('api/project')
 export class ProjectController {
 
     constructor(
-        private projectService: ProjectService,
+        private projectService: GitProjectService,
         private authorService: AuthorService,
-        private gitService: GitService
+        private gitService: GitProjectService
     ) {}
 
     @Get()

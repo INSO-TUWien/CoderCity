@@ -6,7 +6,7 @@ import {
 } from 'nodegit';
 import { Branch } from '../../model/branch.model';
 import { Commit as CommitModel } from '../../model/commit.model';
-import { GitModel } from 'src/datastore/git-model';
+import { GitProject } from 'src/services/git/git-project';
 import { Logger } from '@nestjs/common';
 import { Repository } from 'src/services/git/repo';
 import { ProjectUtil } from 'src/model/project.model';
@@ -16,7 +16,7 @@ export class RepoIndexer {
 
   constructor(
     private gitFolderPath: string,
-    private gitModel: GitModel,
+    private gitModel: GitProject,
     private repo: Repository,
   ) {
     this.logger.debug(`Created Git Indexer for FOLDER_PATH: ${this.gitFolderPath}`);
@@ -91,7 +91,7 @@ export class RepoIndexer {
     this.logger.log(`branch names: ${branchNames}`);
     // TODO FIX
     const branches = await this.getBranches(repo, branchNames);
-    this.logger.log(`Adding branches: ${branches}`);
+    this.logger.log(`Adding ${branches.length} branches to repository`);
     this.gitModel.addBranches(branches);
   }
 

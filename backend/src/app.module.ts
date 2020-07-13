@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { GitService } from './services/git/git.service';
+import { GitProjectService } from './services/git/git-project.service';
 import { CommitController } from './controller/commit.controller';
 import { CommitService } from './services/commit/commit.service';
 import { ProjectController } from './controller/project.controller';
-import { ProjectService } from './services/project/project.service';
+
 import { AuthorService } from './services/author/author.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProjectSnapshotDataModule } from './module/projectsnapshot/project-snapshot.module';
@@ -19,6 +19,6 @@ import { ProjectSnapshotDataModule } from './module/projectsnapshot/project-snap
       envFilePath: ['.env.development', '.env'],
     })],
   controllers: [CommitController, ProjectController],
-  providers: [GitService, AuthorService, CommitService, ProjectService],
+  providers: [GitProjectService, AuthorService, CommitService],
 })
 export class AppModule { }
