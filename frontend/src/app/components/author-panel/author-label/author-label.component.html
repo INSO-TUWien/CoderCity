@@ -1,23 +1,31 @@
-<div
-    *ngIf="size === 'normal'"
-    [ngbTooltip]="name"
-    placement="left"
-    [style.backgroundColor]="color"
-    [style.border-bottom-color]="darkenedAuthorColor"
+<div *ngIf="size === 'normal'" 
     class="
-        author-circle 
-        text-center 
         d-flex 
-        align-items-center 
-        justify-content-center"
-    >
-    {{name | authorInitials | uppercase}}
+        flex-row 
+        author-label-container 
+        mt-2 
+        justify-content-between  
+        align-items-center">
+    <div class="
+        mr-2
+        d-flex 
+        justify-content-center         flex-column
+    ">
+        <div class="author-text text-left font-weight-bold">{{name}}</div>
+        <div class="author-text text-left text-muted font-weight-light ">{{email}}</div>
+    </div>
+    <div [style.backgroundColor]="color"
+        [style.border-bottom-color]="darkenedAuthorColor" class="
+                author-circle 
+                text-center 
+                d-flex
+                align-items-center 
+                justify-content-center">
+        {{name | authorInitials | uppercase}}
+    </div>
 </div>
 
-<div *ngIf="size === 'xs'"
-    [style.backgroundColor]="color"
-    [style.border-bottom-color]="darkenedAuthorColor"
-    class="
+<div *ngIf="size === 'xs'" [style.backgroundColor]="color" [style.border-bottom-color]="darkenedAuthorColor" class="
         author-circle-xs
         d-flex 
         justify-content-center 

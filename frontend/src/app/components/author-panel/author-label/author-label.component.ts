@@ -13,6 +13,9 @@ export class AuthorLabelComponent implements OnInit {
   name: string;
 
   @Input()
+  email: string;
+
+  @Input()
   size: string = 'normal';
 
   @Input()

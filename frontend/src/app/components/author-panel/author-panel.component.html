@@ -2,6 +2,7 @@
   <cc-author-label
     *ngFor="let author of authors$ | async"
     [name]="author.name"
+    [email]="author.email"
     [color]="author.color"
   ></cc-author-label>
 </div>

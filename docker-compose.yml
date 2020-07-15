@@ -4,23 +4,25 @@ services:
   cc-mongodb:
     container_name: cc-mongodb
     image: mongo
-    ports: 
+    ports:
       - 27017:27017
-    environment: 
+    environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-  # cc-backend:
-  #   container_name: cc-backend
-  #   image: codecity-backend:latest
-  #   ports: 
-  #       - 3000:3000
-  #   volumes: 
-  #       - '/Users/yikaiyang/Projects/BA2/projects/ue2_github/:/.git'
-  # cc-frontend:
-  #   image: cc-frontend
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: ./Dockerfile
-  #   ports:
-  #     - ${FRONTEND_PORT}:80
-  
+  cc-backend:
+    container_name: cc-backend
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    image: codecity-backend:latest
+    ports:
+      - 3000:3000
+    volumes:
+      - "/Users/yikaiyang/Projects/BA2/projects/ue2_github/:/.git"
+  cc-frontend:
+    image: cc-frontend
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:80

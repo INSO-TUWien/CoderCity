@@ -17,6 +17,9 @@ export class ProjectSnapshotService {
         return created.save();
     }
 
+    /**
+     * Returns all project snapshots regardless of the project from the database 
+     */
     async findAll(): Promise<ProjectSnapshot[]> {
         return this.dataModel.find().exec();
     }
@@ -26,7 +29,7 @@ export class ProjectSnapshotService {
      * @param projectId 
      * @param commitId 
      */
-    async exists(projectId: string, commitId: string) {
+    async exists(projectId: string, commitId: string): Promise<boolean> {
         return this.dataModel.exists({
             'projectId': projectId,
             'commitId': commitId

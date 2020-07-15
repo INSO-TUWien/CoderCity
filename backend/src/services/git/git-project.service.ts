@@ -12,6 +12,7 @@ export class GitProjectService {
     private readonly logger = new Logger(GitProjectService.name);
 
     private projectFolderPath: string;
+    private preIndexProjects: boolean;
     public repositories: Map<string, Repository> = new Map();
     private projects: Project[] = []; // Stores git projects
 
@@ -21,6 +22,7 @@ export class GitProjectService {
     ) {
         this.logger.log(`Initializing GitService`);
         this.projectFolderPath = this.configService.get<string>('GIT_PROJECTS_FOLDER');
+        this.preIndexProjects = this.configService.get<boolean>('PRE_INDEX_PROJECT_FILES');
         this.logger.log(`Set project path: ${this.projectFolderPath}`);
         this.indexGitProjects();
     }
@@ -135,24 +137,32 @@ export class GitProjectService {
         const repo = new Repository(projectPath);
         await repo.openRepo();
         await repo.startIndexing();
-        // Index project files
-        this.indexProjectFilesForEachCommit(repo);
+        // Index project files if pre-index projects flag is set
+        if (this.preIndexProjects) {
+            await this.indexProjectFilesForEachCommit(repo);
+        }
+        
         this.repositories.set(projectPath, repo);
     }
 
-    private indexProjectFilesForEachCommit(repo: Repository) {
+    private async indexProjectFilesForEachCommit(repo: Repository) {
+        if (!repo) {
+            this.logger.error(`indexProjectFilesForEachCommit: Repo is not defined.`);
+            return;
+        }
         this.logger.log(`Starting indexing project files for each commit of the project`)
         // Index all project files for each commit of the project
-        // repo.foreachCommit(async (commit) => {
-        //     if (!this.commitDataService.exists(commit.projectId, commit.commitId)) {
-        //         this.logger.log(`Indexing project files: ProjectId: ${commit.projectId} CommitId ${commit.commitId}`);
-        //         const result = await repo.getFilesWithDirectoriesOfCommit(commit.commitId);
-        //         this.commitDataService.create({
-        //             projectId: commit.projectId,
-        //             commitId: commit.commitId,
-        //             data: JSON.stringify(result)
-        //         });
-        //     }
-        // });
+        await repo.foreachCommit(async (commit) => {
+            // this.logger.log(`Executing operation projectID: ${commit.projectId} commitID: ${commit.commitId}`);
+            if (!await this.commitDataService.exists(commit.projectId, commit.commitId)) {
+                this.logger.log(`Indexing project files: ProjectId: ${commit.projectId} CommitId ${commit.commitId}`);
+                const result = await repo.getFilesWithDirectoriesOfCommit(commit.commitId);
+                this.commitDataService.create({
+                    projectId: commit.projectId,
+                    commitId: commit.commitId,
+                    data: JSON.stringify(result)
+                });
+            }
+        });
     }
 }

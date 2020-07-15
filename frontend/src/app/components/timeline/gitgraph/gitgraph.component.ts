@@ -131,7 +131,7 @@ export class GitgraphComponent implements OnInit {
       });
   }
 
-  private deselectSelectedCommit() {
+  deselectSelectedCommit() {
     if (this.selectedCommit != null) {
       this.gitGraph.setCommitDisplayState(
         this.selectedCommit.commitId,
@@ -250,7 +250,7 @@ export class GitgraphComponent implements OnInit {
     }
   }
 
-  private deselectPreviewCommit() {
+  deselectPreviewCommit() {
     this.commitService.setPreviewCommit(null);
   }
 

@@ -3,7 +3,11 @@ import { faPlay, faStop } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'cc-play-button',
-  templateUrl: './play-button.component.html',
+  template: `
+  <button class="btn btn-primary btn-sm btn-play" (click)="onCommitsClick()">
+  <fa-icon *ngIf="!_playing" [icon]="faPlay" size="sm"></fa-icon>
+  <fa-icon *ngIf="_playing" [icon]="faStop" size="sm"></fa-icon>
+</button>`,
   styleUrls: ['./play-button.component.scss']
 })
 export class PlayButtonComponent implements OnInit {
@@ -11,7 +15,7 @@ export class PlayButtonComponent implements OnInit {
   faPlay = faPlay;
   faStop = faStop;
 
-  private _playing = false;
+  _playing = false;
 
   @Input()
   playing: boolean;

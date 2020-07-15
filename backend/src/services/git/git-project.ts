@@ -77,7 +77,7 @@ export class GitProject {
     }
 
     /**
-     * Rebuilds the dag by setting parent commit objects using the parent commit id string array.
+     * Rebuilds the model by setting the children commit ids in each commit.
      */
     rebuild() {
         this.commits.forEach((commit) => {

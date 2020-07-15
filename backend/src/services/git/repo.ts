@@ -1,5 +1,5 @@
-// @ts-nocheck
-import { Repository as NodeGitRepository, Tree, Blame, Oid, Revwalk } from 'nodegit';
+
+import { Repository as NodeGitRepository, Tree, Blame, Oid, Revwalk, Commit } from 'nodegit';
 import { Logger } from '@nestjs/common';
 import { File, calculateLinecount } from "src/model/file.model";
 import { BlameHunk as BlameHunkModel } from "src/model/blamehunk.model";
@@ -7,6 +7,7 @@ import { Directory } from 'src/model/directory.model';
 import { GitProject } from 'src/services/git/git-project';
 import { Signature } from 'src/model/signature.model';
 import { RepoIndexer } from 'src/services/git/repo-indexer';
+import { ProjectUtil } from 'src/model/project.model';
 
 export class Repository {
 
@@ -24,7 +25,7 @@ export class Repository {
         this.repository = await NodeGitRepository.open(this.folderPath);
     }
 
-    async startIndexing(): void {
+    async startIndexing(): Promise<void> {
         this.gitModel = new GitProject();
         this.repoIndexer = new RepoIndexer(this.folderPath, this.gitModel, this);
         await this.repoIndexer.startIndexing();
@@ -49,9 +50,14 @@ export class Repository {
         return directory;
     }
 
+    /**
+     * Executes a provided function for each commit.
+     * @param operation the funciton that should be executed
+     */
     async foreachCommit(operation: (commitData: { projectId: string; commitId: string }) => void ) {
+        const repo = this.repository;
         const branchNames = await RepoIndexer.getAllBranchNames(repo);
-        const projectId = ProjectUtil.getProjectId(this.gitFolderPath);
+        const projectId = ProjectUtil.getProjectId(this.folderPath);
         await branchNames.forEach(async branch => {
           this.logger.log(`Indexing commits of branch ${branch}`);
           const walker = Revwalk.create(repo);
@@ -189,11 +195,17 @@ export class Repository {
             // OrigLine number is the line number of the hunk at the state where the commit of the hunk was made.
             // Whereas finalLineNumber takes into account of other hunks (code segments) inserted in between.
             const hunkModel = new BlameHunkModel(
+                // @ts-ignore
                 hunk.finalStartLineNumber(),
+                // @ts-ignore
                 hunk.finalStartLineNumber() + hunk.linesInHunk() - 1,
+                // @ts-ignore
                 hunk.linesInHunk(),
+                // @ts-ignore
                 hunk.origCommitId().tostrS(),
+                // @ts-ignore
                 hunk.origPath(),
+                // @ts-ignore
                 new Signature(hunk.origSignature().name(), hunk.origSignature().email())
             );
             file.hunks.push(hunkModel);
