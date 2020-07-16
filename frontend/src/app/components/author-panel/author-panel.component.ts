@@ -6,7 +6,16 @@ import { ProjectQuery } from 'src/app/store/project/project.query';
 
 @Component({
   selector: 'cc-author-panel',
-  templateUrl: './author-panel.component.html',
+  template: `
+  <div class="d-flex flex-column">
+    <cc-author-label
+      *ngFor="let author of authors$ | async"
+      [name]="author.name"
+      [email]="author.email"
+      [color]="author.color"
+    ></cc-author-label>
+  </div>
+`,
   styleUrls: ['./author-panel.component.scss']
 })
 export class AuthorPanelComponent implements OnInit {

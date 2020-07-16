@@ -17,10 +17,14 @@ services:
     image: codecity-backend:latest
     ports:
       - 3000:3000
+    environment:
+      GIT_PROJECTS_FOLDER: /projects
+      MONGODB_URI: mongodb://root:example@cc-mongodb:27017
+      INDEX_MODE: EAGER  # EAGER = Pre index files. LAZY = Indexes files on demand
     volumes:
-      - "/Users/yikaiyang/Projects/BA2/projects/ue2_github/:/.git"
+      - "/Users/yikaiyang/Projects/Uni:/projects"
   cc-frontend:
-    image: cc-frontend
+    container_name: cc-frontend
     build:
       context: ./frontend
       dockerfile: ./Dockerfile

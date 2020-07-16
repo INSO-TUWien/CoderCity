@@ -58,28 +58,26 @@ export class Repository {
         const repo = this.repository;
         const branchNames = await RepoIndexer.getAllBranchNames(repo);
         const projectId = ProjectUtil.getProjectId(this.folderPath);
-        await branchNames.forEach(async branch => {
-          this.logger.log(`Indexing commits of branch ${branch}`);
-          const walker = Revwalk.create(repo);
-          const branchCommit = await repo.getBranchCommit(branch);
-          if (branchCommit != null) {
-            walker.push(branchCommit.id());
-            walker.sorting(Revwalk.SORT.TOPOLOGICAL);
-            await walker
-              .getCommitsUntil(() => true)
-              .then(async (commits: Commit[]) => {
-                // Get all commit ids (sha) and proceed with indexing all project files at that commit and saving result to the mongodb database
-                commits.forEach(commit => {
-                  const commitId = commit.sha();
-                  // Execute externally provided operation
-                  operation({
-                    projectId: projectId,
-                    commitId: commitId
-                  });
-                })
-              });
-          }
-        });
+        this.logger.log(`Starting execution of foreachCommit`);
+        const walker = Revwalk.create(repo);
+        const headCommit = await repo.getHeadCommit();
+        if (headCommit != null) {
+          walker.push(headCommit.id());
+          walker.sorting(Revwalk.SORT.TOPOLOGICAL);
+          await walker
+            .getCommitsUntil(() => true)
+            .then(async (commits: Commit[]) => {
+              // Get all commit ids (sha) and proceed with indexing all project files at that commit and saving result to the mongodb database
+              commits.forEach(commit => {
+                const commitId = commit.sha();
+                // Execute externally provided operation
+                operation({
+                  projectId: projectId,
+                  commitId: commitId
+                });
+              })
+            });
+        }
     }
 
     /**
@@ -109,7 +107,7 @@ export class Repository {
                 const file = await this.getFileWithBlameHunks(entry.path(), commitId);
                 file.name = entryName;
                 directory.files.push(file);
-                this.logger.log(`File entryName: ${entryName}`);
+                // this.logger.log(`File entryName: ${entryName}`);
             } else if (entry.isDirectory()) {
                 const entryDirectory = new Directory();
                 entryDirectory.name = entryName;
@@ -117,7 +115,7 @@ export class Repository {
                 directory.directories.push(entryDirectory);
                 // Build model recursively in sub folderes
                 const tree = await entry.getTree();
-                this.logger.log(`Folder entryName: ${entryName}`);
+                // this.logger.log(`Folder entryName: ${entryName}`);
                 await this.buildProjectModel(tree, entryDirectory, commitId);
             }
         }

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GitProjectService } from './services/git/git-project.service';
 import { CommitController } from './controller/commit.controller';
 import { CommitService } from './services/commit/commit.service';
@@ -8,18 +8,27 @@ import * as Joi from '@hapi/joi';
 import { AuthorService } from './services/author/author.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProjectSnapshotDataModule } from './module/projectsnapshot/project-snapshot.module';
+import { async } from 'rxjs';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://root:example@localhost:27017'),
-    ProjectSnapshotDataModule,
     ConfigModule.forRoot({
       validationSchema: Joi.object({
         GIT_PROJECTS_FOLDER: Joi.string().required(),
-        PRE_INDEX_PROJECT_FILES: Joi.boolean().default(false)
+        INDEX_MODE: Joi.string().default('LAZY').valid('LAZY', 'EAGER'),
       }),
       envFilePath: ['.env.development', '.env'],
-    })],
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async(configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI')
+      }),
+      inject: [ConfigService]
+    }),
+    ProjectSnapshotDataModule,
+    
+  ],
   controllers: [CommitController, ProjectController],
   providers: [GitProjectService, AuthorService, CommitService],
 })

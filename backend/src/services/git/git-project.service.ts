@@ -12,7 +12,7 @@ export class GitProjectService {
     private readonly logger = new Logger(GitProjectService.name);
 
     private projectFolderPath: string;
-    private preIndexProjects: boolean;
+    private preIndexProjects: string;
     public repositories: Map<string, Repository> = new Map();
     private projects: Project[] = []; // Stores git projects
 
@@ -22,7 +22,7 @@ export class GitProjectService {
     ) {
         this.logger.log(`Initializing GitService`);
         this.projectFolderPath = this.configService.get<string>('GIT_PROJECTS_FOLDER');
-        this.preIndexProjects = this.configService.get<boolean>('PRE_INDEX_PROJECT_FILES');
+        this.preIndexProjects = this.configService.get<string>('INDEX_MODE');
         this.logger.log(`Set project path: ${this.projectFolderPath}`);
         this.indexGitProjects();
     }
@@ -138,7 +138,7 @@ export class GitProjectService {
         await repo.openRepo();
         await repo.startIndexing();
         // Index project files if pre-index projects flag is set
-        if (this.preIndexProjects) {
+        if (this.preIndexProjects == 'EAGER') {
             await this.indexProjectFilesForEachCommit(repo);
         }
         
