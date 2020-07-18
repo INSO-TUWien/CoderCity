@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Entity } from './entity';
-import { EarthControls } from './controls/EarthControls';
+import { MapControls } from 'three/examples/jsm/controls/OrbitControls';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { City } from './entities/City';
 import { MousePicker } from './controls/MousePicker';
@@ -10,6 +10,8 @@ import { BuildingRandomColorMapper } from './util/color/building-random-color-ma
 import { Preferences, BuildingColorMapperPreference } from '../components/settings-panel/state/preferences.model';
 import { DistrictColorMapper } from './util/color/district-color-mapper';
 import { DistrictRandomColorMapper } from './util/color/district-random-color-mapper';
+import { TextLabel } from './entities/TextLabel';
+import { entitiesToArray } from '@datorama/akita';
 
 export class Engine {
     private canvasElement: HTMLCanvasElement;
@@ -25,6 +27,7 @@ export class Engine {
     private districtColorMapper: DistrictColorMapper = new DistrictRandomColorMapper();
 
     private entities: Entity[] = [];
+    private textLabels: TextLabel[] = [];
 
     private stats = new Stats();
 
@@ -32,7 +35,6 @@ export class Engine {
         this.canvasElement = document.querySelector('#canvas');
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvasElement,
-            logarithmicDepthBuffer: true
         });
 
         // Set canvas size to whole viewport
@@ -50,7 +52,7 @@ export class Engine {
         this.scene.add(this.light);
         this.scene.background = new THREE.Color('#EEEEEE');
 
-        this.controls = new EarthControls(this.camera, this.renderer.domElement);
+        this.controls = new MapControls(this.camera, this.renderer.domElement);
 
         window.addEventListener('resize', () => this.handleWindowResize(), false);
 
@@ -145,12 +147,12 @@ export class Engine {
 
         this.stats.begin();
         this.controls.update();
-        this.entities.forEach(entity => {
+        for (let entity of this.entities) {
             entity.update();
-        });
+        }
 
-        this.stats.end();
         this.renderer.render(this.scene, this.camera);
+        this.stats.end();
     }
 
     setCanvasSize(width: number, height: number) {

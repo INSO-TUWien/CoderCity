@@ -1,7 +1,6 @@
 import { Entity } from '../entity';
 import * as THREE from 'three';
 import { BuildingSegment } from './BuildingSegment';
-import { getRandomBuildingColor } from 'src/app/util/color-scheme';
 import { BUILDING_INNER_MARGIN } from '../constants';
 import { CityElement } from '../layout/city-element';
 import { Bounds } from '../layout/bounds';

@@ -99,12 +99,16 @@ export class District extends Entity implements Element {
     init() {
     }
 
-    addBuilding(file: File) {
+    addBuildingWithFile(file: File) {
         const width = 3;
         const height = 3;
         // const element = new Element(new Bounds(width, height));
         const building = new Building(new Bounds(width, height), this.options);
         building.createWithFile(file);
+        this.addBuilding(building);
+    }
+
+    addBuilding(building: Building) {
         this.addCityElement(building);
     }
 
@@ -133,14 +137,14 @@ export class District extends Entity implements Element {
         this.tree = new KDTree(new Vector2(0, 0), maxArea);
         this.coveredArea = new Area(new Vector2(0, 0), new Bounds(0, 0));
         this.districtElements.forEach(element => {
-            this.computeCityElementPosition(element);
+            this.computeCityElementPositions(element);
         });
     }
 
     /**
      * Adds city element to kd tree and assigns positions.
      */
-    private computeCityElementPosition(element: CityElement): void {
+    private computeCityElementPositions(element: CityElement): void {
         let emptyLeafNodes = this.tree.getEmptyLeafNodes();
         // Filter nodes which are large enough to fit the element.
         emptyLeafNodes = emptyLeafNodes.filter((node) => node.bounds.fits(element.bounds));
@@ -258,10 +262,10 @@ export class District extends Entity implements Element {
             }
         });
 
-        const districtColor = this.options.districtColorMapper.mapValue(this);
+        const color = this.options.districtColorMapper.mapValue(this);
 
         // Add this district to scene
-        const cube = new Cube(this.bounds.x, 0.2, this.bounds.y, districtColor);
+        const cube = new Cube(this.bounds.x, 0.2, this.bounds.y, color);
         const bboxCenter = cube.calculateBoundingBoxCenterOffset();
         cube.setPosition(bboxCenter.x, 0, bboxCenter.z);
         cube.setUserData(IntersectableDirectory.fromObject(this.directory));

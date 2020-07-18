@@ -62,7 +62,7 @@ export class City extends Entity {
 
         directory.files.forEach(file => {
             // Create building for each file
-            district.addBuilding(file);
+            district.addBuildingWithFile(file);
         });
 
         directory.directories.forEach(d => {
