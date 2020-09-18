@@ -5,7 +5,7 @@ import { CityLayoutElement } from './city-layout-element';
 import { CityOptions } from '../../util/city-options';
 import { Directory } from 'src/app/model/directory.model';
 import { District } from '../../entities/District';
-import { DistrictLayout } from '../district-layout';
+import { DistrictLayout } from './district-layout';
 import { BuildingLayout } from './building-layout';
 
 export class CityLayout extends CityLayoutElement {

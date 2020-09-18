@@ -1,7 +1,7 @@
 import { Entity } from '../entity';
 import * as THREE from 'three';
 import { BuildingSegment } from './BuildingSegment';
-import { BUILDING_INNER_MARGIN } from '../constants';
+import { BUILDING_MARGIN } from '../constants';
 import { CityElement } from '../layout/city-element';
 import { Bounds } from '../layout/bounds';
 import { File } from '../../model/file.model';
@@ -47,17 +47,17 @@ export class Building extends Entity implements CityElement {
     createBuildingSegment(start: number, end: number, hunk: BlameHunk) {
         const color = this.options.buildingColorMapper.mapValue(hunk);
         const segment = new BuildingSegment(
-            this.bounds.x - BUILDING_INNER_MARGIN,
+            this.bounds.x - BUILDING_MARGIN,
             (end - start),
-            this.bounds.y - BUILDING_INNER_MARGIN,
+            this.bounds.y - BUILDING_MARGIN,
             color
         );
 
         segment.setPosition(
-            0 + BUILDING_INNER_MARGIN / 2,
+            0 + BUILDING_MARGIN / 2,
             // Add y axis offset
             (start - 1) + segment.calculateBoundingBoxCenterOffset().y,
-            0 + BUILDING_INNER_MARGIN / 2
+            0 + BUILDING_MARGIN / 2
         );
         segment.setUserData(hunk);
         this.addEntity(segment);

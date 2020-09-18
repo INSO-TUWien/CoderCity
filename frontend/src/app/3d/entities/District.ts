@@ -4,15 +4,12 @@ import { Bounds } from '../layout/bounds';
 import { KDTree } from '../layout/kd-tree';
 import { Element } from '../layout/element';
 import { Cube } from './Cube';
-import * as THREE from 'three';
 import { KDTreeNode } from '../layout/kd-treenode';
 import { Area } from '../layout/area';
-import { getRandomDistrictColor, getRandomBuildingColor, getRandomNumber } from 'src/app/util/color-scheme';
 import { Building} from './Building';
 import { DISTRICT_MARGIN } from '../constants';
 import { File } from '../../model/file.model';
 import { CityElement } from '../layout/city-element';
-import { SquareRootValueMapper } from '../util/mapper/squareroot-value-mapper';
 import { CityOptions } from '../util/city-options';
 import { Directory } from 'src/app/model/directory.model';
 import { IntersectableDirectory } from 'src/app/model/intersectable/intersectable-directory';
@@ -27,14 +24,6 @@ export interface ExpanderNode {
     ratio: number;
 }
 
-export class RandomRectangleGenerator {
-    static generateBounds(): Bounds {
-        const randomWidth = Math.floor(Math.random() * 5) + 1;
-        const randomHeight = Math.floor(Math.random() * 5) + 1;
-        return new Bounds(randomWidth, randomHeight);
-    }
-}
-
 /**
  * Calculates the largest possible area taken up by the elements (represented as bounds array).
  */
@@ -47,16 +36,6 @@ export function calculcateMaxAreaForElements(elements: CityElement[]): Bounds {
     }
     return new Bounds(x, y);
 }
-
-export function generateRandomBuildings(count: number, options: CityOptions): Building[] {
-    const elements: Building[] = [];
-    for (let i = 0; i < count; i++) {
-        const bounds = RandomRectangleGenerator.generateBounds();
-        elements.push(new Building(bounds, options));
-    }
-    return elements;
-}
-
 
 export class District extends Entity implements Element {
 
@@ -84,17 +63,8 @@ export class District extends Entity implements Element {
         private options: CityOptions) {
         super();
         this.name = directory.name;
-        this.computeCity();
+        this.computeDistrictLayout();
     }
-
-    generateRandomBuildings(count: number) {
-        const elements = generateRandomBuildings(count, this.options);
-        const randomHeight = getRandomNumber(6);
-        // building.createBuildingSegment(0, randomHeight + 1);
-        // building.createBuildingSegment(randomHeight + 1, randomHeight + 4);
-        this.addCityElements(elements);
-    }
-
 
     init() {
     }
@@ -108,20 +78,32 @@ export class District extends Entity implements Element {
         this.addBuilding(building);
     }
 
+    /**
+     * Adds a building to district
+     * @param building 
+     */
     addBuilding(building: Building) {
         this.addCityElement(building);
     }
 
+    /**
+     * Adds a city element to district
+     * @param cityElement 
+     */
     addCityElement(cityElement: CityElement) {
         this.districtElements.push(cityElement);
-        this.computeCity();
+        this.computeDistrictLayout();
     }
 
+    /**
+     * Adds multiple city elements to district
+     * @param cityElements 
+     */
     addCityElements(cityElements: CityElement[]) {
         cityElements.forEach(element  => {
             this.districtElements.push(element);
         });
-        this.computeCity();
+        this.computeDistrictLayout();
     }
 
     // Sort elements by surface area descending. (Largest first)
@@ -130,21 +112,24 @@ export class District extends Entity implements Element {
         //console.log(`Sorted city elements: ${JSON.stringify(this.districtElements)}`);
     }
 
-    private computeCity(): void {
+    /**
+     * Computes the coordinates of the city elemenets positioned in this district. 
+     */
+    private computeDistrictLayout(): void {
         this.sortCityElements();
         // Determine largest area that can be taken up if all elements are placed.
         const maxArea = calculcateMaxAreaForElements(this.districtElements);
         this.tree = new KDTree(new Vector2(0, 0), maxArea);
         this.coveredArea = new Area(new Vector2(0, 0), new Bounds(0, 0));
         this.districtElements.forEach(element => {
-            this.computeCityElementPositions(element);
+            this.computePositionForCityElement(element);
         });
     }
 
     /**
      * Adds city element to kd tree and assigns positions.
      */
-    private computeCityElementPositions(element: CityElement): void {
+    private computePositionForCityElement(element: CityElement): void {
         let emptyLeafNodes = this.tree.getEmptyLeafNodes();
         // Filter nodes which are large enough to fit the element.
         emptyLeafNodes = emptyLeafNodes.filter((node) => node.bounds.fits(element.bounds));
@@ -253,9 +238,9 @@ export class District extends Entity implements Element {
                     const building = element as Building;
                     const bboxCenter = building.calculateBoundingBoxCenterOffset();
                     building.setPosition(
-                        node.position.x + bboxCenter.x + DISTRICT_MARGIN,
+                        node.position.x + bboxCenter.x + DISTRICT_MARGIN / 2,
                         0,
-                        node.position.y + bboxCenter.z + DISTRICT_MARGIN
+                        node.position.y + bboxCenter.z + DISTRICT_MARGIN / 2,
                     );
                     this.addEntity(building);
                 }
@@ -265,7 +250,7 @@ export class District extends Entity implements Element {
         const color = this.options.districtColorMapper.mapValue(this);
 
         // Add this district to scene
-        const cube = new Cube(this.bounds.x, 0.2, this.bounds.y, color);
+        const cube = new Cube(this.bounds.x - DISTRICT_MARGIN, 0.2, this.bounds.y - DISTRICT_MARGIN, color);
         const bboxCenter = cube.calculateBoundingBoxCenterOffset();
         cube.setPosition(bboxCenter.x, 0, bboxCenter.z);
         cube.setUserData(IntersectableDirectory.fromObject(this.directory));
