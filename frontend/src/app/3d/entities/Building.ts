@@ -24,7 +24,7 @@ export class Building extends Entity implements CityElement {
 
     gridPosition: THREE.Vector2;
 
-    createWithFile(file: File) {
+    createWithFile(file: File): void {
         // Create building segments for each blame hunk
         file.hunks.forEach((hunk) => {
             const transformedHunk = BlameHunk.fromObject(hunk);

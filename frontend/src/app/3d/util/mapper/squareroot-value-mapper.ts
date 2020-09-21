@@ -1,4 +1,3 @@
-import * as d3 from 'd3-scale';
 import { ValueMapper } from './value-mapper';
 
 export class SquareRootValueMapper implements ValueMapper {
