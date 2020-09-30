@@ -4,5 +4,6 @@ export class File {
 
     constructor(public name: string) {}
 
+    lineCount: number;
     hunks: BlameHunk[] = [];
 }

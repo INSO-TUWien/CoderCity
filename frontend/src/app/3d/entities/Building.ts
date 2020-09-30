@@ -26,9 +26,12 @@ export class Building extends Entity implements CityElement {
 
     createWithFile(file: File): void {
         // Create building segments for each blame hunk
+        const lineCount = file.lineCount;
         file.hunks.forEach((hunk) => {
             const transformedHunk = BlameHunk.fromObject(hunk);
-            const startLineNumber = (this.mapper == null) ? hunk.startLineNumber : this.mapper.map(hunk.startLineNumber);
+            const startLineNumber = (this.mapper == null) 
+                ? hunk.startLineNumber 
+                : this.mapper.map(hunk.startLineNumber);
             const endLineNumber = (this.mapper == null)
                 ? hunk.startLineNumber + hunk.linesInHunk
                 : this.mapper.map(hunk.startLineNumber + hunk.linesInHunk );
