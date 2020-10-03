@@ -27,14 +27,17 @@ export class Building extends Entity implements CityElement {
     createWithFile(file: File): void {
         // Create building segments for each blame hunk
         const lineCount = file.lineCount;
+        const mappedLineCount = (this.mapper == null) ? file.lineCount : this.mapper.map(lineCount);
         file.hunks.forEach((hunk) => {
             const transformedHunk = BlameHunk.fromObject(hunk);
             const startLineNumber = (this.mapper == null) 
                 ? hunk.startLineNumber 
-                : this.mapper.map(hunk.startLineNumber);
+                : hunk.startLineNumber / lineCount * mappedLineCount; // Use correct relational ration between line number after applying mapper
+                //: this.mapper.map(hunk.startLineNumber);
             const endLineNumber = (this.mapper == null)
                 ? hunk.startLineNumber + hunk.linesInHunk
-                : this.mapper.map(hunk.startLineNumber + hunk.linesInHunk );
+                : (hunk.startLineNumber + hunk.linesInHunk) / lineCount * mappedLineCount; // Use correct relational ration between line number after applying mapper
+                //: this.mapper.map(hunk.startLineNumber + hunk.linesInHunk );
             this.createBuildingSegment(startLineNumber, endLineNumber, transformedHunk);
         });
     }
