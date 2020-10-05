@@ -20,6 +20,18 @@ export class FilterPanelComponent implements OnInit {
   selectedCommitTimeInterval$;
   selectedCommitTimeIntervalWithAuthorColor$: Observable<any>;
 
+
+  files = [
+    'test.js',
+    '2.js',
+    '3.js',
+    '4.js',
+    '2.js',
+    '3.js',
+    '2.js',
+    '3.js',
+  ]
+
   constructor(
     private visualizationQuery: VisualizationQuery,
     private visualizationService: VisualizationService
