@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { File } from '../../../model/file.model';
 
 @Component({
     selector: '[cc-file-panel-item]',
@@ -7,13 +8,13 @@ import { Component, Input, OnInit } from '@angular/core';
       <div  class="ml-2" >
         <input type="checkbox" class="form-check-input">
       </div>
-      <div>{{file}}</div>
+      <div>{{file?.name}}</div>
     </div>`
 })
 export class FilePanelItemComponent implements OnInit {
 
     @Input('file')
-    file: string = '';
+    file: File;
 
     constructor() { }
 

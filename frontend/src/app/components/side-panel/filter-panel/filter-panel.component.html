@@ -117,7 +117,7 @@
       </div>
 
       <div class="list-group mt-2 overflow-auto files-list-container" id="list-tab" role="tablist">
-        <div class="list-group-item  py-1 list-group-item-action "  *ngFor="let file of files" cc-file-panel-item [file]="file"></div>
+        <div class="list-group-item  py-1 list-group-item-action "  *ngFor="let file of files$ | async" cc-file-panel-item [file]="file"></div>
       </div>
     </div>
   </div>
