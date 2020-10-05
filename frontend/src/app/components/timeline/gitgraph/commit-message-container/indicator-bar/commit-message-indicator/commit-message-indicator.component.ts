@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Commit } from 'src/app/model/commit.model';
-import { TimelineQuery } from 'src/app/state/timeline.query';
+import { TimelineQuery } from 'src/app/store/timeline/timeline.query';
 import { Observable } from 'rxjs';
 import { CommitMessageIndicatorStatus } from './CommitMessageIndicatorStatus';
 import { darkenColor } from 'src/app/util/color-scheme';

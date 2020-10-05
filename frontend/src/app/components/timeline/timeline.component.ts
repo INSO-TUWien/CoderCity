@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { faChevronUp, faChevronDown, faPlay } from '@fortawesome/free-solid-svg-icons';
-import { TimelineQuery } from 'src/app/state/timeline.query';
+import { TimelineQuery } from 'src/app/store/timeline/timeline.query';
 import { Observable} from 'rxjs';
 import { TimeInterval } from './timeinterval';
 

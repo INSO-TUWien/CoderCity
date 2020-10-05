@@ -3,8 +3,8 @@ import { Query } from '@datorama/akita';
 import { TimelineStore, TimelineState } from './timeline.store';
 import { withLatestFrom, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { Commit } from '../model/commit.model';
-import { ProjectQuery } from '../store/project/project.query';
+import { Commit } from '../../model/commit.model';
+import { ProjectQuery } from '../project/project.query';
 
 @Injectable({ providedIn: 'root' })
 export class TimelineQuery extends Query<TimelineState> {

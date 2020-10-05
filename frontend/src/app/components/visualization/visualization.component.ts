@@ -34,7 +34,7 @@ export class VisualizationComponent implements OnInit {
   constructor(
     private visualizationService: VisualizationService,
     private visualizationQuery: VisualizationQuery,
-    private projectQuery: ProjectQuery,
+    private projectQuery: ProjectQuery, 
     private settingsQuery: SettingsQuery,
     private route: ActivatedRoute
   ) {
