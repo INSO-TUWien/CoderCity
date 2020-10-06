@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { VisualizationStore } from '../state/visualization.store';
-import { BlameHunk } from '../model/blamehunk.model';
-import { File } from '../model/file.model';
-import { Directory } from '../model/directory.model';
-import { Commit } from '../model/commit.model';
-import { CommitService } from './commit.service';
-import { CommitTimeInterval } from '../components/timeline/commit-timeinterval';
+import { BlameHunk } from '../../model/blamehunk.model';
+import { File } from '../../model/file.model';
+import { Directory } from '../../model/directory.model';
+import { Commit } from '../../model/commit.model';
+import { CommitService } from '../../services/commit.service';
+import { CommitTimeInterval } from '../../components/timeline/commit-timeinterval';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ProjectChooserComponent } from '../components/project-chooser/project-chooser.component';
+import { ProjectChooserComponent } from '../../components/project-chooser/project-chooser.component';
+import { VisualizationStore } from './visualization.store';
+import { HttpClient } from '@angular/common/http'
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class VisualizationService {
     private visualizationStore: VisualizationStore,
     private commitService: CommitService,
     private modalService: NgbModal,
+    private http: HttpClient,
   ) { }
 
   openProject() {
@@ -60,11 +62,20 @@ export class VisualizationService {
     }));
 
     if (commit != null) {
+      // Load project snapshot at this commit.
       this.commitService.getProjectFilesAtCommit(commit).subscribe(
         directory => {
           this.setProjectFiles(directory);
         }
       );
+
+      // Load project files
+      this.commitService.getFilesAtCommit(commit).subscribe(
+        files => {
+          this.setFiles(files);
+        }
+      )
+
     }
   }
 

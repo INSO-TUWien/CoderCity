@@ -3,7 +3,7 @@ import { Query } from '@datorama/akita';
 import { VisualizationStore, VisualizationState } from './visualization.store';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ProjectQuery } from '../store/project/project.query';
+import { ProjectQuery } from '../project/project.query';
 
 @Injectable({ providedIn: 'root' })
 export class VisualizationQuery extends Query<VisualizationState> {

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Store, StoreConfig } from '@datorama/akita';
-import { BlameHunk } from '../model/blamehunk.model';
-import { File } from '../model/file.model';
-import { Directory } from '../model/directory.model';
-import { Commit } from '../model/commit.model';
-import { CommitTimeInterval } from '../components/timeline/commit-timeinterval';
+import { StoreConfig, Store } from '@datorama/akita';
+import { CommitTimeInterval } from 'src/app/components/timeline/commit-timeinterval';
+import { BlameHunk } from 'src/app/model/blamehunk.model';
+import { Commit } from 'src/app/model/commit.model';
+import { Directory } from 'src/app/model/directory.model';
+import { File } from 'src/app/model/file.model';
+
 
 export interface VisualizationState {
   selectedObject: BlameHunk;

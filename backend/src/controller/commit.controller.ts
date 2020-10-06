@@ -11,7 +11,7 @@ export class CommitController {
   constructor(
     private commitService: CommitService,
     private gitService: GitProjectService,
-  ) {}
+  ) { }
 
   /**
    * Retrieves an array of all commits.
@@ -36,20 +36,27 @@ export class CommitController {
   @Get(':id')
   async getProjectFilesByCommitId(
     @Param('projectId') projectId,
-    @Param('id') id,
-    @Query('mode') mode,
+    @Param('id') id
   ): Promise<File[] | Directory> {
     try {
-      if (mode === 'directory') {
-        const projectRootFolder = await this.commitService.getFilesWithDirectoriesOfCommit(
-          projectId,
-          id,
-        );
-        return projectRootFolder;
-      } else {
-        const files = await this.commitService.getFilesOfCommit(projectId, id);
-        return files;
-      }
+      const projectRootFolder = await this.commitService.getFilesWithNestedDirectoriesOfCommit(
+        projectId,
+        id,
+      );
+      return projectRootFolder;
+    } catch (e) {
+      throw new HttpException(`Requested ressource is not ready yet.`, HttpStatus.ACCEPTED);
+    }
+  }
+
+  @Get(':id/files')
+  async getFilesByCommitId(
+    @Param('projectId') projectId,
+    @Param('id') id
+  ): Promise<File[]> {
+    try {
+      const files = await this.commitService.getFilesOfCommit(projectId, id);
+      return files;
     } catch (e) {
       throw new HttpException(`Requested ressource is not ready yet.`, HttpStatus.ACCEPTED);
     }

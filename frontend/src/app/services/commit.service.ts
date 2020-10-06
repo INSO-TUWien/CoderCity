@@ -8,7 +8,6 @@ import { Directory } from '../model/directory.model';
 import { environment } from 'src/environments/environment';
 import { ProjectQuery } from '../store/project/project.query';
 
-export const HOST = '/api';
 export const COMMIT_ENDPOINT = 'commit';
 
 @Injectable({
@@ -30,15 +29,18 @@ export class CommitService {
     });
   }
 
+  // Loads array of project files without preserving folder structure
   getFilesAtCommit(commit: Commit): Observable<File[]> {
-    return this.http.get<File[]>(environment.apiUrl  + '/project/' + this.projectId + '/' + COMMIT_ENDPOINT + '/' + commit.commitId);
+    return this.http.get<File[]>(environment.apiUrl  + '/project/' + this.projectId + '/' + COMMIT_ENDPOINT + '/' + commit.commitId + '/files');
   }
 
+  // Loads project files while preserving folder structure
   getProjectFilesAtCommit(commit: Commit): Observable<Directory> {
     return this.http.get<Directory>(environment.apiUrl
       + `/project/${this.projectId}/` + COMMIT_ENDPOINT
-      + '/' + commit.commitId + `?mode=directory`);
+      + '/' + commit.commitId);
   }
+  
 
   setPreviewCommit(commit: Commit): void {
     this.gitStore.update((state) => ({

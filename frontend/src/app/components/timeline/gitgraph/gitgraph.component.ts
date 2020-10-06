@@ -4,8 +4,8 @@ import { GitModel } from "../../../model/git-model";
 import { Branch } from "src/app/model/branch.model";
 import { GitGraph } from "./gitgraph/gitgraph";
 import { CommitService } from "src/app/services/commit.service";
-import { VisualizationService } from "src/app/services/visualization.service";
-import { VisualizationQuery } from "src/app/state/visualization.query";
+import { VisualizationService } from "src/app/store/visualization/visualization.service";
+import { VisualizationQuery } from "src/app/store/visualization/visualization.query";
 import { GraphCommitState } from "./gitgraph/elements/abstract-graph-commit";
 import {
   TooltipComponent,

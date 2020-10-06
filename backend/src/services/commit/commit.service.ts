@@ -13,12 +13,20 @@ export class CommitService {
     private commitDataService: ProjectSnapshotService
   ) {}
 
+  /**
+   * Returns an array of all files of project without preserving nesting directories.
+   * @param projectId 
+   * @param commitId 
+   */
   async getFilesOfCommit(projectId: string, commitId: string): Promise<File[]> {
     const repo = await this.gitService.getRepoByProjectId(projectId);
     return repo.getFilesForCommit(commitId);
   }
 
-  async getFilesWithDirectoriesOfCommit(
+  /**
+   * Returns all files of project preserving nesting in sub directories.
+   */
+  async getFilesWithNestedDirectoriesOfCommit(
     projectId: string,
     commitId: string,
   ): Promise<Directory> {
@@ -35,6 +43,7 @@ export class CommitService {
       })
       return result;
     } else {
+      // Get preprocessed entry from db.
       this.logger.log(`Requested commit data with projectId: ${projectId} commitId: ${commitId} exists in database. Queried data from database.`)
       const result = JSON.parse(dbCommitData.data);
       return result;
