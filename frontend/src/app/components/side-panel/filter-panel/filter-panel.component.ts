@@ -6,6 +6,10 @@ import { faChevronUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { VisualizationService } from 'src/app/store/visualization/visualization.service';
 import { File } from '../../../model/file.model';
 import { FileQuery } from 'src/app/store/files/file.query';
+import { FileService } from 'src/app/store/files/file.service';
+import { map, tap } from 'rxjs/operators';
+import { isArray } from 'util';
+import { FilterQuery, FilterService } from 'src/app/store/filter';
 
 @Component({
   selector: 'cc-filter-panel',
@@ -22,15 +26,25 @@ export class FilterPanelComponent implements OnInit {
   selectedCommitTimeInterval$;
   selectedCommitTimeIntervalWithAuthorColor$: Observable<any>;
   files$: Observable<File[]>;
+  excludedFiles$: Observable<string[]>;
 
   constructor(
     private visualizationQuery: VisualizationQuery,
-    private fileQuery: FileQuery,
+    private filterQuery: FilterQuery,
+    private filterService: FilterService,
+    private fileService: FileService,
     private visualizationService: VisualizationService,
   ) {
     this.selectedCommitTimeInterval$ = this.visualizationQuery.selectedCommitInterval$;
     this.selectedCommitTimeIntervalWithAuthorColor$ = this.visualizationQuery.selectedCommitTimeIntervalWithAuthorColor$;
-    this.files$ = this.fileQuery.selectAll();
+    this.files$ = this.visualizationQuery.files$;
+    // this.excludedFiles$ = this.fileQuery.selectActive().pipe(
+    //   map(
+    //     f => (!isArray(f)) ? [f] : f
+    //   )
+    // );
+    this.excludedFiles$ = this.filterQuery.select(store => store.excludedFiles);
+    // this.fileQuery.selectMany(['README.md', 'README.md']);
   }
 
   ngOnInit() {
@@ -52,6 +66,14 @@ export class FilterPanelComponent implements OnInit {
       return darkenColor(color, 0.6);
     } else {
       return '';
+    }
+  }
+
+  onFileSelectionChanged(enabled: boolean, file: File) {
+    if (enabled) {
+      this.filterService.includeFile(`${file.name}`);
+    } else {
+      this.filterService.excludeFile(`${file.name}`);
     }
   }
 }

@@ -20,8 +20,7 @@ export class VisualizationService {
     private visualizationStore: VisualizationStore,
     private commitService: CommitService,
     private modalService: NgbModal,
-    private fileService: FileService,
-    private http: HttpClient,
+    private fileService: FileService
   ) { }
 
   openProject() {
@@ -74,7 +73,9 @@ export class VisualizationService {
       // Load project files
       this.commitService.getFilesAtCommit(commit).subscribe(
         files => {
-          this.fileService.set(files)
+          this.setFiles(files);
+          // Get all files and set files in store
+          this.fileService.set(files);
         }
       )
     }

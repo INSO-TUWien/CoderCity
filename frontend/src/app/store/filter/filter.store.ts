@@ -2,14 +2,12 @@ import { Injectable } from '@angular/core';
 import { Store, StoreConfig } from '@datorama/akita';
 
 export interface FilterState {
-  deselectedFiles: string[];
-  excludedFiles: Set<string>;
+  excludedFiles: string[];
 }
 
 export function createInitialState(): FilterState {
   return {
-    deselectedFiles: [],
-    excludedFiles: new Set<string>()
+    excludedFiles: []
   };
 }
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { File } from '../../../model/file.model';
 
 @Component({
@@ -22,11 +22,15 @@ export class FilePanelItemComponent implements OnInit {
     @Input('enabled')
     enabled: boolean = true;
 
+    @Output() 
+    onFileSelectionChanged = new EventEmitter<boolean>();
+  
     constructor() { }
 
     ngOnInit() { }
 
     onClick() {
       this.enabled = !this.enabled;
+      this.onFileSelectionChanged.emit(this.enabled);
     }
 }

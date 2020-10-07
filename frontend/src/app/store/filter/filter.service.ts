@@ -9,22 +9,26 @@ export class FilterService {
   constructor(private filterStore: FilterStore) {
   }
 
-  addExcludedFile(fileName: string) {
+  excludeFile(fileName: string) {
     this.filterStore.update(
-      state => ({
-        ...state,
-        excludedFiles: state.excludedFiles.add(fileName)
-      })
+      state => {
+        const updatedExcludedFiles = state.excludedFiles.concat(fileName);
+        return {
+          ...state,
+          excludedFiles: updatedExcludedFiles
+        }
+      }
     )
   }
 
-  // removeExcludedFiles(fileName: string) {
-  //   this.filterStore.update(
-  //     state => ({
-  //       ...state,
-  //       excludedFiles: state.excludedFiles.delete(fileName)
-  //     })
-  //   )
-  // }
+  includeFile(fileName: string) {
+    this.filterStore.update(
+      state => {
+        return {
+          ...state,
+          excludedFiles: state.excludedFiles.filter((item) => item !== fileName)
+        }
+      }
+    )
+  }
 }
-

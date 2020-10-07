@@ -26,7 +26,19 @@ export class FileService {
     this.fileStore.set(files);
   }
 
-  remove(id: ID) {
+  setActive(fileIDs) {
+    this.fileStore.setActive(fileIDs);
+  }
+
+  toggleActive(fileID: ID) {
+    this.fileStore.toggleActive(fileID);
+  }
+
+  removeActive(fileID: ID) {
+    this.fileStore.removeActive(fileID);
+  }
+
+  remove(id) {
     this.fileStore.remove(id);
   }
 }
