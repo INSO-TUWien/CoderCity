@@ -10,6 +10,7 @@ import { Commit } from 'src/app/model/commit.model';
 import { TimelineService } from 'src/app/components/timeline/timeline.service';
 import { Author } from 'src/app/model/author.model';
 import { getAuthorColor } from 'src/app/util/color-scheme';
+import { FileService } from '../files/file.service';
 
 @Injectable({ providedIn: "root" })
 export class ProjectService {

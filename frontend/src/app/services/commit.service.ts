@@ -20,8 +20,10 @@ export class CommitService {
   constructor(
     private http: HttpClient,
     private gitStore: GitStore,
-    private projectQuery: ProjectQuery
+    private projectQuery: ProjectQuery,
+    
   ) {
+    // Get id of active project
     projectQuery.selectActiveId().subscribe(id => {
       if (id != null) {
         this.projectId = id;

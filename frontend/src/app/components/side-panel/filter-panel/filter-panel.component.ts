@@ -4,9 +4,8 @@ import { Observable } from 'rxjs';
 import { darkenColor } from 'src/app/util/color-scheme';
 import { faChevronUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { VisualizationService } from 'src/app/store/visualization/visualization.service';
-import { FilterQuery } from 'src/app/store/filter';
 import { File } from '../../../model/file.model';
-import { tap } from 'rxjs/operators';
+import { FileQuery } from 'src/app/store/files/file.query';
 
 @Component({
   selector: 'cc-filter-panel',
@@ -24,27 +23,14 @@ export class FilterPanelComponent implements OnInit {
   selectedCommitTimeIntervalWithAuthorColor$: Observable<any>;
   files$: Observable<File[]>;
 
-  // files = [
-  //   'test.js',
-  //   '2.js',
-  //   '3.js',
-  //   '4.js',
-  //   '2.js',
-  //   '3.js',
-  //   '2.js',
-  //   '3.js',
-  // ]
-
   constructor(
     private visualizationQuery: VisualizationQuery,
+    private fileQuery: FileQuery,
     private visualizationService: VisualizationService,
-    private filterQuery: FilterQuery,
   ) {
     this.selectedCommitTimeInterval$ = this.visualizationQuery.selectedCommitInterval$;
     this.selectedCommitTimeIntervalWithAuthorColor$ = this.visualizationQuery.selectedCommitTimeIntervalWithAuthorColor$;
-    this.files$ = this.visualizationQuery.files$.pipe(
-      tap((f) => console.error(f))
-    );
+    this.files$ = this.fileQuery.selectAll();
   }
 
   ngOnInit() {
