@@ -15,6 +15,7 @@ import { ProjectQuery } from 'src/app/store/project/project.query';
 import { Subscription, combineLatest } from 'rxjs';
 import { DistrictDepthColorMapper } from 'src/app/3d/util/color/district-depth-color-mapper';
 import { DistrictRandomColorMapper } from 'src/app/3d/util/color/district-random-color-mapper';
+import { FilterQuery } from 'src/app/store/filter';
 
 @Component({
   selector: 'cc-visualization',
@@ -36,6 +37,7 @@ export class VisualizationComponent implements OnInit {
     private visualizationQuery: VisualizationQuery,
     private projectQuery: ProjectQuery, 
     private settingsQuery: SettingsQuery,
+    private filterQuery: FilterQuery,
     private route: ActivatedRoute
   ) {
   }
@@ -124,11 +126,6 @@ export class VisualizationComponent implements OnInit {
     this.eventBus = EventBus.instance;
     this.eventBus.on('intersectObject', (intersectedObject) => {
       this.visualizationService.setSelectedObject(intersectedObject);
-      // if (intersectedObject != null) {
-      //   if (intersectedObject instanceof BlameHunk) {
-      //     this.visualizationService.setSelectedObject(intersectedObject);
-      //   }
-      // }
     });
   }
 }

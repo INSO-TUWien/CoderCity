@@ -7,11 +7,8 @@ import { MousePicker } from './controls/MousePicker';
 import { Directory } from '../model/directory.model';
 import { BuildingColorMapper } from './util/color/building-color-mapper';
 import { BuildingRandomColorMapper } from './util/color/building-random-color-mapper';
-import { Preferences, BuildingColorMapperPreference } from '../components/settings-panel/state/preferences.model';
 import { DistrictColorMapper } from './util/color/district-color-mapper';
 import { DistrictRandomColorMapper } from './util/color/district-random-color-mapper';
-import { TextLabel } from './entities/TextLabel';
-import { entitiesToArray } from '@datorama/akita';
 
 export class Engine {
     private canvasElement: HTMLCanvasElement;
@@ -27,7 +24,6 @@ export class Engine {
     private districtColorMapper: DistrictColorMapper = new DistrictRandomColorMapper();
 
     private entities: Entity[] = [];
-    private textLabels: TextLabel[] = [];
 
     private stats = new Stats();
 

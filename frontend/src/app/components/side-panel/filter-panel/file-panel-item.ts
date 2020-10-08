@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { File } from '../../../model/file.model';
+
+export interface FilterableFile {
+  enabled: boolean,
+  name: string
+}
 
 @Component({
     selector: '[cc-file-panel-item]',
@@ -16,10 +20,18 @@ import { File } from '../../../model/file.model';
 })
 export class FilePanelItemComponent implements OnInit {
 
-    @Input('file')
-    file: File;
+    private _file: FilterableFile;
 
-    @Input('enabled')
+    @Input('file')
+    set file(value: FilterableFile) {
+      this._file = value;
+      this.enabled = value.enabled;
+    }
+
+    get file(): FilterableFile {
+      return this._file;
+    }
+    
     enabled: boolean = true;
 
     @Output() 

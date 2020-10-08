@@ -31,4 +31,13 @@ export class FilterService {
       }
     )
   }
+
+  reset() {
+    this.filterStore.update(
+      state => ({
+        ...state,
+        excludedFiles: []
+      })
+    )
+  }
 }

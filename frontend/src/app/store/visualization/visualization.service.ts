@@ -9,7 +9,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProjectChooserComponent } from '../../components/project-chooser/project-chooser.component';
 import { VisualizationStore } from './visualization.store';
 import { HttpClient } from '@angular/common/http'
-import { FileService } from '../files/file.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +19,6 @@ export class VisualizationService {
     private visualizationStore: VisualizationStore,
     private commitService: CommitService,
     private modalService: NgbModal,
-    private fileService: FileService
   ) { }
 
   openProject() {
@@ -73,9 +71,8 @@ export class VisualizationService {
       // Load project files
       this.commitService.getFilesAtCommit(commit).subscribe(
         files => {
-          this.setFiles(files);
           // Get all files and set files in store
-          this.fileService.set(files);
+          this.setFiles(files);
         }
       )
     }

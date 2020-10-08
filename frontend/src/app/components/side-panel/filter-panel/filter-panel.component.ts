@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { VisualizationQuery } from 'src/app/store/visualization/visualization.query';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { darkenColor } from 'src/app/util/color-scheme';
 import { faChevronUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { VisualizationService } from 'src/app/store/visualization/visualization.service';
 import { File } from '../../../model/file.model';
-import { FileQuery } from 'src/app/store/files/file.query';
-import { FileService } from 'src/app/store/files/file.service';
 import { map, tap } from 'rxjs/operators';
 import { isArray } from 'util';
 import { FilterQuery, FilterService } from 'src/app/store/filter';
+import { FilterableFile } from './file-panel-item';
 
 @Component({
   selector: 'cc-filter-panel',
@@ -27,25 +26,33 @@ export class FilterPanelComponent implements OnInit {
   selectedCommitTimeIntervalWithAuthorColor$: Observable<any>;
   files$: Observable<File[]>;
   excludedFiles$: Observable<string[]>;
+  filteredFiles$: Observable<FilterableFile[]>;
 
   constructor(
     private visualizationQuery: VisualizationQuery,
     private filterQuery: FilterQuery,
     private filterService: FilterService,
-    private fileService: FileService,
     private visualizationService: VisualizationService,
   ) {
     this.selectedCommitTimeInterval$ = this.visualizationQuery.selectedCommitInterval$;
     this.selectedCommitTimeIntervalWithAuthorColor$ = this.visualizationQuery.selectedCommitTimeIntervalWithAuthorColor$;
     this.files$ = this.visualizationQuery.files$;
-    // this.excludedFiles$ = this.fileQuery.selectActive().pipe(
-    //   map(
-    //     f => (!isArray(f)) ? [f] : f
-    //   )
-    // );
     this.excludedFiles$ = this.filterQuery.select(store => store.excludedFiles);
-    // this.fileQuery.selectMany(['README.md', 'README.md']);
+    this.filteredFiles$ = combineLatest(this.visualizationQuery.files$, this.excludedFiles$)
+      .pipe(
+        map(([files, excludedFiles]) => 
+          (
+            files.map((file) => ({
+              name: file.name + '',
+              // If file is not in excluded files ,then set enabled status to true.
+              enabled: (excludedFiles.findIndex(e => e == file.name) == -1) ? true : false
+            }))
+          )
+        )
+      );
   }
+
+
 
   ngOnInit() {
   }
@@ -55,6 +62,10 @@ export class FilterPanelComponent implements OnInit {
       start: null,
       end: null
     });
+  }
+
+  onResetExcludedFiles() {
+    this.filterService.reset();
   }
 
   onClose() {
