@@ -1,6 +1,6 @@
 import { RenderElement } from "./render-element";
 import { Svg, SVG } from "@svgdotjs/svg.js";
-import { GitModel } from "src/app/model/git-model";
+import { GitModel } from "src/app/model/git.model";
 import { Commit } from "src/app/model/commit.model";
 import { GraphLine, generateGraphLineKey } from "./elements/graph-line";
 import { GraphMergeCommit } from "./elements/graph-merge-commit";

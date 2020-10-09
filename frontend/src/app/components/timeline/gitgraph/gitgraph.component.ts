@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { Observable, combineLatest, Subscription } from "rxjs";
-import { GitModel } from "../../../model/git-model";
 import { Branch } from "src/app/model/branch.model";
 import { GitGraph } from "./gitgraph/gitgraph";
 import { CommitService } from "src/app/services/commit.service";

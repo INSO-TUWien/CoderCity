@@ -6,4 +6,5 @@ export interface CityOptions {
     buildingColorMapper: BuildingColorMapper;
     districtColorMapper: DistrictColorMapper;
     valueMapper?: ValueMapper;
+    excludedFiles?: string[];
 }

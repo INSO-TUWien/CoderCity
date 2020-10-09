@@ -1,7 +1,6 @@
 import { Entity } from '../entity';
 import { District } from './District';
 import { Directory } from 'src/app/model/directory.model';
-import { BuildingColorMapper } from '../util/color/building-color-mapper';
 import { CityOptions } from '../util/city-options';
 
 export class City extends Entity {
@@ -23,21 +22,6 @@ export class City extends Entity {
         const offsetZ = - (this.rootDistrict.bounds.y / 2);
         this.rootDistrict.setPosition(offsetX, 0, offsetZ);
     }
-
-    // generateExampleCity() {
-    //     this.rootDistrict = new District('Folder 1', this.options);
-    //     this.rootDistrict.generateRandomBuildings(2);
-    //     const district2 = new District('Folder 2', this.options);
-    //     district2.generateRandomBuildings(1);
-    //     const district3 = new District('Folder 2', this.options);
-    //     district3.generateRandomBuildings(3);
-    //     this.rootDistrict.addCityElement(district3);
-    //     this.rootDistrict.addCityElement(district2);
-    //     this.addEntity(this.rootDistrict);
-
-    //     // Call addtoscene in all sub city elements of the district.
-    //     this.rootDistrict.addToScene();
-    // }
 
     generateCity(projectFiles: Directory): void {
         if (this.rootDistrict != null) {
@@ -61,6 +45,12 @@ export class City extends Entity {
         district.depth = depth;
 
         directory.files.forEach(file => {
+            // Check if file is excluded in exclusion list and skip file if so
+            if (this.options.excludedFiles && this.options.excludedFiles.includes(`${file.fullPath}`)) {
+                // File is excluded
+                return;
+            }
+
             // Create building for each file
             district.addBuildingWithFile(file);
         });

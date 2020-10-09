@@ -210,6 +210,7 @@ export class Repository {
             // this.logger.log(`file: ${JSON.stringify(file)}`);
         }
 
+        file.fullPath = filePath;
         // Calculate total length
         file.lineCount = calculateLinecount(file);
         return file;

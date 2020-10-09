@@ -10,7 +10,7 @@ import { BuildingRandomColorMapper } from './util/color/building-random-color-ma
 import { DistrictColorMapper } from './util/color/district-color-mapper';
 import { DistrictRandomColorMapper } from './util/color/district-random-color-mapper';
 
-export class Engine {
+export class Visualization {
     private canvasElement: HTMLCanvasElement;
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
@@ -24,6 +24,8 @@ export class Engine {
     private districtColorMapper: DistrictColorMapper = new DistrictRandomColorMapper();
 
     private entities: Entity[] = [];
+
+    private excludedFiles: string[] = [];
 
     private stats = new Stats();
 
@@ -104,9 +106,9 @@ export class Engine {
         this.city = new City(
             {
                 buildingColorMapper: this.buildingColorMapper,
-                districtColorMapper: this.districtColorMapper
+                districtColorMapper: this.districtColorMapper,
+                excludedFiles: this.excludedFiles
             });
-        //this.city.generateExampleCity();
         this.city.generateCity(
             directory
         );
@@ -124,6 +126,13 @@ export class Engine {
         if (districtColorMapper != null) {
             this.districtColorMapper = districtColorMapper;
         }
+    }
+
+    /**
+     * Sets a list of excluded filenames which will be not rendered
+     */
+    setExcludedFiles(files: string[]) {
+        this.excludedFiles = files;
     }
 
     addEntity(entity: Entity): void {
@@ -153,11 +162,5 @@ export class Engine {
 
     setCanvasSize(width: number, height: number) {
         this.renderer.setSize(width, height);
-    }
-
-    start(): void {
-    }
-
-    stop(): void {
     }
 }

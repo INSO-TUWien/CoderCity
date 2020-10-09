@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Engine } from '../../3d/engine';
+import { Visualization } from '../../3d/visualization';
 import { EventBus } from 'src/app/3d/util/eventbus';
 import * as EventEmitter from 'eventemitter3';
 import { VisualizationService } from 'src/app/store/visualization/visualization.service';
@@ -24,7 +24,7 @@ import { FilterQuery } from 'src/app/store/filter';
 })
 export class VisualizationComponent implements OnInit {
 
-  engine: Engine;
+  visualization: Visualization;
   private eventBus: EventEmitter;
   private projectFiles: Directory;
   private authors: Author[];
@@ -48,8 +48,7 @@ export class VisualizationComponent implements OnInit {
       this.visualizationService.openProject();
     }
 
-    this.engine = new Engine();
-    this.engine.start();
+    this.visualization = new Visualization();
     this.initEventBus();
 
     this.projectSubscription = this.projectQuery.selectActive().subscribe(project => {
@@ -62,7 +61,7 @@ export class VisualizationComponent implements OnInit {
     this.visualizationQuery.selectedCommit$.subscribe(
       (commit) => {
         if (commit === null) {
-          this.engine.deleteCity();
+          this.visualization.deleteCity();
         }
       }
     );
@@ -78,11 +77,11 @@ export class VisualizationComponent implements OnInit {
     );
 
     // Handle preference changes. Wait for author data before rendering.
-    combineLatest(this.projectQuery.authors$, this.settingsQuery.preferences$).subscribe(
-      ([authors, preferences]) => {
+    combineLatest(this.projectQuery.authors$, this.settingsQuery.preferences$, this.filterQuery.excludedFiles$).subscribe(
+      ([authors, preferences, excludedFiles]) => {
         this.authors = authors;
         if (authors != null && preferences != null) {
-            this.handlePreferences(preferences);
+            this.handleVisualizationOptions(preferences, excludedFiles);
             this.renderCity();
         }
       }
@@ -91,28 +90,32 @@ export class VisualizationComponent implements OnInit {
 
   private renderCity(): void {
     if (this.projectFiles != null) {
-      this.engine.generateCity(this.projectFiles);
+      this.visualization.generateCity(this.projectFiles);
     }
   }
 
-  private handlePreferences(preferences: Preferences) {
+  private handleVisualizationOptions(preferences: Preferences, excludedFiles: string[]) {
     if (preferences == null) {
         console.error(`Engine: setPreferences: preferences is null or undefined.`);
     }
     // Update BuildingColorMapper based on set preference
     const buildingColorPreference = preferences.colorMapping.buildingColor;
     if (buildingColorPreference === BuildingColorMapperPreference.author) {
-        this.engine.setBuildingColorMapper(new BuildingAuthorColorMapper(this.authors));
+        this.visualization.setBuildingColorMapper(new BuildingAuthorColorMapper(this.authors));
     } else if (buildingColorPreference === BuildingColorMapperPreference.random) {
-        this.engine.setBuildingColorMapper(new BuildingRandomColorMapper());
+        this.visualization.setBuildingColorMapper(new BuildingRandomColorMapper());
     }
 
     // Handle district color mapper
     const districtColorPreference = preferences.colorMapping.districtColor;
     if (districtColorPreference === DistrictColorMapperPreference.depth) {
-      this.engine.setDistrictColorMapper(new DistrictDepthColorMapper());
+      this.visualization.setDistrictColorMapper(new DistrictDepthColorMapper());
     } else if (districtColorPreference === DistrictColorMapperPreference.random) {
-      this.engine.setDistrictColorMapper(new DistrictRandomColorMapper());
+      this.visualization.setDistrictColorMapper(new DistrictRandomColorMapper());
+    }
+
+    if (excludedFiles !== null) {
+      this.visualization.setExcludedFiles(excludedFiles);
     }
   }
 
