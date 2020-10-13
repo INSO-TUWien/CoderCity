@@ -4,7 +4,6 @@ import { faFolder } from '@fortawesome/free-regular-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsPanelComponent } from '../settings-panel/settings-panel.component';
 import { VisualizationService } from 'src/app/store/visualization/visualization.service';
-import { ProjectChooserComponent } from '../project-chooser/project-chooser.component';
 
 @Component({
   selector: 'cc-side-panel',

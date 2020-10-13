@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
+import { ColorPickerModule } from 'ngx-color-picker';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { VisualizationComponent } from './components/visualization/visualization.component';
@@ -31,7 +32,10 @@ import { TooltipComponent } from './components/timeline/gitgraph/tooltip/tooltip
 import { FilterPanelComponent } from './components/side-panel/filter-panel/filter-panel.component';
 import { ProjectChooserComponent } from './components/project-chooser/project-chooser.component';
 import { BranchTagComponent } from './components/timeline/gitgraph/branch-tag/branch-tag.component';
-import { FilePanelItemComponent } from './components/side-panel/filter-panel/file-panel-item';
+import { FilePanelItemComponent } from './components/side-panel/filter-panel/file-filter-item';
+import { AuthorEditModalComponent } from './components/side-panel/filter-panel/author-edit-modal/author-edit-modal.component';
+import { AuthorFilterItemComponent } from './components/side-panel/filter-panel/author-filter-item';
+
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
 @NgModule({
@@ -59,11 +63,14 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     FilterPanelComponent,
     ProjectChooserComponent,
     BranchTagComponent,
-    FilePanelItemComponent
+    FilePanelItemComponent,
+    AuthorEditModalComponent,
+    AuthorFilterItemComponent
   ],
   entryComponents: [
     SettingsPanelComponent,
-    ProjectChooserComponent
+    ProjectChooserComponent,
+    AuthorEditModalComponent
   ],
   imports: [
     NgbModule,
@@ -73,6 +80,7 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     FontAwesomeModule,
     HttpClientModule,
     SocketIoModule.forRoot(config),
+    ColorPickerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
