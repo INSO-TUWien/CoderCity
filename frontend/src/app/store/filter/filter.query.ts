@@ -10,5 +10,6 @@ export class FilterQuery extends Query<FilterState> {
     super(store);
   }
 
+  excludedAuthors = this.select(store => store.excludedAuthors);
   excludedFiles$ = this.select(store => store.excludedFiles);
 }

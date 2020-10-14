@@ -14,7 +14,7 @@
         d-flex
         flex-row
       ">
-        <cc-author-label [name]="author.name" [color]="author.color" size="xs"></cc-author-label>
+        <cc-author-label [name]="author.name" [color]="activeColor"></cc-author-label>
       <div class="
         ml-2
         d-flex 
@@ -41,12 +41,12 @@
   <hr>
   <h3>Visibility</h3>
   <div>
-    <input type="checkbox">
+    <input type="checkbox" [checked]="enabled" (click)="onCheckboxChanged()">
   </div>
 </div>
 
 <div class="modal-footer">
-  <button type="submit" class="btn btn-primary">Save</button>
+  <button type="submit" class="btn btn-primary" (click)="onSave()">Save</button>
   <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close
   </button>
 </div>

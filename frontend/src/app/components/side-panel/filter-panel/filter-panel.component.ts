@@ -12,6 +12,7 @@ import { ProjectQuery } from 'src/app/store/project/project.query';
 import { Author } from 'src/app/model/author.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthorEditModalComponent } from './author-edit-modal/author-edit-modal.component';
+import { FilterableAuthor } from './author-filter-item';
 
 @Component({
   selector: 'cc-filter-panel',
@@ -32,6 +33,7 @@ export class FilterPanelComponent implements OnInit {
   selectedCommitTimeIntervalWithAuthorColor$: Observable<any>;
   excludedFiles$: Observable<string[]>;
   filteredFiles$: Observable<FilterableFile[]>;
+  filteredAuthors$: Observable<FilterableAuthor[]>;
   authors$: Observable<Author[]>;
 
   constructor(
@@ -57,6 +59,17 @@ export class FilterPanelComponent implements OnInit {
           )
         )
       );
+    this.filteredAuthors$ = combineLatest(this.projectQuery.authors$, this.filterQuery.excludedAuthors)
+      .pipe(
+        map(([authors, excludedAuthors]) =>
+          (
+            authors.map((author) => ({
+              author: author,
+              // If file is not in exlusion list ,then set enabled status to true.
+              enabled: (excludedAuthors.findIndex(e => e == Author.hashCode(author)) == -1) ? true : false
+            }))
+          )
+        ));
     this.authors$ = this.projectQuery.authors$;
   }
 
@@ -94,8 +107,18 @@ export class FilterPanelComponent implements OnInit {
     }
   }
 
-  onAuthorFilterItemClick(author: Author) {
+  // Author filter item checkbox clicked.
+  onAuthorItemSelectionChanged(enabled: boolean, filterableAuthor: FilterableAuthor) {
+    if (enabled) {
+      this.filterService.includeAuthor(filterableAuthor.author);
+    } else {
+      this.filterService.excludeAuthor(filterableAuthor.author);
+    }
+  }
+
+  onAuthorFilterItemClick(event, filterableAuthor: FilterableAuthor) {
     const modalRef = this.modalService.open(AuthorEditModalComponent);
-    modalRef.componentInstance.author = author;
+    modalRef.componentInstance.author = filterableAuthor.author;
+    modalRef.componentInstance.enabled = filterableAuthor.enabled;
   }
 }

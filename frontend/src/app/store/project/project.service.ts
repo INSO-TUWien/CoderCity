@@ -117,4 +117,35 @@ export class ProjectService {
       this.getProjectData(id as string);
     }
   }
+
+  updateAuthorColor(author: Author, color: string) {
+    this.projectStore.update(
+      (state) => {
+        const authorColorMap = state.authorColorMap;
+        const projectData = state.projectData;
+        const updatedProjectData = {
+          ...projectData,
+          authors:  projectData.authors.map((a, i) => {
+            if (Author.hashCode(a) === Author.hashCode(author)) {
+              // Update author item with color
+              return {
+                ...a,
+                color: color
+              };
+            } else {
+              // Do not change color
+              return a;
+            }
+          })
+        }
+
+        authorColorMap.set(Author.hashCode(author), color);
+        return ({
+          ...state,
+          projectData: updatedProjectData,
+          authorColorMap: authorColorMap
+        });
+      }
+    )
+  }
 }

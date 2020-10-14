@@ -1,5 +1,16 @@
-<div *ngIf="size === 'normal'" 
-    class="
+<div *ngIf="size === 'normal'" >
+    <div [style.backgroundColor]="color"
+    [style.border-bottom-color]="darkenedAuthorColor" class="
+            author-circle 
+            text-center 
+            d-flex
+            align-items-center 
+            justify-content-center">
+    {{name | authorInitials | uppercase}}
+    </div>
+
+
+    <!-- class="
         d-flex 
         flex-row 
         author-label-container 
@@ -9,20 +20,13 @@
     <div class="
         mr-2
         d-flex 
-        justify-content-center         flex-column
+        justify-content-center         
+        flex-column
     ">
         <div class="author-text text-left font-weight-bold">{{name}}</div>
         <div class="author-text text-left text-muted font-weight-light ">{{email}}</div>
-    </div>
-    <div [style.backgroundColor]="color"
-        [style.border-bottom-color]="darkenedAuthorColor" class="
-                author-circle 
-                text-center 
-                d-flex
-                align-items-center 
-                justify-content-center">
-        {{name | authorInitials | uppercase}}
-    </div>
+    </div> -->
+   
 </div>
 
 <div *ngIf="size === 'xs'" [style.backgroundColor]="color" [style.border-bottom-color]="darkenedAuthorColor" class="

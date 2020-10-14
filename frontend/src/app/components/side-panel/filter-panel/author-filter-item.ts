@@ -1,6 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Author } from 'src/app/model/author.model';
 
+export interface FilterableAuthor {
+  enabled: boolean,
+  author: Author
+}
 
 @Component({
   selector: '[cc-author-filter-item]',
@@ -8,9 +12,16 @@ import { Author } from 'src/app/model/author.model';
     <div class="
       d-flex
       flex-row
-    ">
+    "
+    (click)="onAuthorItemClicked()"
+    >
     <span class="ml-2">
-      <input type="checkbox" class="form-check-input">
+      <input 
+        type="checkbox" 
+        class="form-check-input" 
+        [checked]="enabled"
+        (click)="onCheckboxChanged($event)"
+      >
     </span>
     
     <cc-author-label [name]="author.name" [color]="author.color" size="xs"></cc-author-label>
@@ -35,17 +46,29 @@ export class AuthorFilterItemComponent implements OnInit {
   @Input('author')
   author: Author;
 
+  @Input('enabled')
   enabled: boolean = true;
 
   @Output()
   onAuthorItemSelectionChanged = new EventEmitter<boolean>();
 
-  constructor() { }
+  @Output()
+  onItemClicked = new EventEmitter<void>();
+
+  constructor(
+  ) {
+  }
 
   ngOnInit() { }
 
-  onClick() {
-    //   this.enabled = !this.enabled;
-    //   this.onFileSelectionChanged.emit(this.enabled);
+  onCheckboxChanged(event) {
+    this.enabled = !this.enabled;
+    this.onAuthorItemSelectionChanged.emit(this.enabled);
+    event.stopPropagation();
   }
+
+  onAuthorItemClicked() {
+    this.onItemClicked.emit();
+  }
+
 }

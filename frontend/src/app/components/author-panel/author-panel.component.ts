@@ -8,12 +8,30 @@ import { ProjectQuery } from 'src/app/store/project/project.query';
   selector: 'cc-author-panel',
   template: `
   <div class="d-flex flex-column">
-    <cc-author-label
-      *ngFor="let author of authors$ | async"
-      [name]="author.name"
-      [email]="author.email"
-      [color]="author.color"
-    ></cc-author-label>
+    <div *ngFor="let author of authors$ | async">
+        <div class="
+        d-flex 
+        flex-row 
+        author-label-container 
+        mt-2 
+        justify-content-between  
+        align-items-center">
+        <div class="
+            mr-2
+            d-flex 
+            justify-content-center         
+            flex-column
+        ">
+            <div class="author-text text-left font-weight-bold">{{author.name}}</div>
+            <div class="author-text text-left text-muted font-weight-light ">{{author.email}}</div>
+        </div>
+        <cc-author-label
+          [name]="author.name"
+          [email]="author.email"
+          [color]="author.color"
+        ></cc-author-label>
+      </div>  
+    </div>
   </div>
 `,
   styleUrls: ['./author-panel.component.scss']
@@ -26,19 +44,6 @@ export class AuthorPanelComponent implements OnInit {
     private projectQuery: ProjectQuery
   ) {
     this.authors$ = this.projectQuery.authors$;
-    //this.initSampleAuthors();
-  }
-
-  private initSampleAuthors() {
-    const authors: Author[] = [];
-    for (let i = 0; i < 5; i++) {
-      authors.push({
-        name: `Author ${i}`,
-        email: ``,
-        color: getAuthorColor(i)
-      });
-    }
-    this.authors$ = of(authors);
   }
 
   ngOnInit() {

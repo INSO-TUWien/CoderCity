@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Author } from 'src/app/model/author.model';
+import { FilterService } from 'src/app/store/filter';
+import { ProjectService } from 'src/app/store/project/project.service';
 import { COLORS } from 'src/app/util/color-scheme';
 
 @Component({
@@ -10,7 +12,10 @@ import { COLORS } from 'src/app/util/color-scheme';
 })
 export class AuthorEditModalComponent implements OnInit {
 
+  private colors: string[] = COLORS;
+
   private _author: Author;
+  
   set author(value) {
     this.activeColor = value.color;
     this._author = value;
@@ -19,11 +24,14 @@ export class AuthorEditModalComponent implements OnInit {
     return this._author;
   }
 
-  colors: string[] = COLORS;
+  enabled: boolean = true;
+
   activeColor: string = '';
 
   constructor(
     public activeModal: NgbActiveModal,
+    private filterService: FilterService,
+    private projectService: ProjectService
   ) { }
 
   ngOnInit() {
@@ -33,4 +41,18 @@ export class AuthorEditModalComponent implements OnInit {
     this.activeColor = color;
   }
 
+  onCheckboxChanged() {
+    this.enabled = !this.enabled;
+  }
+
+  onSave() {
+    if (this.enabled) {
+      this.filterService.includeAuthor(this.author);
+      this.projectService.updateAuthorColor(this.author, this.activeColor);
+    } else {
+      this.filterService.excludeAuthor(this.author);
+      this.projectService.updateAuthorColor(this.author, this.activeColor);
+    }
+    this.activeModal.close();
+  }
 }

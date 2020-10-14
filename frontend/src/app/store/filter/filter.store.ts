@@ -3,11 +3,13 @@ import { Store, StoreConfig } from '@datorama/akita';
 
 export interface FilterState {
   excludedFiles: string[];
+  excludedAuthors: string[];
 }
 
 export function createInitialState(): FilterState {
   return {
-    excludedFiles: []
+    excludedFiles: [],
+    excludedAuthors: []
   };
 }
 
