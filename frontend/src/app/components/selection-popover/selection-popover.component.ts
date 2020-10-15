@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Commit } from "../../model/commit.model";
 import { Observable, Subject, BehaviorSubject, of, combineLatest } from "rxjs";
 import { tap, map, timeInterval } from "rxjs/operators";
-import { GitQuery } from "src/app/state/git.query";
+import { GitQuery } from "src/app/store/git/git.query";
 import { VisualizationQuery } from "src/app/store/visualization/visualization.query";
 import { ProjectQuery } from 'src/app/store/project/project.query';
 

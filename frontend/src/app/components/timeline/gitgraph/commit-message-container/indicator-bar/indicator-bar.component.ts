@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Commit } from 'src/app/model/commit.model';
 import { Observable, combineLatest } from 'rxjs';
-import { GitQuery } from 'src/app/state/git.query';
+import { GitQuery } from 'src/app/store/git/git.query';
 import { VisualizationQuery } from 'src/app/store/visualization/visualization.query';
 import { withLatestFrom, tap, map } from 'rxjs/operators';
 import { ProjectQuery } from 'src/app/store/project/project.query';

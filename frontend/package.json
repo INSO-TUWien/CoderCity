@@ -35,6 +35,7 @@
     "@types/d3-scale": "^2.2.0",
     "@types/lodash-es": "^4.17.3",
     "@types/webgl2": "0.0.5",
+    "angular2-draggable": "^2.3.2",
     "bootstrap": "^4.4.1",
     "chroma-js": "^2.1.0",
     "d3-scale": "^3.2.1",

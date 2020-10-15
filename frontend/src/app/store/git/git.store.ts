@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store, StoreConfig } from '@datorama/akita';
-import { Commit } from '../model/commit.model';
+import { Commit } from 'src/app/model/commit.model';
 
 export interface GitState {
   commitPreview: Commit;

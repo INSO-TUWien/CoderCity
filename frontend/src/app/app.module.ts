@@ -35,6 +35,7 @@ import { BranchTagComponent } from './components/timeline/gitgraph/branch-tag/br
 import { FilePanelItemComponent } from './components/side-panel/filter-panel/file-filter-item';
 import { AuthorEditModalComponent } from './components/side-panel/filter-panel/author-edit-modal/author-edit-modal.component';
 import { AuthorFilterItemComponent } from './components/side-panel/filter-panel/author-filter-item';
+import { AngularDraggableModule } from 'angular2-draggable';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -80,7 +81,8 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     FontAwesomeModule,
     HttpClientModule,
     SocketIoModule.forRoot(config),
-    ColorPickerModule
+    ColorPickerModule,
+    AngularDraggableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

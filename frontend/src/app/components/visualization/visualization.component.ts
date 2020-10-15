@@ -77,8 +77,13 @@ export class VisualizationComponent implements OnInit {
     );
 
     // Handle preference changes. Wait for author data before rendering.
-    combineLatest(this.projectQuery.authors$, this.settingsQuery.preferences$, this.filterQuery.excludedFiles$).subscribe(
-      ([authors, preferences, excludedFiles]) => {
+    combineLatest(
+      this.projectQuery.authors$, 
+      this.settingsQuery.preferences$, 
+      this.filterQuery.excludedFiles$,
+      this.filterQuery.excludedAuthors
+    ).subscribe(
+      ([authors, preferences, excludedFiles, excludedAuthors]) => {
         this.authors = authors;
         if (authors != null && preferences != null) {
             this.handleVisualizationOptions(preferences, excludedFiles);

@@ -26,6 +26,7 @@ export class Visualization {
     private entities: Entity[] = [];
 
     private excludedFiles: string[] = [];
+    private excludedAuthors: string[] = [];
 
     private stats = new Stats();
 
@@ -133,6 +134,10 @@ export class Visualization {
      */
     setExcludedFiles(files: string[]) {
         this.excludedFiles = files;
+    }
+
+    setExcludedAuthors(authors: string[]) {
+        this.excludedAuthors = authors;
     }
 
     addEntity(entity: Entity): void {

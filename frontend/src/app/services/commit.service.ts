@@ -3,10 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Commit } from '../model/commit.model';
 import { File } from '../model/file.model';
 import { Observable } from 'rxjs';
-import { GitStore } from '../state/git.store';
 import { Directory } from '../model/directory.model';
 import { environment } from 'src/environments/environment';
 import { ProjectQuery } from '../store/project/project.query';
+import { GitStore } from '../store/git/git.store';
 
 export const COMMIT_ENDPOINT = 'commit';
 

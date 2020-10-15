@@ -51,6 +51,10 @@ export class Building extends Entity implements CityElement {
     }
 
     createBuildingSegment(start: number, end: number, hunk: BlameHunk) {
+        // Check whether author of hunk is in exlusion list.
+        // if (hunk.signature) {
+
+        // }
         const color = this.options.buildingColorMapper.mapValue(hunk);
         const segment = new BuildingSegment(
             this.bounds.x - BUILDING_MARGIN,
