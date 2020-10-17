@@ -5,6 +5,7 @@ import { GitQuery } from 'src/app/store/git/git.query';
 import { VisualizationQuery } from 'src/app/store/visualization/visualization.query';
 import { withLatestFrom, tap, map } from 'rxjs/operators';
 import { ProjectQuery } from 'src/app/store/project/project.query';
+import { Author } from 'src/app/model/author.model';
 
 @Component({
   selector: 'cc-indicator-bar',
@@ -15,6 +16,7 @@ export class IndicatorBarComponent implements OnInit {
 
   commits$: Observable<Commit[]>;
   authorColorMap$: Observable<Map<string, string>>;
+  authors$: Observable<Author[]>
 
   commitsWithAuthorColor$;
 
@@ -22,17 +24,19 @@ export class IndicatorBarComponent implements OnInit {
     private projectQuery: ProjectQuery,
   ) {
     this.commits$ = this.projectQuery.sortedCommits$;
+    this.authors$ = this.projectQuery.authors$;
     this.authorColorMap$ = this.projectQuery.authorColorMap$;
 
-    this.commitsWithAuthorColor$ = combineLatest(this.commits$, this.authorColorMap$)
+    this.commitsWithAuthorColor$ = combineLatest(this.commits$, this.authors$)
       .pipe(
         map(([commits, authors]) => {
           let result = [];
-          if (commits != null && authors != null && commits.length > 0 && authors.size > 0) {
+          if (commits != null && authors != null && commits.length > 0 && authors.length > 0) {
             result = commits.map(
               (commit) => ({
                 ...commit,
-                authorColor: authors.get(commit.authorName + commit.mail)
+                // Get color of author if author exists
+                authorColor: authors?.find((a) => Author.hashCode(a) === commit.authorName + commit.mail)?.color
               })
             );
           }

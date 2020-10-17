@@ -86,7 +86,7 @@ export class VisualizationComponent implements OnInit {
       ([authors, preferences, excludedFiles, excludedAuthors]) => {
         this.authors = authors;
         if (authors != null && preferences != null) {
-            this.handleVisualizationOptions(preferences, excludedFiles);
+            this.handleVisualizationOptions(preferences, excludedFiles, excludedAuthors);
             this.renderCity();
         }
       }
@@ -99,7 +99,7 @@ export class VisualizationComponent implements OnInit {
     }
   }
 
-  private handleVisualizationOptions(preferences: Preferences, excludedFiles: string[]) {
+  private handleVisualizationOptions(preferences: Preferences, excludedFiles: string[], excludedAuthors: string[]) {
     if (preferences == null) {
         console.error(`Engine: setPreferences: preferences is null or undefined.`);
     }
@@ -121,6 +121,10 @@ export class VisualizationComponent implements OnInit {
 
     if (excludedFiles !== null) {
       this.visualization.setExcludedFiles(excludedFiles);
+    }
+
+    if (excludedAuthors !== null) {
+      this.visualization.setExcludedAuthors(excludedAuthors);
     }
   }
 

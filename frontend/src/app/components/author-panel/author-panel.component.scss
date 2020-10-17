@@ -4,6 +4,7 @@
     bottom: 65%;
     right: 18px;
     width: 280px;
+    max-height: 720px;
     font-size: 10pt;
 }
 
@@ -14,7 +15,7 @@ h3 {
 }
 
 .author-label-container {
-    box-shadow: 4px 4px 4px 0 #E9E9E9;
+    box-shadow: 4px 4px 4px 0 #00000020;
     background-color: white;
     position: relative;
     pointer-events: all;

@@ -9,8 +9,12 @@ import { ValueMapper } from '../util/mapper/value-mapper';
 import { SquareRootValueMapper } from '../util/mapper/squareroot-value-mapper';
 import { BlameHunk } from 'src/app/model/blamehunk.model';
 import { CityOptions } from '../util/city-options';
+import { Author } from 'src/app/model/author.model';
 
 export class Building extends Entity implements CityElement {
+
+    static DEFAULT_COLOR = new THREE.Color('#F9F9F9');
+
 
     mapper: ValueMapper;
 
@@ -51,16 +55,26 @@ export class Building extends Entity implements CityElement {
     }
 
     createBuildingSegment(start: number, end: number, hunk: BlameHunk) {
+        let color = Building.DEFAULT_COLOR;
+        let opacity = 1;
+   
         // Check whether author of hunk is in exlusion list.
-        // if (hunk.signature) {
-
-        // }
-        const color = this.options.buildingColorMapper.mapValue(hunk);
+        const author = Author.fromHunk(hunk);
+        if (this.options?.excludedAuthors != null &&
+            this.options?.excludedAuthors.findIndex((excludedAuthor) => Author.hashCode(author) == excludedAuthor) === -1) 
+        {
+            // Author is not in exlusion list.
+            // Get mapped author color
+            color = this.options.buildingColorMapper.mapValue(hunk);
+            opacity = 1;
+        }
+        
         const segment = new BuildingSegment(
             this.bounds.x - BUILDING_MARGIN,
             (end - start),
             this.bounds.y - BUILDING_MARGIN,
-            color
+            color,
+            opacity
         );
 
         segment.setPosition(

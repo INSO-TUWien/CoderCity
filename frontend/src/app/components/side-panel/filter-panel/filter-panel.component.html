@@ -1,4 +1,4 @@
-<div class="information-panel" *ngIf="isViewActive$ | async">
+<div ngDraggable class="information-panel" *ngIf="isViewActive$ | async">
   <div class="d-flex flex-row justify-content-between">
     <h3 class="font-weight-bold">Filter</h3>
     <button class="btn btn-sm btn-light" (click)="onClose()">

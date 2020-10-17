@@ -108,7 +108,8 @@ export class Visualization {
             {
                 buildingColorMapper: this.buildingColorMapper,
                 districtColorMapper: this.districtColorMapper,
-                excludedFiles: this.excludedFiles
+                excludedFiles: this.excludedFiles,
+                excludedAuthors: this.excludedAuthors
             });
         this.city.generateCity(
             directory

@@ -3,7 +3,7 @@ $TIMELINE_HEIGHT: 300px;
 :host {
     z-index: 400;
     font-size: 12pt;
-    pointer-events: all;
+    pointer-events: none;
 }
 
 .timeline-header {
@@ -12,11 +12,12 @@ $TIMELINE_HEIGHT: 300px;
 }
 
 .container {
+    pointer-events: all;
     padding: 16px;
     height: $TIMELINE_HEIGHT;
     min-width: 600px;
     border-radius: 4px;
-    box-shadow: 4px 4px 4px 0 rgba(226,226,226,0.50);
+    box-shadow: 4px 4px 4px 0 #00000020;
     background-color: white;
 }
 
