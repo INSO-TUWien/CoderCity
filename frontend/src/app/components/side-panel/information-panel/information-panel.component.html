@@ -1,52 +1,57 @@
-<div *ngIf="state !== InformationPanelState.Inactive" [ngSwitch]="state" class="information-panel d-flex flex-column">
-    <div *ngSwitchCase="InformationPanelState.Hunk">
-      <h3>{{hunk.path}}</h3>
-      <hr class="mt-2 mb-2"/>
-      <div>
-          <table class="table borderless  table-sm">
-              <tbody>
-                  <tr>
-                      <th scope="row">Lines</th>
-                      <td> {{hunk.startLineNumber}} - {{hunk.endLineNumber}}</td>
-                  </tr>
-                  <tr>
-                      <th scope="row">Number of lines</th>
-                      <td> {{hunk.linesInHunk}}</td>
-                  </tr>
-                <tr>
-                  <th scope="row">Name</th>
-                  <td> {{hunk?.signature?.name}}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Email</th>
-                  <td> {{hunk?.signature?.email}}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Commit ID:</th>
-                  <td> {{hunk?.commitId}}</td>
-                </tr>
-              </tbody>
-            </table>
-      </div>
+<div 
+  *ngIf="state !== InformationPanelState.Inactive" 
+  [ngSwitch]="state" 
+  [style.left]="x + 'px'"
+  [style.top]="y + 'px'"
+  class="information-panel d-flex flex-column">
+  <div *ngSwitchCase="InformationPanelState.Hunk">
+    <h3>{{hunk.path}}</h3>
+    <hr class="mt-2 mb-2" />
+    <div>
+      <table class="table borderless  table-sm">
+        <tbody>
+          <tr>
+            <th scope="row">Lines</th>
+            <td> {{hunk.startLineNumber}} - {{hunk.endLineNumber}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Number of lines</th>
+            <td> {{hunk.linesInHunk}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Name</th>
+            <td> {{hunk?.signature?.name}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Email</th>
+            <td> {{hunk?.signature?.email}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Commit ID:</th>
+            <td> {{hunk?.commitId}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
 
-    <div *ngSwitchCase="InformationPanelState.Directory">
-      <h3>{{directory.fullPath}}</h3>
-      <hr class="mt-2 mb-2"/>
-      <div>
-          <table class="table borderless  table-sm">
-              <tbody>
-                <tr>
-                  <th scope="row">Directories:</th>
-                  <td>{{directory.directories.length}}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Files:</th>
-                    <td>{{directory.files.length}}</td>
-                </tr>
-              </tbody>
-            </table>
-      </div>
+  <div *ngSwitchCase="InformationPanelState.Directory">
+    <h3>{{directory.fullPath}}</h3>
+    <hr class="mt-2 mb-2" />
+    <div>
+      <table class="table borderless  table-sm">
+        <tbody>
+          <tr>
+            <th scope="row">Directories:</th>
+            <td>{{directory.directories.length}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Files:</th>
+            <td>{{directory.files.length}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    
+  </div>
+
 </div>

@@ -3,13 +3,16 @@
 }
 
 .information-panel {
+    position: absolute;
     margin-top: 8px;
+    margin-left: 16px;
     padding: 16px;
     border-radius: 4px;
     box-shadow: 4px 4px 4px 0 #00000020;
     background-color: white;
     font-size: 10pt;
     pointer-events: all;
+    z-index: 500;
 }
 
 .information-panel table {

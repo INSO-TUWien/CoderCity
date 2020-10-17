@@ -20,11 +20,32 @@ export class InformationPanelComponent implements OnInit {
   InformationPanelState = InformationPanelState;
 
   state: InformationPanelState = InformationPanelState.Inactive;
-
-  title: string = 'Test';
   hunk: BlameHunk;
   directory: IntersectableDirectory;
   selectedObjectSubscription: Subscription;
+
+  private _x: number;
+  get x(): number {
+    return this._x;
+  }
+  set x(value: number) {
+    if (value > 0)
+      this._x = value;
+  }
+
+  private _y: number;
+  get y(): number {
+    return this._y;
+  }
+  set y(value: number) {
+    if (value > 0)
+      this._y = value;
+  }
+
+  onMouseMove = e => {
+    this.x = e.offsetX;
+    this.y = e.offsetY;
+  }
 
   constructor(
     private visualizationQuery: VisualizationQuery
@@ -32,7 +53,10 @@ export class InformationPanelComponent implements OnInit {
   }
 
   ngOnInit() {
+    window.addEventListener('mousemove', this.onMouseMove);
     this.selectedObjectSubscription = this.visualizationQuery.selectedObject$.subscribe(selectedObject => {
+      
+
       if (selectedObject == null) {
         this.state = InformationPanelState.Inactive;
         return;
@@ -53,6 +77,7 @@ export class InformationPanelComponent implements OnInit {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
+    window.removeEventListener('mousemove', this.onMouseMove);
     this.selectedObjectSubscription.unsubscribe();
   }
 }
