@@ -47,19 +47,26 @@ export class FilterPanelComponent implements OnInit {
     this.selectedCommitTimeInterval$ = this.visualizationQuery.selectedCommitInterval$;
     this.selectedCommitTimeIntervalWithAuthorColor$ = this.visualizationQuery.selectedCommitTimeIntervalWithAuthorColor$;
     this.excludedFiles$ = this.filterQuery.select(store => store.excludedFiles);
-    this.filteredFiles$ = combineLatest(this.visualizationQuery.files$, this.excludedFiles$)
+    this.filteredFiles$ = combineLatest(
+      this.visualizationQuery.files$, 
+      this.excludedFiles$, 
+      this.filterQuery.fileSearchTerm$
+    )
       .pipe(
-        map(([files, excludedFiles]) =>
+        map(([files, excludedFiles, searchterm]) =>
           (
-            files.map((file) => ({
-              name: file.name + '',
-              // If file is not in excluded files ,then set enabled status to true.
-              enabled: (excludedFiles.findIndex(e => e == file.name) == -1) ? true : false
+            files
+              .filter((f) => f.fullPath.toUpperCase().includes(searchterm.toUpperCase())) // Filter list by searchterm independent on upper/lower casing
+              .map((file) => ({
+                name: file.name + '',
+                // If file is not in excluded files ,then set enabled status to true.
+                enabled: (excludedFiles.findIndex(e => e == file.name) == -1) ? true : false
             }))
           )
         )
       );
-    this.filteredAuthors$ = combineLatest(this.projectQuery.authors$, this.filterQuery.excludedAuthors)
+    
+    this.filteredAuthors$ = combineLatest(this.projectQuery.authors$, this.filterQuery.excludedAuthors$)
       .pipe(
         map(([authors, excludedAuthors]) =>
           (
@@ -74,6 +81,10 @@ export class FilterPanelComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  fileSearchInputChanged(e) {
+    this.filterService.setFileSearchString(e?.target?.value);
   }
 
   onDeleteTimeInterval() {

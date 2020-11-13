@@ -33,6 +33,13 @@ export class FilterService {
     )
   }
 
+  setFileSearchString(searchTerm: string) {
+    this.filterStore.update(
+      state => ({
+        ...state,
+        fileSearchString: searchTerm
+      }))
+  }
 
   excludeAuthor(author: Author) {
     this.filterStore.update(
@@ -46,7 +53,7 @@ export class FilterService {
     )
   }
 
-  includeAuthor(author: Author) {
+  includeAuthor(author: Author) {
     this.filterStore.update(
       state => {
         return {

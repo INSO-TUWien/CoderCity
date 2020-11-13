@@ -13,6 +13,7 @@ export interface VisualizationState {
   projectFiles: Directory;
   selectedCommit: Commit;
   selectedCommitInterval: CommitTimeInterval;
+  selectedSearchItem: string;
   isFilterViewActive: boolean;
 }
 
@@ -22,6 +23,7 @@ export function createInitialState(): VisualizationState {
     files: [],
     projectFiles: null,
     selectedCommit: null,
+    selectedSearchItem: '',
     selectedCommitInterval: {
       start: null,
       end: null

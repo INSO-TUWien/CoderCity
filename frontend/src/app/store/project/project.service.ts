@@ -27,6 +27,24 @@ export class ProjectService {
     );
   }
 
+  // Calculates and assigns individual color values of authors. 
+  // Authors with the same name or email  are given the same color.
+  private assignColors(authors: Author[]): Author[] {
+    let result: Author[] = [];
+    authors.forEach((a,i) => {
+      let color = result.find((existingAuthor) => existingAuthor.name == a.name || existingAuthor.email == a.email)?.color;
+      if (color == null) {
+        color = getAuthorColor(i);
+      }
+      result.push({
+        color: color,
+        email: a.email, 
+        name: a.name 
+      });
+    });
+    return result;
+  }
+
   async getProjectData(projectId: string) {
     this.http
       .get<ProjectData>(`${environment.apiUrl}/project/${projectId}`)
@@ -45,7 +63,7 @@ export class ProjectService {
           const authors = val?.authors;
           return ({
             ...val,
-            authors: authors.map((a, index) => ({ color: getAuthorColor(index), email: a.email, name: a.name }))
+            authors: this.assignColors(authors)
           });
         }),
         tap((val) => {

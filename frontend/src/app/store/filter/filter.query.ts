@@ -10,6 +10,7 @@ export class FilterQuery extends Query<FilterState> {
     super(store);
   }
 
-  excludedAuthors = this.select(store => store.excludedAuthors);
+  excludedAuthors$ = this.select(store => store.excludedAuthors);
   excludedFiles$ = this.select(store => store.excludedFiles);
+  fileSearchTerm$ = this.select(store => store.fileSearchString);
 }

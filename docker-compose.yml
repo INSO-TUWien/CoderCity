@@ -20,7 +20,7 @@ services:
     environment:
       GIT_PROJECTS_FOLDER: /projects
       MONGODB_URI: mongodb://root:example@cc-mongodb:27017
-      INDEX_MODE: EAGER  # EAGER = Pre index files. LAZY = Indexes files on demand
+      INDEX_MODE: LAZY  # EAGER = Pre index files. LAZY = Indexes files on demand
     volumes:
       - "/Users/yikaiyang/Projects/Uni:/projects"
   cc-frontend:

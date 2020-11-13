@@ -98,6 +98,10 @@ export class Visualization {
         }
     }
 
+    getCity(): City {
+        return this.city;
+    }
+
     /**
      * Generates a city based on git snapshot
      */

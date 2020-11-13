@@ -90,10 +90,20 @@
         <div class="font-weight-bold">Files</div>
       </div>
 
-      <div class="list-group mt-2 overflow-auto files-list-container" id="list-tab" role="tablist">
-        <div class="list-group-item  py-1 list-group-item-action " *ngFor="let file of filteredFiles$ | async"
+      <div class="list-group mt-2 files-list-container" id="list-tab" role="tablist">
+        <div class="mb-2">
+          <input 
+            (keyup)="fileSearchInputChanged($event)"
+            type="text" 
+            class="form-control form-control-sm" 
+            placeholder="Search for files">
+        </div>
+        <div class="overflow-auto ">
+          <div class=" list-group-item  py-1 list-group-item-action " *ngFor="let file of filteredFiles$ | async"
           cc-file-panel-item 
           (onFileSelectionChanged)="onFileSelectionChanged($event, file)" [file]="file"></div>
+        </div>
+     
       </div>
 
       <div class="d-flex mt-3 flex-row justify-content-between">

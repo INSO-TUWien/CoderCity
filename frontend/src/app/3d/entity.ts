@@ -3,7 +3,8 @@ import * as THREE from 'three';
 
 export class Entity {
     // List of sub entities
-    private entities: Entity[] = [];
+    entities: Entity[] = [];
+    
     // Threejs mesh represented by this entity
     object: Object3D = new THREE.Object3D();
 
@@ -14,11 +15,31 @@ export class Entity {
      */
     init() {}
 
-
     addEntity(entity: Entity): void {
         entity.init();
         this.object.add(entity.object);
         this.entities.push(entity);
+    }
+
+    /**
+     * Searches recursively using DFS in all child entities and returns 
+     * the first entity matching the matchingFunction. ()
+     * 
+     * An optional cancellation function terminates the current branch and further subbranches if the output of the cancellationFunction returns false
+     */
+    searchEntity(matchingFunction: (userdata) => boolean, cancellationFunction?: (userData) => boolean): Entity {
+        if (cancellationFunction(this.userData)) {
+            // If this branch does not 
+            return;
+        }
+        if (matchingFunction(this.userData)) {
+            // Current entity matches matching function. This is the searched object.
+            return this;
+        }
+
+        for (let entity of this.entities) {
+            entity.searchEntity(matchingFunction, cancellationFunction);
+        }
     }
 
     deleteEntity(entity: Entity): void {
@@ -42,8 +63,8 @@ export class Entity {
     }
 
     update(): void {
-        this.entities.forEach(entity => {
+        for (let entity of this.entities) {
             entity.update();
-        });
+        }
     }
 }

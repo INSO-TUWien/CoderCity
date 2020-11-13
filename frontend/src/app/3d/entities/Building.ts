@@ -12,10 +12,7 @@ import { CityOptions } from '../util/city-options';
 import { Author } from 'src/app/model/author.model';
 
 export class Building extends Entity implements CityElement {
-
     static DEFAULT_COLOR = new THREE.Color('#F9F9F9');
-
-
     mapper: ValueMapper;
 
     /**
@@ -66,7 +63,6 @@ export class Building extends Entity implements CityElement {
             // Author is not in exlusion list.
             // Get mapped author color
             color = this.options.buildingColorMapper.mapValue(hunk);
-            opacity = 1;
         }
         
         const segment = new BuildingSegment(

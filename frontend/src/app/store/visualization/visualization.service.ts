@@ -84,4 +84,15 @@ export class VisualizationService {
       selectedCommitInterval: commitInterval
     }));
   }
+
+  /**
+   * Sets selected item of universal search
+   * @param item selected search item
+   */
+  setSelectedSearchItem(item: string) {
+    this.visualizationStore.update(state => ({
+      ...state,
+      selectedSearchItem: item
+    }))
+  }
 }

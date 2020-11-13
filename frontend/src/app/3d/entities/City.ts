@@ -23,6 +23,10 @@ export class City extends Entity {
         this.rootDistrict.setPosition(offsetX, 0, offsetZ);
     }
 
+    searchEntity(matchingFunction: (userdata) => boolean, cancellationFunction?: (userData) => boolean): Entity {
+        return this.rootDistrict.searchEntity(matchingFunction, cancellationFunction);
+    }
+
     generateCity(projectFiles: Directory): void {
         if (this.rootDistrict != null) {
             this.deleteEntity(this.rootDistrict);
@@ -36,6 +40,9 @@ export class City extends Entity {
         this.generateCityElement(projectFiles, this.rootDistrict);
         this.addEntity(this.rootDistrict);
         this.rootDistrict.addToScene();
+        this.rootDistrict.setUserData({
+            fullPath: ''
+        })
     }
 
     /**

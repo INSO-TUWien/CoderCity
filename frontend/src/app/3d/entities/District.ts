@@ -75,7 +75,7 @@ export class District extends Entity implements Element {
         // const element = new Element(new Bounds(width, height));
         const building = new Building(new Bounds(width, height), this.options);
         building.createWithFile(file);
-        this.addBuilding(building);
+        this.addCityElement(building);
     }
 
     /**

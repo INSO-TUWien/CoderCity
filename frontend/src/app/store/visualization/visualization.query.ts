@@ -22,6 +22,7 @@ export class VisualizationQuery extends Query<VisualizationState> {
   files$ = this.select(state => state.files);
   projectFiles$ = this.select(state => state.projectFiles);
   private authorColorMap$ = this.projectQuery.authorColorMap$;
+  selectedSearchItem$ = this.select(state => state.selectedSearchItem);
 
   selectedCommitTimeIntervalWithAuthorColor$ = combineLatest(
     this.selectedCommitInterval$,

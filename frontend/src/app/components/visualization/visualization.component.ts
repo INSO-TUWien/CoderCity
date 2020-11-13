@@ -15,7 +15,7 @@ import { ProjectQuery } from 'src/app/store/project/project.query';
 import { Subscription, combineLatest } from 'rxjs';
 import { DistrictDepthColorMapper } from 'src/app/3d/util/color/district-depth-color-mapper';
 import { DistrictRandomColorMapper } from 'src/app/3d/util/color/district-random-color-mapper';
-import { FilterQuery } from 'src/app/store/filter';
+import { FilterQuery } from 'src/app/store/filter/filter.query';
 
 @Component({
   selector: 'cc-visualization',
@@ -38,7 +38,7 @@ export class VisualizationComponent implements OnInit {
     private projectQuery: ProjectQuery, 
     private settingsQuery: SettingsQuery,
     private filterQuery: FilterQuery,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
   }
 
@@ -76,12 +76,35 @@ export class VisualizationComponent implements OnInit {
       }
     );
 
+    this.visualizationQuery.selectedSearchItem$.subscribe((searchItem) => {
+      if (searchItem.length > 0) {
+        const result = this.visualization.getCity().searchEntity(
+          (userdata) => {
+            if (userdata?.fullPath == searchItem){
+              return true;
+            } else {
+              return false;
+            }
+          },
+          (userdata) => {
+            // Abort if searchItem does not include the full path value of the current entity.
+            // 
+            if (!searchItem.includes(userdata?.fullPath)) {
+              return true;
+            }
+            return false;
+          }
+        );
+        alert(JSON.stringify(result));
+      }
+    });
+
     // Handle preference changes. Wait for author data before rendering.
     combineLatest(
       this.projectQuery.authors$, 
       this.settingsQuery.preferences$, 
       this.filterQuery.excludedFiles$,
-      this.filterQuery.excludedAuthors
+      this.filterQuery.excludedAuthors$
     ).subscribe(
       ([authors, preferences, excludedFiles, excludedAuthors]) => {
         this.authors = authors;
