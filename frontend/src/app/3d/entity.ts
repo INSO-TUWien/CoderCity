@@ -29,7 +29,7 @@ export class Entity {
      */
     searchEntity(matchingFunction: (userdata) => boolean, cancellationFunction?: (userData) => boolean): Entity {
         if (cancellationFunction(this.userData)) {
-            // If this branch does not 
+            // If this branch does not contain path then abort.
             return;
         }
         if (matchingFunction(this.userData)) {
@@ -38,7 +38,10 @@ export class Entity {
         }
 
         for (let entity of this.entities) {
-            entity.searchEntity(matchingFunction, cancellationFunction);
+            let result = entity.searchEntity(matchingFunction, cancellationFunction);
+            if (result !== null && result !== undefined) {
+                return result;
+            }
         }
     }
 

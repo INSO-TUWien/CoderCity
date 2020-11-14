@@ -1,6 +1,6 @@
 import { Entity } from '../entity';
 import * as THREE from 'three';
-import { BuildingSegment } from './BuildingSegment';
+import { BuildingSegment } from './building-segment';
 import { BUILDING_MARGIN } from '../constants';
 import { CityElement } from '../layout/city-element';
 import { Bounds } from '../layout/bounds';
@@ -41,6 +41,8 @@ export class Building extends Entity implements CityElement {
                 //: this.mapper.map(hunk.startLineNumber + hunk.linesInHunk );
             this.createBuildingSegment(startLineNumber, endLineNumber, transformedHunk);
         });
+
+        this.setUserData(file);
     }
 
     setPosition(x: number, y: number, z: number) {

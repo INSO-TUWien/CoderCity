@@ -3,10 +3,10 @@ import { Vector2 } from 'three';
 import { Bounds } from '../layout/bounds';
 import { KDTree } from '../layout/kd-tree';
 import { Element } from '../layout/element';
-import { Cube } from './Cube';
+import { Cube } from './cube';
 import { KDTreeNode } from '../layout/kd-treenode';
 import { Area } from '../layout/area';
-import { Building} from './Building';
+import { Building} from './building';
 import { DISTRICT_MARGIN } from '../constants';
 import { File } from '../../model/file.model';
 import { CityElement } from '../layout/city-element';
@@ -53,7 +53,6 @@ export class District extends Entity implements Element {
     }
 
     private tree: KDTree;
-    private name: string;
 
     // Currently covered area by the elements.
     private coveredArea: Area;
@@ -62,7 +61,7 @@ export class District extends Entity implements Element {
         public directory: Directory,
         private options: CityOptions) {
         super();
-        this.name = directory.name;
+        this.setUserData(directory);
         this.computeDistrictLayout();
     }
 
@@ -220,7 +219,7 @@ export class District extends Entity implements Element {
     }
 
     addToScene(): void {
-        console.log(`District: ${this.name} : addToScene`);
+        console.log(`District: ${this.directory.name} : addToScene`);
          // Traverse tree and add elements to scene
         this.tree.executeWhileTraversingPreOrder((node) => {
             console.log(node);

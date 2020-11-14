@@ -4,7 +4,6 @@ import { Mesh, MeshLambertMaterial, Object3D } from 'three';
 import { EventBus } from '../util/eventbus';
 import * as EventEmitter from 'eventemitter3';
 import { BlameHunk } from 'src/app/model/blamehunk.model';
-import { Directory } from 'src/app/model/directory.model';
 import { IntersectableDirectory } from 'src/app/model/intersectable/intersectable-directory';
 
 /**

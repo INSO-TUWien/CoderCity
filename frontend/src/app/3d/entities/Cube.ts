@@ -22,9 +22,14 @@ export class Cube extends Entity {
 
     init() {
         this.object.add(this.mesh);
-        // // If data associated with the object exists: Copy data to mesh.
-        // const exampleHunk = new BlameHunk(1, 2, 2, "test", "test", "signature");
-        // this.mesh.userData.test = exampleHunk;
+    }
+
+    getUserData() {
+        return this.mesh.userData;
+    }
+
+    get userData() {
+        return this.mesh.userData;
     }
 
     setUserData(userData) {

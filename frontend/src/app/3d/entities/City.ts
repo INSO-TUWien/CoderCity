@@ -1,5 +1,5 @@
 import { Entity } from '../entity';
-import { District } from './District';
+import { District } from './district';
 import { Directory } from 'src/app/model/directory.model';
 import { CityOptions } from '../util/city-options';
 

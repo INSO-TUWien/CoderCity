@@ -1,4 +1,4 @@
-import { Cube } from './Cube';
+import { Cube } from './cube';
 
 export class BuildingSegment extends Cube {
 }
