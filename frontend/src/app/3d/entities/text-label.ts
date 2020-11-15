@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export class TextLabel {
     private htmlElement: HTMLElement;
-    private position: THREE.Vector3;
+    private position: THREE.Vector3 = new THREE.Vector3;
 
     // TODO implement a smart way to signal which text labels must 
     // be updated to avoid recalculating screen space coordinates all the time.
@@ -19,7 +19,7 @@ export class TextLabel {
     init() {
         this.htmlElement = document.createElement('div');
         this.htmlElement.style.position = 'absolute';
-        this.htmlElement.className='texty';
+        this.htmlElement.className='text-label';
         this.htmlContainer.appendChild(this.htmlElement);
         this.updatePosition();
         this.setText('Hello');
@@ -32,8 +32,8 @@ export class TextLabel {
     get2DCoordinates(): THREE.Vector2 {
         const projectedCoords = this.position.project(this.camera);
         return new THREE.Vector2(
-            (projectedCoords.x + 1) / 2 * window.innerWidth,
-            (projectedCoords.y - 1) / 2 * window.innerHeight,
+            (projectedCoords.x + 1) * window.innerWidth / 2,
+            - (projectedCoords.y - 1) * window.innerHeight / 2,
         );
     }
 

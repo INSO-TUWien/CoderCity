@@ -30,7 +30,7 @@ export class Entity {
     searchEntity(matchingFunction: (userdata) => boolean, cancellationFunction?: (userData) => boolean): Entity {
         if (cancellationFunction(this.userData)) {
             // If this branch does not contain path then abort.
-            return;
+            return null;
         }
         if (matchingFunction(this.userData)) {
             // Current entity matches matching function. This is the searched object.
@@ -43,6 +43,8 @@ export class Entity {
                 return result;
             }
         }
+        
+        return null;
     }
 
     deleteEntity(entity: Entity): void {

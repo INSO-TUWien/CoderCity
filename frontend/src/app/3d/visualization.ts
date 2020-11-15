@@ -9,6 +9,7 @@ import { BuildingColorMapper } from './util/color/building-color-mapper';
 import { BuildingRandomColorMapper } from './util/color/building-random-color-mapper';
 import { DistrictColorMapper } from './util/color/district-color-mapper';
 import { DistrictRandomColorMapper } from './util/color/district-random-color-mapper';
+import { TextLabel } from './entities/text-label';
 
 export class Visualization {
     private canvasElement: HTMLCanvasElement;
@@ -43,10 +44,10 @@ export class Visualization {
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.set( 0, 50, 60);
+        this.camera.position.set(0, 50, 60);
 
-        this.light = new THREE.HemisphereLight( 0xffffff, 0x8f8f8f, 1);
-        this.light.position.set( 0, 50, 10);
+        this.light = new THREE.HemisphereLight(0xffffff, 0x8f8f8f, 1);
+        this.light.position.set(0, 50, 10);
 
         this.scene.add(this.light);
         this.scene.background = new THREE.Color('#EEEEEE');
@@ -78,7 +79,7 @@ export class Visualization {
     private handleWindowResize() {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
-        this.renderer.setSize( window.innerWidth, window.innerHeight );
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
     private setupScene() {
@@ -89,6 +90,8 @@ export class Visualization {
             this.canvasElement
         );
         this.addEntity(mousePicker);
+
+
     }
 
     deleteCity(): void {
@@ -157,8 +160,36 @@ export class Visualization {
         this.entities.splice(this.entities.indexOf(entity), 1);
     }
 
+    searchEntity(matchingFunction: (userdata) => boolean, cancellationFunction?: (userData) => boolean): Entity {
+        return this.city.searchEntity(matchingFunction, cancellationFunction);
+    }
+
+    searchEntityByPath(fullPath: string) {
+        new TextLabel(document.body, this?.city?.object, this.camera);
+        const matchingFunction = (userdata) => {
+            if (userdata?.fullPath == fullPath) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        const abortFunction = (userdata) => {
+            // Terminate search path if searchItem does not include the full path value of the current entity.
+            if (!fullPath.includes(userdata?.fullPath)) {
+                return true;
+            }
+            return false;
+        }
+        const result = this.searchEntity(
+            matchingFunction,
+            abortFunction
+          );
+        return result;
+    }
+
     private render(): void {
-        requestAnimationFrame( () => this.render());
+        requestAnimationFrame(() => this.render());
 
         this.stats.begin();
         this.controls.update();

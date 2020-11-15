@@ -77,32 +77,11 @@ export class VisualizationComponent implements OnInit {
     );
 
     /**
-     * Handles search 
+     * Handle when a search item is received
      */
     this.visualizationQuery.selectedSearchItem$.subscribe((searchItem) => {
-
-      const matchingFunction = (userdata) => {
-        if (userdata?.fullPath == searchItem){
-          return true;
-        } else {
-          return false;
-        }
-      };
-
-      const abortFunction = (userdata) => {
-        // Abort if searchItem does not include the full path value of the current entity.
-        // 
-        if (!searchItem.includes(userdata?.fullPath)) {
-          return true;
-        }
-        return false;
-      }
-
       if (searchItem.length > 0) {
-        const result = this.visualization.getCity().searchEntity(
-          matchingFunction,
-          abortFunction
-        );
+        const result = this.visualization.searchEntityByPath(searchItem)
         alert(JSON.stringify(result));
       }
     });
