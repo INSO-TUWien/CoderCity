@@ -1,0 +1,44 @@
+:host {
+    pointer-events: none;
+}
+
+$item-height: 32px;
+$arrow-size: 20px;
+
+.selected-item-modal {
+    position: absolute;
+    height: $item-height;
+    margin-top: - $item-height / 2;
+    margin-left: $arrow-size;
+    padding: 8px;
+    border-radius: 4px;
+    box-shadow: 4px 4px 4px 0 #00000020;
+    background-color: white;
+    font-size: 10pt;
+    pointer-events: none;
+    z-index: 500;
+}
+
+h3 {
+  font-size: 11pt;
+  font-weight: bold;
+  color: #414141;
+  word-break: break-all;
+}
+
+#arrow::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: $arrow-size;
+  height: $arrow-size;
+  margin-top: - $arrow-size / 2;
+  margin-left: - $arrow-size / 2;
+  z-index: -10;
+}
+
+#arrow::before {
+  content: "";
+  transform: rotate(45deg);
+  background: white;
+}

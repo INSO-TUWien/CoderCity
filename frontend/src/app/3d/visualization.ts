@@ -14,7 +14,7 @@ import { TextLabel } from './entities/text-label';
 export class Visualization {
     private canvasElement: HTMLCanvasElement;
     private scene: THREE.Scene;
-    private camera: THREE.PerspectiveCamera;
+    camera: THREE.PerspectiveCamera;
     private renderer: THREE.WebGLRenderer;
     private light: THREE.AmbientLight;
     private axesHelper: THREE.AxesHelper;
@@ -63,6 +63,7 @@ export class Visualization {
     private init() {
         //document.body.appendChild(this.stats.dom);
         this.setupScene();
+        // this.initHelpers();
     }
 
     private initHelpers() {
@@ -90,8 +91,6 @@ export class Visualization {
             this.canvasElement
         );
         this.addEntity(mousePicker);
-
-
     }
 
     deleteCity(): void {
@@ -165,7 +164,10 @@ export class Visualization {
     }
 
     searchEntityByPath(fullPath: string) {
-        new TextLabel(document.body, this?.city?.object, this.camera);
+        // TODO: Move to a better place
+        //const textlabel = new TextLabel(document.body, this?.city?.object, this.camera);
+        //this.addEntity(textlabel);
+
         const matchingFunction = (userdata) => {
             if (userdata?.fullPath == fullPath) {
                 return true;

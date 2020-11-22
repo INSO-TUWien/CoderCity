@@ -20,11 +20,12 @@ export class MousePicker extends Entity {
     private eventBus: EventEmitter;
 
     constructor(
-        private camera: THREE.Camera,
+        camera: THREE.Camera,
         private scene: THREE.Scene,
         private htmlElement: HTMLElement
         ) {
         super();
+        this.camera = camera;
     }
 
     init(): void {

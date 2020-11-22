@@ -19,7 +19,6 @@ import { BranchSimpleNamePipe } from './pipes/branch-simple-name.pipe';
 import { SelectionPopoverComponent } from './components/selection-popover/selection-popover.component';
 import { AuthorPanelComponent } from './components/author-panel/author-panel.component';
 import { AuthorInitialsPipe } from './pipes/author-initials.pipe';
-import { InformationPanelComponent } from './components/side-panel/information-panel/information-panel.component';
 import { SidePanelComponent } from './components/side-panel/side-panel.component';
 import { SettingsPanelComponent } from './components/settings-panel/settings-panel.component';
 import { PlayButtonComponent } from './components/timeline/play-button/play-button.component';
@@ -36,6 +35,8 @@ import { FilePanelItemComponent } from './components/side-panel/filter-panel/fil
 import { AuthorEditModalComponent } from './components/side-panel/filter-panel/author-edit-modal/author-edit-modal.component';
 import { AuthorFilterItemComponent } from './components/side-panel/filter-panel/author-filter-item';
 import { AngularDraggableModule } from 'angular2-draggable';
+import { InformationPanelComponent } from './components/information-panel/information-panel.component';
+import { SelectedItemModalComponent } from './components/selected-item-modal/selected-item-modal.component';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -66,7 +67,8 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     BranchTagComponent,
     FilePanelItemComponent,
     AuthorEditModalComponent,
-    AuthorFilterItemComponent
+    AuthorFilterItemComponent,
+    SelectedItemModalComponent
   ],
   entryComponents: [
     SettingsPanelComponent,

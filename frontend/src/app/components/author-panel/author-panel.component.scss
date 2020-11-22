@@ -20,6 +20,7 @@ h3 {
     position: relative;
     pointer-events: all;
     font-size: 10pt;
+    z-index: 500;
 }
 
 .item-overflow-wrap { word-wrap: break-word; word-break: break-all }

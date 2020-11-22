@@ -8,6 +8,9 @@ export class Entity {
     // Threejs mesh represented by this entity
     object: Object3D = new THREE.Object3D();
 
+    private listener: (values: {x: number, y: number}) => void = null;
+    camera: THREE.Camera;
+
     constructor() {}
 
     /**
@@ -47,6 +50,27 @@ export class Entity {
         return null;
     }
 
+    addScreenSpaceCoordinatesListener(camera: THREE.Camera, listener: (values: {x: number, y: number}) => void) {
+        this.camera = camera;
+        this.listener = listener;
+    }
+
+    removeScreenSpaceCoordinatesListener(): void {
+        this.listener = null;
+    }
+
+    get2DCoordinates(camera: THREE.Camera): THREE.Vector2 {
+        let projectedCoords = new THREE.Vector3();
+        this.object.getWorldPosition(projectedCoords);
+        projectedCoords = projectedCoords.project(camera);
+        // projectedCoords = new THREE.Vector3(10,0,0).project(camera);
+        return new THREE.Vector2(
+            (projectedCoords.x + 1) * window.innerWidth / 2,
+            - (projectedCoords.y - 1) * window.innerHeight / 2,
+        );
+    }
+
+
     deleteEntity(entity: Entity): void {
         entity.destroy();
         this.object.remove(entity.object);
@@ -71,5 +95,11 @@ export class Entity {
         for (let entity of this.entities) {
             entity.update();
         }
+
+        if (this.listener !== null) {
+            let coords = this.get2DCoordinates(this.camera);
+            this.listener({ x: coords.x, y: coords.y});
+        }
+
     }
 }

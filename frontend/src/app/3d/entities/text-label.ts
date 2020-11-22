@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+import { Entity } from '../entity';
 
-export class TextLabel {
+export class TextLabel extends Entity {
     private htmlElement: HTMLElement;
     private position: THREE.Vector3 = new THREE.Vector3;
 
@@ -13,7 +14,7 @@ export class TextLabel {
         public parent: THREE.Object3D,
         public camera: THREE.Camera
     ) {
-        this.init();
+        super();
     }
     
     init() {

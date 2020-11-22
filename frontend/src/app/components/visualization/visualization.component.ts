@@ -16,6 +16,7 @@ import { Subscription, combineLatest } from 'rxjs';
 import { DistrictDepthColorMapper } from 'src/app/3d/util/color/district-depth-color-mapper';
 import { DistrictRandomColorMapper } from 'src/app/3d/util/color/district-random-color-mapper';
 import { FilterQuery } from 'src/app/store/filter/filter.query';
+import { Entity } from 'src/app/3d/entity';
 
 @Component({
   selector: 'cc-visualization',
@@ -24,13 +25,19 @@ import { FilterQuery } from 'src/app/store/filter/filter.query';
 })
 export class VisualizationComponent implements OnInit {
 
-  visualization: Visualization;
+  private visualization: Visualization;
   private eventBus: EventEmitter;
   private projectFiles: Directory;
   private authors: Author[];
   private filesSubscription: Subscription;
   private settingsSubscription: Subscription;
   private projectSubscription: Subscription;
+
+  // Selected item
+  selectedItemX: number;
+  selectedItemY: number;
+  selectedItemTitle: string;
+  selectedItemEntity: Entity;
 
   constructor(
     private visualizationService: VisualizationService,
@@ -77,12 +84,25 @@ export class VisualizationComponent implements OnInit {
     );
 
     /**
-     * Handle when a search item is received
+     * Add Selected Item modal when an item has been selected via search.
      */
     this.visualizationQuery.selectedSearchItem$.subscribe((searchItem) => {
       if (searchItem.length > 0) {
-        const result = this.visualization.searchEntityByPath(searchItem)
-        alert(JSON.stringify(result));
+        if (this.selectedItemEntity != null) {
+          this.selectedItemEntity.removeScreenSpaceCoordinatesListener();
+        }
+        this.selectedItemEntity = this.visualization.searchEntityByPath(searchItem)
+        this.selectedItemTitle = this.selectedItemEntity?.userData?.fullPath;
+        
+        
+        if (this.selectedItemEntity != null) {
+          let camera = this.visualization.camera;
+          this.selectedItemEntity.addScreenSpaceCoordinatesListener(camera, (coords) => {
+            this.selectedItemX = coords.x;
+            this.selectedItemY = coords.y;
+          })
+        }
+        // alert(JSON.stringify(resultEntity))
       }
     });
 
@@ -111,7 +131,7 @@ export class VisualizationComponent implements OnInit {
 
   private handleVisualizationOptions(preferences: Preferences, excludedFiles: string[], excludedAuthors: string[]) {
     if (preferences == null) {
-        console.error(`Engine: setPreferences: preferences is null or undefined.`);
+        console.error(`Visualization: setPreferences: preferences is null or undefined.`);
     }
     // Update BuildingColorMapper based on set preference
     const buildingColorPreference = preferences.colorMapping.buildingColor;
