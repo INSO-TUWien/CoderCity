@@ -38,6 +38,7 @@ export class VisualizationComponent implements OnInit {
   selectedItemY: number;
   selectedItemTitle: string;
   selectedItemEntity: Entity;
+  selectedItemHidden: boolean = true;
 
   constructor(
     private visualizationService: VisualizationService,
@@ -67,6 +68,7 @@ export class VisualizationComponent implements OnInit {
 
     this.visualizationQuery.selectedCommit$.subscribe(
       (commit) => {
+        // A commit has been selected using the commit graph.
         if (commit === null) {
           this.visualization.deleteCity();
         }
@@ -88,12 +90,13 @@ export class VisualizationComponent implements OnInit {
      */
     this.visualizationQuery.selectedSearchItem$.subscribe((searchItem) => {
       if (searchItem.length > 0) {
+        // Remove prior selected item
         if (this.selectedItemEntity != null) {
           this.selectedItemEntity.removeScreenSpaceCoordinatesListener();
+          
         }
         this.selectedItemEntity = this.visualization.searchEntityByPath(searchItem)
         this.selectedItemTitle = this.selectedItemEntity?.userData?.fullPath;
-        
         
         if (this.selectedItemEntity != null) {
           let camera = this.visualization.camera;
@@ -101,6 +104,7 @@ export class VisualizationComponent implements OnInit {
             this.selectedItemX = coords.x;
             this.selectedItemY = coords.y;
           })
+          this.selectedItemHidden = false;
         }
         // alert(JSON.stringify(resultEntity))
       }
@@ -162,6 +166,11 @@ export class VisualizationComponent implements OnInit {
     this.filesSubscription.unsubscribe();
     this.settingsSubscription.unsubscribe();
     this.projectSubscription.unsubscribe();
+  }
+
+  onCloseSelectedItemModal(): void {
+    this.selectedItemHidden = true;
+    this.selectedItemEntity?.removeScreenSpaceCoordinatesListener();
   }
 
   private initEventBus(): void {

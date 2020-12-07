@@ -1,16 +1,14 @@
 version: "3.7"
 services:
   # Connection string: mongodb://root:example@localhost:27017
-  cc-mongodb:
-    container_name: cc-mongodb
+  cc_mongodb:
     image: mongo
     ports:
       - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-  cc-backend:
-    container_name: cc-backend
+  cc_backend:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
@@ -19,12 +17,11 @@ services:
       - 3000:3000
     environment:
       GIT_PROJECTS_FOLDER: /projects
-      MONGODB_URI: mongodb://root:example@cc-mongodb:27017
+      MONGODB_URI: mongodb://root:example@cc_mongodb:27017
       INDEX_MODE: LAZY  # EAGER = Pre index files. LAZY = Indexes files on demand
     volumes:
       - "/Users/yikaiyang/Projects/Uni:/projects"
-  cc-frontend:
-    container_name: cc-frontend
+  cc_frontend:
     build:
       context: ./frontend
       dockerfile: ./Dockerfile

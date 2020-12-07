@@ -2,7 +2,7 @@
     <canvas id="canvas" class="p-0 m-0"></canvas>
     <cc-side-panel></cc-side-panel>
     <cc-author-panel></cc-author-panel>
-    <cc-selected-item-modal [x]="selectedItemX" [y]="selectedItemY" [title]="selectedItemTitle"></cc-selected-item-modal>
+    <cc-selected-item-modal [hidden]="selectedItemHidden" [x]="selectedItemX" [y]="selectedItemY" [title]="selectedItemTitle" (onClose)="onCloseSelectedItemModal()"></cc-selected-item-modal>
     <!--git graph-->
     <div class="timeline-container
                 d-flex 

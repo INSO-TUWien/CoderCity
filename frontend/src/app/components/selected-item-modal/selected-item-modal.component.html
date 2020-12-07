@@ -6,5 +6,10 @@
   [style.top]="y + 'px'"
   [title]="title"
 >
-  <h3>{{title}}</h3>
+  <div class="d-flex flex-row">
+    <span>{{title}}</span>
+    <button class="btn btn-link close-btn ml-2 p-0" (click)="close()">
+      <fa-icon [icon]="faTimesCircle" size="md"></fa-icon>
+    </button>
+  </div>
 </div>

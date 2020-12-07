@@ -7,7 +7,7 @@ $arrow-size: 20px;
 
 .selected-item-modal {
     position: absolute;
-    height: $item-height;
+    min-height: $item-height;
     margin-top: - $item-height / 2;
     margin-left: $arrow-size;
     padding: 8px;
@@ -19,7 +19,7 @@ $arrow-size: 20px;
     z-index: 500;
 }
 
-h3 {
+span {
   font-size: 11pt;
   font-weight: bold;
   color: #414141;
@@ -41,4 +41,9 @@ h3 {
   content: "";
   transform: rotate(45deg);
   background: white;
+}
+
+.close-btn {
+  pointer-events: all;
+  margin-top: -2px
 }

@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'cc-selected-item-modal',
@@ -6,6 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./selected-item-modal.component.scss']
 })
 export class SelectedItemModalComponent implements OnInit {
+
+  faTimesCircle = faTimesCircle;
 
   @Input('hidden')
   hidden = false;
@@ -19,9 +22,16 @@ export class SelectedItemModalComponent implements OnInit {
   @Input('title')
   title: string = 'Title';
 
+  @Output() 
+  onClose = new EventEmitter<void>();
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  close() {
+    this.onClose.emit();
   }
 
 }

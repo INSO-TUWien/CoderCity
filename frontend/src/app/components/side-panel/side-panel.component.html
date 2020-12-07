@@ -12,11 +12,28 @@
         </button>
     </div>
     <div class="mt-1">
-        <input
-            [ngbTypeahead]="search"
-            (selectItem)="onSearchItemSelected($event)"
-            class="bg-light cc-input form-control form-control-sm" 
-            placeholder="Search files">
+        <div class="input-group">
+            <input
+                [ngbTypeahead]="search"
+                (selectItem)="onSearchItemSelected($event)"
+                class="bg-light cc-input form-control form-control-sm" 
+                placeholder="Search files"
+                #searchInput
+            >
+            <div class="input-group-append" *ngIf="hasItemSelected">
+                <button 
+                    class="
+                        btn 
+                        btn-primary 
+                        form-control 
+                        form-control-sm btn-sm" 
+                    type="button"
+                    (click)="onDeleteSelectedItem()"
+                >
+                    <fa-icon [icon]="faTimesCircle" size="md"></fa-icon>
+                </button>
+            </div>
+        </div>
     </div>
     <div class="mt-2 d-flex flex-row justify-content-between">
         <button class="btn btn-xs filter-btn" (click)="openProject()">
@@ -25,7 +42,7 @@
                 <span class="ml-1">Open Project</span>
             </div>
         </button>
-        <button class="btn btn-xs filter-btn" (click)="onTriggerFilter()">
+        <button class="btn btn-xs filter-btn" (click)="onOpenFilter()">
             <div class="d-flex flex-row justify-content-between align-items-center">
                 <fa-icon [icon]="faFilter" size="xs"></fa-icon>
                 <span class="ml-1">Filter</span>

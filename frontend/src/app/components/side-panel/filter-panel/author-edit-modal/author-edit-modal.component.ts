@@ -12,7 +12,7 @@ import { COLORS } from 'src/app/util/color-scheme';
 })
 export class AuthorEditModalComponent implements OnInit {
 
-  private colors: string[] = COLORS;
+  colors: string[] = COLORS;
 
   private _author: Author;
   
