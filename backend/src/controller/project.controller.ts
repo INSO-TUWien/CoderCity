@@ -12,11 +12,18 @@ export class ProjectController {
         private gitService: GitProjectService
     ) {}
 
+    /**
+     * Retrieves a list of all projects
+     */
     @Get()
     findAll() {
         return this.projectService.findAll();
     }
 
+    /**
+     * Retrieves data of a specific git project
+     * @param projectId 
+     */
     @Get(':projectId')
     async findOne(
         @Param('projectId') projectId: string) {

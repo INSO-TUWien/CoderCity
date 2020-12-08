@@ -2,7 +2,6 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Repository } from './repo';
 import { ConfigService } from '@nestjs/config';
 import { Signature } from 'src/model/signature.model';
-import { ProjectSnapshotService } from 'src/module/projectsnapshot/project-snapshot.service';
 import { Project, ProjectUtil } from 'src/model/project.model';
 import * as path from 'path';
 import * as find from 'findit';
@@ -18,13 +17,12 @@ export class GitProjectService {
 
     constructor(
         private configService: ConfigService,
-        private commitDataService: ProjectSnapshotService
     ) {
         this.logger.log(`Initializing GitService`);
         this.projectFolderPath = this.configService.get<string>('GIT_PROJECTS_FOLDER');
         this.preIndexProjects = this.configService.get<string>('INDEX_MODE');
         this.logger.log(`Set project path: ${this.projectFolderPath}`);
-        this.indexGitProjects();
+        this.findAndIndexGitProjects();
     }
 
     findProject(id: string) {
@@ -43,7 +41,7 @@ export class GitProjectService {
     /**
      * Retrieves a list of all git projects given a folder path.
      */
-    private indexGitProjects(): void {
+    private findAndIndexGitProjects(): void {
         this.logger.log(`Started indexProjects`);
         const finder = find(this.projectFolderPath);
         // find all git directories
@@ -67,7 +65,6 @@ export class GitProjectService {
         });
         finder.on('end', () => {
             // All folders traversed
-
         });
     }
 
@@ -138,31 +135,31 @@ export class GitProjectService {
         await repo.openRepo();
         await repo.startIndexing();
         // Index project files if pre-index projects flag is set
-        if (this.preIndexProjects == 'EAGER') {
-            await this.indexProjectFilesForEachCommit(repo);
-        }
+        // if (this.preIndexProjects == 'EAGER') {
+        //     await this.indexProjectFilesForEachCommit(repo);
+        // }
         
         this.repositories.set(projectPath, repo);
     }
 
-    private async indexProjectFilesForEachCommit(repo: Repository) {
-        if (!repo) {
-            this.logger.error(`indexProjectFilesForEachCommit: Repo is not defined.`);
-            return;
-        }
-        this.logger.log(`Starting indexing project files for each commit of the project`)
-        // Index all project files for each commit of the project
-        await repo.foreachCommit(async (commit) => {
-            // this.logger.log(`Executing operation projectID: ${commit.projectId} commitID: ${commit.commitId}`);
-            if (!await this.commitDataService.exists(commit.projectId, commit.commitId)) {
-                this.logger.log(`Indexing project files: ProjectId: ${commit.projectId} CommitId ${commit.commitId}`);
-                const result = await repo.getFilesWithDirectoriesOfCommit(commit.commitId);
-                this.commitDataService.create({
-                    projectId: commit.projectId,
-                    commitId: commit.commitId,
-                    data: JSON.stringify(result)
-                });
-            }
-        });
-    }
+    // private async indexProjectFilesForEachCommit(repo: Repository) {
+    //     if (!repo) {
+    //         this.logger.error(`indexProjectFilesForEachCommit: Repo is not defined.`);
+    //         return;
+    //     }
+    //     this.logger.log(`Starting indexing project files for each commit of the project`)
+    //     // Index all project files for each commit of the project
+    //     await repo.foreachCommit(async (commit) => {
+    //         // this.logger.log(`Executing operation projectID: ${commit.projectId} commitID: ${commit.commitId}`);
+    //         if (!await this.projectSnapShotService.exists(commit.projectId, commit.commitId)) {
+    //             this.logger.log(`Indexing project files: ProjectId: ${commit.projectId} CommitId ${commit.commitId}`);
+    //             const result = await repo.getFilesWithDirectoriesOfCommit(commit.commitId);
+    //             this.projectSnapShotService.create({
+    //                 projectId: commit.projectId,
+    //                 commitId: commit.commitId,
+    //                 data: JSON.stringify(result)
+    //             });
+    //         }
+    //     });
+    // }
 }
