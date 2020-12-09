@@ -53,22 +53,22 @@ export class VisualizationComponent implements OnInit {
   ngOnInit() {
     let id = this.route.snapshot.paramMap.get('id');
     if (id == null || id.length <= 0) {
-      this.visualizationService.openProject();
+      this.visualizationService.openProjectSelectionModal();
     }
 
     this.visualization = new Visualization();
     this.initEventBus();
 
     this.projectSubscription = this.projectQuery.selectActive().subscribe(project => {
-      if (project != null) {
-      } else {
-        this.visualizationService.openProject();
+      if (project == null) {
+        this.visualizationService.openProjectSelectionModal();
       }
     });
 
     this.visualizationQuery.selectedCommit$.subscribe(
       (commit) => {
-        // A commit has been selected using the commit graph.
+        // A new commit has been selected using the commit graph.
+        // Reset visualization.
         if (commit === null) {
           this.visualization.deleteCity();
         }
@@ -80,6 +80,7 @@ export class VisualizationComponent implements OnInit {
         const directory = val;
         if (directory != null) {
           this.projectFiles = directory;
+          this.removeSelectedItem();
           this.renderCity();
         }
       }
@@ -89,12 +90,15 @@ export class VisualizationComponent implements OnInit {
      * Add Selected Item modal when an item has been selected via search.
      */
     this.visualizationQuery.selectedSearchItem$.subscribe((searchItem) => {
-      if (searchItem.length > 0) {
+      if (searchItem === null) {
+        this.removeSelectedItem();
+      } else if (searchItem.length > 0) {
         // Remove prior selected item
         if (this.selectedItemEntity != null) {
           this.selectedItemEntity.removeScreenSpaceCoordinatesListener();
           
         }
+        // Add selected item marker
         this.selectedItemEntity = this.visualization.searchEntityByPath(searchItem)
         this.selectedItemTitle = this.selectedItemEntity?.userData?.fullPath;
         
@@ -169,6 +173,10 @@ export class VisualizationComponent implements OnInit {
   }
 
   onCloseSelectedItemModal(): void {
+    this.removeSelectedItem();
+  }
+
+  private removeSelectedItem(): void {
     this.selectedItemHidden = true;
     this.selectedItemEntity?.removeScreenSpaceCoordinatesListener();
   }

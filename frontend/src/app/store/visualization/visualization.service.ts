@@ -21,7 +21,7 @@ export class VisualizationService {
     private modalService: NgbModal,
   ) { }
 
-  openProject() {
+  openProjectSelectionModal() {
     this.modalService.open(ProjectChooserComponent);
   }
 

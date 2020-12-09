@@ -18,7 +18,7 @@ import { File } from 'src/app/model/file.model';
   templateUrl: './side-panel.component.html',
   styleUrls: ['./side-panel.component.scss']
 })
-export class SidePanelComponent implements OnInit {
+export class MainPaneComponent implements OnInit {
 
   faSlidersH = faSlidersH;
   faFilter = faFilter;
@@ -48,7 +48,7 @@ export class SidePanelComponent implements OnInit {
   }
 
   openProject() {
-    this.visualizationService.openProject();
+    this.visualizationService.openProjectSelectionModal();
   }
 
   onDeleteSelectedItem() {

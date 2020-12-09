@@ -19,7 +19,7 @@ import { BranchSimpleNamePipe } from './pipes/branch-simple-name.pipe';
 import { SelectionPopoverComponent } from './components/selection-popover/selection-popover.component';
 import { AuthorPanelComponent } from './components/author-panel/author-panel.component';
 import { AuthorInitialsPipe } from './pipes/author-initials.pipe';
-import { SidePanelComponent } from './components/side-panel/side-panel.component';
+import { MainPaneComponent } from './components/main-pane/main-pane.component';
 import { SettingsPanelComponent } from './components/settings-panel/settings-panel.component';
 import { PlayButtonComponent } from './components/timeline/play-button/play-button.component';
 import { TimeIntervalLabelComponent } from './components/timeline/time-interval-label/time-interval-label.component';
@@ -28,12 +28,12 @@ import { IndicatorBarComponent } from './components/timeline/gitgraph/commit-mes
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthorLabelComponent } from './components/author-panel/author-label/author-label.component';
 import { TooltipComponent } from './components/timeline/gitgraph/tooltip/tooltip.component';
-import { FilterPanelComponent } from './components/side-panel/filter-panel/filter-panel.component';
+import { FilterPanelComponent } from './components/main-pane/filter-panel/filter-panel.component';
 import { ProjectChooserComponent } from './components/project-chooser/project-chooser.component';
 import { BranchTagComponent } from './components/timeline/gitgraph/branch-tag/branch-tag.component';
-import { FilePanelItemComponent } from './components/side-panel/filter-panel/file-filter-item';
-import { AuthorEditModalComponent } from './components/side-panel/filter-panel/author-edit-modal/author-edit-modal.component';
-import { AuthorFilterItemComponent } from './components/side-panel/filter-panel/author-filter-item';
+import { FilePanelItemComponent } from './components/main-pane/filter-panel/file-filter-item';
+import { AuthorEditModalComponent } from './components/main-pane/filter-panel/author-edit-modal/author-edit-modal.component';
+import { AuthorFilterItemComponent } from './components/main-pane/filter-panel/author-filter-item';
 import { AngularDraggableModule } from 'angular2-draggable';
 import { InformationPanelComponent } from './components/information-panel/information-panel.component';
 import { SelectedItemModalComponent } from './components/selected-item-modal/selected-item-modal.component';
@@ -54,7 +54,7 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     AuthorPanelComponent,
     AuthorInitialsPipe,
     InformationPanelComponent,
-    SidePanelComponent,
+    MainPaneComponent,
     SettingsPanelComponent,
     PlayButtonComponent,
     TimeIntervalLabelComponent,
