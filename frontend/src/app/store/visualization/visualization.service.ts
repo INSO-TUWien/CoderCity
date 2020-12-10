@@ -61,14 +61,16 @@ export class VisualizationService {
     }));
 
     if (commit != null) {
-      // Load project snapshot at this commit.
+      this.visualizationStore.setLoading(true);
+      // Load project snapshot of the specified commit.
       this.commitService.getProjectFilesAtCommit(commit).subscribe(
         directory => {
           this.setProjectFiles(directory);
+          this.visualizationStore.setLoading(false);
         }
       );
 
-      // Load project files
+      // Load list of project files
       this.commitService.getFilesAtCommit(commit).subscribe(
         files => {
           // Get all files and set files in store

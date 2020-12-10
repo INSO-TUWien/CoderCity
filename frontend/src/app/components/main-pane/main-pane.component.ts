@@ -4,19 +4,16 @@ import { faFolder } from '@fortawesome/free-regular-svg-icons';
 import { NgbModal, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsPanelComponent } from '../settings-panel/settings-panel.component';
 import { VisualizationService } from 'src/app/store/visualization/visualization.service';
-import { forkJoin, Observable, of } from 'rxjs';
-import { text } from '@fortawesome/fontawesome-svg-core';
-import { combineAll, map, mergeMap, switchMap } from 'rxjs/operators';
-import { ProjectQuery } from 'src/app/store/project/project.query';
-import { FilterQuery } from 'src/app/store/filter';
+import { Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { VisualizationQuery } from 'src/app/store/visualization/visualization.query';
 import { File } from 'src/app/model/file.model';
 
 @Component({
-  selector: 'cc-side-panel',
-  templateUrl: './side-panel.component.html',
-  styleUrls: ['./side-panel.component.scss']
+  selector: 'cc-main-pane',
+  templateUrl: './main-pane.component.html',
+  styleUrls: ['./main-pane.component.scss']
 })
 export class MainPaneComponent implements OnInit {
 
@@ -35,11 +32,17 @@ export class MainPaneComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private visualizationQuery: VisualizationQuery,
-    private visualizationService: VisualizationService
+    private visualizationService: VisualizationService,
   ) {
     this.files$ = this.visualizationQuery.files$;
+    this.visualizationQuery.selectedSearchItem$.subscribe((selectedItem) => {
+      if (selectedItem == null) {
+        // Reset search bar
+        this.resetSearchInput();
+      }
+    });
   }
-
+ 
   ngOnInit() {
   }
 
@@ -58,7 +61,7 @@ export class MainPaneComponent implements OnInit {
   private resetSearchInput() {
     this.hasItemSelected = false;
     this.searchInput.nativeElement.value = "";
-    //this.visualizationService.setSelectedSearchItem(null);
+    this.visualizationService.setSelectedSearchItem(null);
   }
 
   onOpenFilter() {

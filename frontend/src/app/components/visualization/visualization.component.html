@@ -1,14 +1,28 @@
 <div class="canvas-wrapper">
+    <div *ngIf="isLoading$ | async" class="
+            position-absolute 
+            h-100 
+            w-100 
+            d-flex 
+            justify-content-center 
+            align-items-center">
+        <div class="loading-banner rounded p-2">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
     <canvas id="canvas" class="p-0 m-0"></canvas>
-    <cc-side-panel></cc-side-panel>
+    <cc-main-pane></cc-main-pane>
     <cc-author-panel></cc-author-panel>
-    <cc-selected-item-modal [hidden]="selectedItemHidden" [x]="selectedItemX" [y]="selectedItemY" [title]="selectedItemTitle" (onClose)="onCloseSelectedItemModal()"></cc-selected-item-modal>
+    <cc-selected-item-modal [hidden]="selectedItemHidden" [x]="selectedItemX" [y]="selectedItemY"
+        [title]="selectedItemTitle" (onClose)="onCloseSelectedItemModal()"></cc-selected-item-modal>
     <!--git graph-->
     <div class="timeline-container
                 d-flex 
                 justify-content-end 
                 flex-column">
         <cc-selection-popover class="mb-4"></cc-selection-popover>
-        <cc-timeline></cc-timeline> 
+        <cc-timeline></cc-timeline>
     </div>
 </div>

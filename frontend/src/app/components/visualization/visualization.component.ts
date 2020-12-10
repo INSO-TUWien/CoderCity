@@ -12,7 +12,7 @@ import { BuildingRandomColorMapper } from 'src/app/3d/util/color/building-random
 import { Author } from 'src/app/model/author.model';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectQuery } from 'src/app/store/project/project.query';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription, combineLatest, Observable, of } from 'rxjs';
 import { DistrictDepthColorMapper } from 'src/app/3d/util/color/district-depth-color-mapper';
 import { DistrictRandomColorMapper } from 'src/app/3d/util/color/district-random-color-mapper';
 import { FilterQuery } from 'src/app/store/filter/filter.query';
@@ -40,6 +40,8 @@ export class VisualizationComponent implements OnInit {
   selectedItemEntity: Entity;
   selectedItemHidden: boolean = true;
 
+  isLoading$: Observable<boolean>;
+
   constructor(
     private visualizationService: VisualizationService,
     private visualizationQuery: VisualizationQuery,
@@ -48,6 +50,7 @@ export class VisualizationComponent implements OnInit {
     private filterQuery: FilterQuery,
     private route: ActivatedRoute,
   ) {
+    this.isLoading$ = this.visualizationQuery.selectLoading();
   }
 
   ngOnInit() {
@@ -177,6 +180,7 @@ export class VisualizationComponent implements OnInit {
   }
 
   private removeSelectedItem(): void {
+    this.visualizationService.setSelectedSearchItem(null);
     this.selectedItemHidden = true;
     this.selectedItemEntity?.removeScreenSpaceCoordinatesListener();
   }

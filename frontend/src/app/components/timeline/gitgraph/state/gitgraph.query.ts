@@ -16,27 +16,6 @@ export interface BranchTag extends Branch {
 export class GitgraphQuery extends Query<GitgraphState> {
 
   branchTags$ = this.select(state => state.branchTags);
-  // branchTags$: Observable<BranchTag[]> = combineLatest([
-  //   this.projectQuery.branches$,
-  //   this.graphCommits$
-  // ]).pipe(
-  //   map(([branches, graphCommits]) => {
-  //     return branches.map((branch) => {
-  //       if (branch != null) {
-  //         const graphCommit = graphCommits.get(branch?.commit?.commitId);
-  //         return {
-  //           ...branch,
-  //           x: graphCommit.x + graphCommit.shape.width() / 2,
-  //           y: graphCommit.y + graphCommit.shape.width() / 2,
-  //           color: graphCommit.color
-  //         };
-  //       }
-  //     });
-  //   }),
-  //   tap(branchtags => {
-  //     console.log(`Branchtags: ${JSON.stringify(branchtags)}`);
-  //   })
-  // );
 
   constructor(
     protected store: GitgraphStore,
