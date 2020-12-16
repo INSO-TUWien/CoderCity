@@ -183,7 +183,7 @@ export class GitgraphComponent implements OnInit {
   private initGitGraph(): void {
     this.gitGraph = new GitGraph(this.graphElement.nativeElement, {
       onGraphCommitMouseOver: (commit) => {
-        this.commitService.setPreviewCommit(commit);
+        this.visualizationService.setCommitPreview(commit);
         const element = document.getElementById(commit.commitId);
         this.tooltip.anchorElement = element;
         this.tooltip.commit = commit;
@@ -250,7 +250,7 @@ export class GitgraphComponent implements OnInit {
   }
 
   deselectPreviewCommit() {
-    this.commitService.setPreviewCommit(null);
+    this.visualizationService.setCommitPreview(null);
   }
 
   private drawGraph(branches: Branch[], commits: Commit[], commitMap: Map<string, Commit>) {

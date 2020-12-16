@@ -11,6 +11,7 @@ export interface VisualizationState {
   selectedObject: BlameHunk;
   files: File[];
   projectFiles: Directory;
+  commitPreview: Commit;
   selectedCommit: Commit;
   selectedCommitInterval: CommitTimeInterval;
   selectedSearchItem: string;
@@ -22,6 +23,7 @@ export function createInitialState(): VisualizationState {
     selectedObject: null,
     files: [],
     projectFiles: null,
+    commitPreview: null,
     selectedCommit: null,
     selectedSearchItem: '',
     selectedCommitInterval: {

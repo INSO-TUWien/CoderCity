@@ -25,6 +25,10 @@ export class VisualizationService {
     this.modalService.open(ProjectChooserComponent);
   }
 
+  reset() {
+    this.visualizationStore.reset();
+  }
+
   // Sets selected object in the codecity.
   setSelectedObject(object: BlameHunk): void {
     this.visualizationStore.update(state =>  ({
@@ -78,6 +82,13 @@ export class VisualizationService {
         }
       )
     }
+  }
+
+  setCommitPreview(commit: Commit) {
+    this.visualizationStore.update((state) => ({
+      ...state,
+      commitPreview: commit
+    }));
   }
 
   setSelectedCommitInterval(commitInterval: CommitTimeInterval): void {

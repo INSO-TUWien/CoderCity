@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { Commit } from "../../model/commit.model";
 import { Observable, Subject, BehaviorSubject, of, combineLatest } from "rxjs";
 import { tap, map, timeInterval } from "rxjs/operators";
-import { GitQuery } from "src/app/store/git/git.query";
 import { VisualizationQuery } from "src/app/store/visualization/visualization.query";
 import { ProjectQuery } from 'src/app/store/project/project.query';
 
@@ -44,12 +43,11 @@ export class SelectionPopoverComponent implements OnInit {
   private commitPreviewSubscription;
 
   constructor(
-    private gitQuery: GitQuery,
     private visualizationQuery: VisualizationQuery,
     private projectQuery: ProjectQuery,
   ) {
     // this.commitPreview$ = of(MOCK_COMMIT);
-    this.commitPreview$ = this.gitQuery.commitPreview$;
+    this.commitPreview$ = this.visualizationQuery.commitPreview$;
     this.authorColorMap$ = this.projectQuery.authorColorMap$;
     this.selectedCommit$ = this.visualizationQuery.selectedCommit$;
     this.selectedCommitWithAuthorColor$ = this.visualizationQuery.selectedCommitWithAuthorColor$;

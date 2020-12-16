@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Branch } from 'src/app/model/branch.model';
-import { GitQuery } from 'src/app/store/git/git.query';
 import { ProjectQuery } from 'src/app/store/project/project.query';
 
 @Component({

@@ -45,6 +45,7 @@ export class CommitMessageContainerComponent implements OnInit {
   }
 
   private initEvents(): void {
+  
     this.messageContainer.nativeElement.onmouseenter = () => {
       this.active = true;
     };
@@ -59,7 +60,14 @@ export class CommitMessageContainerComponent implements OnInit {
         this.scroll(scrollLeft);
       }
     };
+
+    // Add mouse wheel scrolling
+    this.messageContainer.nativeElement.addEventListener("wheel", event => {
+      this.setScrollLeft(this.messageContainer.nativeElement.scrollLeft - event.deltaY);
+    })
   }
+
+  
 
   private setScrollLeft(value: number) {
     this.messageContainer.nativeElement.scrollLeft = value;

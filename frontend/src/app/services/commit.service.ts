@@ -7,6 +7,7 @@ import { Directory } from '../model/directory.model';
 import { environment } from 'src/environments/environment';
 import { ProjectQuery } from '../store/project/project.query';
 import { GitStore } from '../store/git/git.store';
+import { VisualizationService } from '../store/visualization/visualization.service';
 
 export const COMMIT_ENDPOINT = 'commit';
 
@@ -19,9 +20,7 @@ export class CommitService {
 
   constructor(
     private http: HttpClient,
-    private gitStore: GitStore,
     private projectQuery: ProjectQuery,
-    
   ) {
     // Get id of active project
     projectQuery.selectActiveId().subscribe(id => {
@@ -33,7 +32,7 @@ export class CommitService {
 
   // Loads array of project files without preserving folder structure
   getFilesAtCommit(commit: Commit): Observable<File[]> {
-    return this.http.get<File[]>(environment.apiUrl  + '/project/' + this.projectId + '/' + COMMIT_ENDPOINT + '/' + commit.commitId + '/files');
+    return this.http.get<File[]>(environment.apiUrl + '/project/' + this.projectId + '/' + COMMIT_ENDPOINT + '/' + commit.commitId + '/files');
   }
 
   // Loads project files while preserving folder structure
@@ -41,13 +40,5 @@ export class CommitService {
     return this.http.get<Directory>(environment.apiUrl
       + `/project/${this.projectId}/` + COMMIT_ENDPOINT
       + '/' + commit.commitId);
-  }
-  
-
-  setPreviewCommit(commit: Commit): void {
-    this.gitStore.update((state) => ({
-      ...state,
-      commitPreview: commit
-    }));
   }
 }

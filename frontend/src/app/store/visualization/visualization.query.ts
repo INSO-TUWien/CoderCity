@@ -15,7 +15,7 @@ export class VisualizationQuery extends Query<VisualizationState> {
   }
 
   isFilterPanelActive$ = this.select(state => state.isFilterViewActive);
-
+  commitPreview$ = this.select(state => state.commitPreview);
   selectedObject$ = this.select(state => state.selectedObject);
   selectedCommit$ = this.select(state => state.selectedCommit);
   selectedCommitInterval$ = this.select(state => state.selectedCommitInterval);

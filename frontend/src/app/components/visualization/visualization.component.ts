@@ -48,13 +48,15 @@ export class VisualizationComponent implements OnInit {
     private projectQuery: ProjectQuery, 
     private settingsQuery: SettingsQuery,
     private filterQuery: FilterQuery,
-    private route: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
   ) {
     this.isLoading$ = this.visualizationQuery.selectLoading();
   }
 
   ngOnInit() {
-    let id = this.route.snapshot.paramMap.get('id');
+    let id = this.activatedRoute.snapshot.paramMap.get('id');
+
+    // Open selection dialog if no project is selected
     if (id == null || id.length <= 0) {
       this.visualizationService.openProjectSelectionModal();
     }
