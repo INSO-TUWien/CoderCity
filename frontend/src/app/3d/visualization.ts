@@ -155,7 +155,12 @@ export class Visualization {
     deleteEntity(entity: Entity): void {
         entity.destroy();
         this.scene.remove(entity.object);
-        this.entities.splice(this.entities.indexOf(entity), 1);
+        if (entity != null) {
+            const index = this.entities.indexOf(entity);
+            if (index > -1) {
+                this.entities.splice(index, 1);
+            }
+        }
     }
 
     searchEntity(matchingFunction: (userdata) => boolean, cancellationFunction?: (userData) => boolean): Entity {
