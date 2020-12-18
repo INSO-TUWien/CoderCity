@@ -9,7 +9,6 @@ import { BuildingColorMapper } from './util/color/building-color-mapper';
 import { BuildingRandomColorMapper } from './util/color/building-random-color-mapper';
 import { DistrictColorMapper } from './util/color/district-color-mapper';
 import { DistrictRandomColorMapper } from './util/color/district-random-color-mapper';
-import { TextLabel } from './entities/text-label';
 
 export class Visualization {
     private canvasElement: HTMLCanvasElement;

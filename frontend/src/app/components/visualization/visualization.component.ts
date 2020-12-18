@@ -55,7 +55,7 @@ export class VisualizationComponent implements OnInit {
 
   ngOnInit() {
     let id = this.activatedRoute.snapshot.paramMap.get('id');
-
+  
     // Open selection dialog if no project is selected
     if (id == null || id.length <= 0) {
       this.visualizationService.openProjectSelectionModal();
@@ -64,15 +64,20 @@ export class VisualizationComponent implements OnInit {
     this.visualization = new Visualization();
     this.initEventBus();
 
-    this.projectSubscription = this.projectQuery.selectActive().subscribe(project => {
-      if (project == null) {
-        this.visualizationService.openProjectSelectionModal();
-      }
+    this.projectSubscription = this.projectQuery
+      .selectActive()
+      .subscribe(project => {
+        // Reset code city visualization
+        this.projectFiles = null;
+        
+        if (project == null) {
+          this.visualizationService.openProjectSelectionModal();
+        }
     });
 
     this.visualizationQuery.selectedCommit$.subscribe(
       (commit) => {
-        // A new commit has been selected using the commit graph.
+        // A new commit was selected using the commit graph.
         // Reset visualization.
         if (commit === null) {
           this.visualization.deleteCity();
@@ -124,7 +129,7 @@ export class VisualizationComponent implements OnInit {
       this.projectQuery.authors$, 
       this.settingsQuery.preferences$, 
       this.filterQuery.excludedFiles$,
-      this.filterQuery.excludedAuthors$
+      this.filterQuery.excludedAuthors$,
     ).subscribe(
       ([authors, preferences, excludedFiles, excludedAuthors]) => {
         this.authors = authors;

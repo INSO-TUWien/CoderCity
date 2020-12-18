@@ -10,6 +10,7 @@ import { Commit } from 'src/app/model/commit.model';
 import { TimelineService } from 'src/app/components/timeline/timeline.service';
 import { Author } from 'src/app/model/author.model';
 import { getAuthorColor } from 'src/app/util/color-scheme';
+import { VisualizationService } from "../visualization/visualization.service";
 
 @Injectable({ providedIn: "root" })
 export class ProjectService {
@@ -45,7 +46,7 @@ export class ProjectService {
     return result;
   }
 
-  async getProjectData(projectId: string) {
+  async loadProjectData(projectId: string) {
     this.http
       .get<ProjectData>(`${environment.apiUrl}/project/${projectId}`)
       .pipe(
@@ -130,9 +131,10 @@ export class ProjectService {
   }
 
   setActive(id: ID) {
+    this.projectStore.reset();
     this.projectStore.setActive(id);
     if (id !== null) {
-      this.getProjectData(id as string);
+      this.loadProjectData(id as string);
     }
   }
 

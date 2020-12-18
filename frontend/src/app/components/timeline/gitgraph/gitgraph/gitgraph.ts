@@ -1,6 +1,5 @@
 import { RenderElement } from "./render-element";
 import { Svg, SVG } from "@svgdotjs/svg.js";
-import { GitModel } from "src/app/model/git.model";
 import { Commit } from "src/app/model/commit.model";
 import { GraphLine, generateGraphLineKey } from "./elements/graph-line";
 import { GraphMergeCommit } from "./elements/graph-merge-commit";
@@ -10,14 +9,14 @@ import {
   GraphCommitState,
 } from "./elements/abstract-graph-commit";
 import { GitGraphGrid } from "./gitgraph-grid";
-import { GitGraphCallbacks } from "./callback/callback";
+import { Callbacks } from "./callback/callback";
 import { Branch } from 'src/app/model/branch.model';
 
 /**
  * Checks whether given commit is a merge commit. (Has 2 or more parent commits)
  */
 export function isMergeCommit(commit: Commit): boolean {
-  if (commit.parentCommitIDs.length >= 2) {
+  if (commit?.parentCommitIDs?.length >= 2) {
     return true;
   } else {
     return false;
@@ -27,7 +26,7 @@ export function isMergeCommit(commit: Commit): boolean {
 export class GitGraph {
   constructor(
     private htmlElement: HTMLElement,
-    private callbacks: GitGraphCallbacks
+    private callbacks: Callbacks
   ) {
     if (this.svg == null) {
       this.svg = SVG().addTo(this.htmlElement);
@@ -58,10 +57,15 @@ export class GitGraph {
    */
   clear() {
     // TODO Fix clear function
+    this.svg.remove();
+    this.svg = SVG().addTo(this.htmlElement);
     this.renderElements = [];
-    this.svg.clear();
     this.grid_x = 0;
     this.grid_y = 0;
+    this.branchChildrenIDs = new Set();
+    this.graphCommits = new Map();
+    this.lines = new Map();
+    this.gitGraphGrid = new GitGraphGrid();
   }
 
   setCommitDisplayState(commitId: string, state: GraphCommitState) {
@@ -111,10 +115,10 @@ export class GitGraph {
     // Get all branch children
     this.commits.forEach((commit) => {
       if (
-        Array.isArray(commit.childCommitIDs) &&
-        commit.childCommitIDs.length > 1
+        Array.isArray(commit?.childCommitIDs) &&
+        commit?.childCommitIDs.length > 1
       ) {
-        commit.childCommitIDs.forEach((childCommitID) => {
+        commit?.childCommitIDs.forEach((childCommitID) => {
           // Ignore merge commits (commits which have > 2 parents)
           const childCommit = this.commitMap.get(childCommitID);
           if (!Commit.isMergeCommit(childCommit)) {
@@ -252,7 +256,7 @@ export class GitGraph {
 
   private getBranchChildrenCount(commit: Commit): number {
     let count = 0;
-    commit.childCommitIDs.forEach((childCommitId) => {
+    commit?.childCommitIDs.forEach((childCommitId) => {
       const childCommit = this.commitMap.get(childCommitId);
       if (!Commit.isMergeCommit(childCommit)) {
         count++;
@@ -263,7 +267,7 @@ export class GitGraph {
 
   private areAllBranchChildrenBeforeDate(commit: Commit, date: Date): boolean {
     let result = true;
-    for (let childCommitId of commit.childCommitIDs) {
+    for (let childCommitId of commit?.childCommitIDs) {
       const childCommit = this.commitMap.get(childCommitId);
       if (!Commit.isMergeCommit(childCommit)) {
         if (childCommit.date >= date) {
@@ -323,7 +327,7 @@ export class GitGraph {
 
         candidates.forEach((candidateCommit) => {
           const parentCommit = this.commitMap.get(candidateCommit[0]);
-          if (parentCommit.childCommitIDs.length <= 1) {
+          if (parentCommit?.childCommitIDs?.length <= 1) {
             // Incoming commit has no other child commits. The incoming commit branch completely merges into different commit branch.
             // Release slot of the parent commit
             activeBranches[candidateCommit[1].graphPositionY] = null;
@@ -432,8 +436,9 @@ export class GitGraph {
    * Renders all elements in the gitgraph by calling render function of each element individually.
    */
   render(): void {
+    // TODO: Reenable resizeSVG and renderBranchtTagLines
     this.resizeSVG();
     this.renderElements.forEach((e) => e.render(this.svg));
-    this.renderBranchTagLines();
+    //this.renderBranchTagLines();
   }
 }

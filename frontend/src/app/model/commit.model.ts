@@ -26,7 +26,7 @@ export class Commit {
   }
 
   static isMergeCommit(commit: Commit) {
-    if (commit.parentCommitIDs.length >= 2) {
+    if (commit?.parentCommitIDs?.length >= 2) {
       return true;
     } else {
       return false;
@@ -34,7 +34,7 @@ export class Commit {
   }
 
   static hasChildNodes(commit: Commit) {
-    if (commit.childCommitIDs.length > 0) {
+    if (commit?.childCommitIDs?.length > 0) {
       return true;
     } else {
       return false;
