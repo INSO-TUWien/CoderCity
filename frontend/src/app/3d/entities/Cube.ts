@@ -7,7 +7,7 @@ export class Cube extends Entity {
     material: THREE.Material;
     mesh: THREE.Mesh;
 
-    constructor(width: number, height: number, depth: number, color: THREE.Color, opacity: number = 1.0) {
+    constructor(width: number, height: number, depth: number, color: THREE.Color, opacity: number = 1) {
         super();
         this.geometry = new BoxBufferGeometry(width, height, depth);
         this.material = new MeshLambertMaterial(

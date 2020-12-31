@@ -231,7 +231,10 @@ export class District extends Entity implements Element {
                     const district = element as District;
                     district.addToScene();
                     // Render inner districts elevated.
-                    district.setPosition(node.position.x + DISTRICT_MARGIN, 0.2, node.position.y + DISTRICT_MARGIN);
+                    district.setPosition(
+                        node.position.x + DISTRICT_MARGIN, 
+                        0.2, 
+                        node.position.y + DISTRICT_MARGIN);
                     this.addEntity(element);
                 } else if (element instanceof Building) {
                     const building = element as Building;
@@ -251,7 +254,7 @@ export class District extends Entity implements Element {
         // Add this district to scene
         const cube = new Cube(this.bounds.x - DISTRICT_MARGIN, 0.2, this.bounds.y - DISTRICT_MARGIN, color);
         const bboxCenter = cube.calculateBoundingBoxCenterOffset();
-        cube.setPosition(bboxCenter.x, 0, bboxCenter.z);
+        cube.setPosition(bboxCenter.x, bboxCenter.y, bboxCenter.z);
         cube.setUserData(IntersectableDirectory.fromObject(this.directory));
         this.addEntity(cube);
     }

@@ -36,6 +36,7 @@ import { AuthorFilterItemComponent } from './components/main-pane/filter-panel/a
 import { AngularDraggableModule } from 'angular2-draggable';
 import { InformationPanelComponent } from './components/information-panel/information-panel.component';
 import { SelectedItemModalComponent } from './components/selected-item-modal/selected-item-modal.component';
+import { HelpComponent } from './components/help/help.component';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -67,7 +68,8 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     FilePanelItemComponent,
     AuthorEditModalComponent,
     AuthorFilterItemComponent,
-    SelectedItemModalComponent
+    SelectedItemModalComponent,
+    HelpComponent
   ],
   entryComponents: [
     SettingsPanelComponent,
