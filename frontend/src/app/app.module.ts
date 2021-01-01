@@ -37,6 +37,7 @@ import { AngularDraggableModule } from 'angular2-draggable';
 import { InformationPanelComponent } from './components/information-panel/information-panel.component';
 import { SelectedItemModalComponent } from './components/selected-item-modal/selected-item-modal.component';
 import { HelpComponent } from './components/help/help.component';
+import { HelpModalComponent } from './components/help/help-modal/help-modal.component';
 
 const SOCKET_HOST = 'http://localhost:3000';
 const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
@@ -69,12 +70,14 @@ const config: SocketIoConfig = { url: SOCKET_HOST, options: {}};
     AuthorEditModalComponent,
     AuthorFilterItemComponent,
     SelectedItemModalComponent,
-    HelpComponent
+    HelpComponent,
+    HelpModalComponent
   ],
   entryComponents: [
     SettingsPanelComponent,
     ProjectChooserComponent,
-    AuthorEditModalComponent
+    AuthorEditModalComponent,
+    HelpModalComponent,
   ],
   imports: [
     NgbModule,
