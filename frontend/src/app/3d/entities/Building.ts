@@ -27,30 +27,22 @@ export class Building extends Entity implements CityElement {
 
     createWithFile(file: File): void {
         // Create building segments for each blame hunk
-        const lineCount = file.lineCount;
-        // const mappedLineCount = (this.mapper == null) ? file.lineCount : this.mapper.map(lineCount);
-        // file.hunks.forEach((hunk) => {
-        //     const transformedHunk = BlameHunk.fromObject(hunk);
-        //     const startLineNumber = (this.mapper == null) 
-        //         ? hunk.startLineNumber 
-        //         : hunk.startLineNumber / lineCount * mappedLineCount; // Use correct relational ration between line number after applying mapper
-        //         //: this.mapper.map(hunk.startLineNumber);
-        //     const endLineNumber = (this.mapper == null)
-        //         ? hunk.startLineNumber + hunk.linesInHunk
-        //         : (hunk.startLineNumber + hunk.linesInHunk) / lineCount * mappedLineCount; // Use correct relational ration between line number after applying mapper
-        //         //: this.mapper.map(hunk.startLineNumber + hunk.lines#InHunk );
-        //     this.createBuildingSegment(startLineNumber, endLineNumber, transformedHunk);
-        // });
-
-        const mappedLineCount = file.lineCount;
         file.hunks.forEach((hunk) => {
             const hunkData = BlameHunk.fromObject(hunk);
-            const startLineNumber =
-                hunk.startLineNumber - 1; // Line numbers in hunks start at 1. However we do not want to render at position 1, but at position 0.
-                 //: this.mapper.map(hunk.startLineNumber);
-            const endLineNumber = 
-                hunk.startLineNumber - 1  + hunk.linesInHunk;
-                //: this.mapper.map(hunk.startLineNumber + hunk.linesInHunk );
+            let startLineNumber;
+            let endLineNumber;
+
+            if (this.mapper == null) {
+                startLineNumber = hunk.startLineNumber - 1; // Line numbers in hunks start at 1. However we do not want to render at position 1, but at position 0.
+                endLineNumber = hunk.startLineNumber - 1  + hunk.linesInHunk;
+            } else {
+                // Mapper exists
+                const lineCount = file.lineCount;
+                const mappedLineCount = this.mapper.map(lineCount);
+                startLineNumber = this.mapper.map((hunk.startLineNumber - 1) / lineCount * mappedLineCount); // Use correct relational ration between line number after applying mapper
+                endLineNumber = this.mapper.map(((hunk.startLineNumber - 1  + hunk.linesInHunk))/ lineCount * mappedLineCount);
+            }
+
             this.createBuildingSegment(startLineNumber, endLineNumber, hunkData);
         });
 

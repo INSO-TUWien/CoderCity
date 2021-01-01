@@ -62,7 +62,7 @@ export class Visualization {
     private init() {
         //document.body.appendChild(this.stats.dom);
         this.setupScene();
-        this.initHelpers();
+        //this.initHelpers();
     }
 
     private initHelpers() {
