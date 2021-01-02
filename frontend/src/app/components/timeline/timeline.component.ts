@@ -28,7 +28,7 @@ export class TimelineComponent implements OnInit {
   }
 
   onToggleExpand() {
-    
+    this.isExpanded = !this.isExpanded;
   }
 
 }

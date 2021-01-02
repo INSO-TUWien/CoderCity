@@ -1,4 +1,5 @@
 $MESSAGE_CONTAINER_HEIGHT: 80px;
+$MESSAGE_CONTAINER_EXPANDED_HEIGHT: 320px;
 $MESSAGE_CONTAINER_MARGIN_LEFT: 40px;
 $LEFT_PANE_WIDTH: 68px;
 $FADE_EFFECT_WIDTH: 12px;
@@ -7,6 +8,10 @@ $COMMIT_MESSAGE_WIDTH: 30px;
 .commit-message-container {
     margin-bottom: 8px;
     padding-top: $MESSAGE_CONTAINER_HEIGHT;
+}
+
+.expanded {
+    padding-top: $MESSAGE_CONTAINER_EXPANDED_HEIGHT;
 }
 
 .commit-graph-container {

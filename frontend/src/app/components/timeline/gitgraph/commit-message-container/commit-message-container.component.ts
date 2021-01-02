@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Commit } from 'src/app/model/commit.model';
 import { faPlay, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -19,6 +19,9 @@ export class CommitMessageContainerComponent implements OnInit {
 
   @ViewChild('messageContainer', {static: true})
   messageContainer: ElementRef<HTMLElement>;
+
+  @Input('isExpanded')
+  isExpanded: boolean;
 
   // Element is active when mouse is hovering above it.
   active: boolean;

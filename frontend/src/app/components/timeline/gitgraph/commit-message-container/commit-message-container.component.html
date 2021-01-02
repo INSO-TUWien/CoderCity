@@ -6,7 +6,7 @@
         </button>
     </div> -->
     <div class="commit-graph-container d-flex flex-column">
-        <div #messageContainer class="commit-message-container overflow-auto" style="white-space: nowrap">
+        <div #messageContainer [class.expanded]="isExpanded" class="expanded commit-message-container overflow-auto" style="white-space: nowrap">
             <span class="commit-messages">
                 <div class="commit-message" *ngFor="let commit of commits$ | async">
                     {{commit.message}}
@@ -14,6 +14,6 @@
             </span>
             <cc-indicator-bar></cc-indicator-bar>
         </div>
-        <cc-gitgraph></cc-gitgraph>
+        <cc-gitgraph [isExpanded]="isExpanded"></cc-gitgraph>
     </div>
 </div>

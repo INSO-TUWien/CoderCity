@@ -1,8 +1,5 @@
-<div id="gitgraph" #gitgraph class="overflow-auto">
-    <cc-tooltip
-        (mouseleave)="deselectPreviewCommit()"
-        (menuItemSelected)="tooltipMenuItemSelected($event)"
-    >
+<div [class.expanded]="expanded" id="gitgraph" #gitgraph class="overflow-auto">
+    <cc-tooltip (mouseleave)="deselectPreviewCommit()" (menuItemSelected)="tooltipMenuItemSelected($event)">
     </cc-tooltip>
     <cc-branch-tag [branch]="branch" *ngFor="let branch of branchTags$ | async"></cc-branch-tag>
 </div>

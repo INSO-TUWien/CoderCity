@@ -1,9 +1,14 @@
 $TIMELINE_HEIGHT: 300px;
+$TIMELINE_EXPANDED_HEIGHT: 680px;
 
 :host {
     z-index: 400;
     font-size: 12pt;
     pointer-events: none;
+}
+
+.expanded {
+    min-height: $TIMELINE_EXPANDED_HEIGHT;
 }
 
 .timeline-header {
@@ -14,13 +19,12 @@ $TIMELINE_HEIGHT: 300px;
 .container {
     pointer-events: all;
     padding: 16px;
-    height: $TIMELINE_HEIGHT;
+    min-height: $TIMELINE_HEIGHT;
     min-width: 600px;
     border-radius: 4px;
     box-shadow: 4px 4px 4px 0 #00000020;
     background-color: white;
 }
-
 
 #gitgraph {
     margin-left: 20px;

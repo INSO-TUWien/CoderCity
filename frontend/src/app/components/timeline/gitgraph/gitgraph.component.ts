@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef, Input } from "@angular/core";
 import { Observable, combineLatest, Subscription } from "rxjs";
 import { Branch } from "src/app/model/branch.model";
 import { GitGraph } from "./gitgraph/gitgraph";
@@ -34,6 +34,9 @@ export class GitgraphComponent implements OnInit {
 
   @ViewChild("popover", { static: true })
   popover: ElementRef<HTMLElement>;
+
+  @Input('isExpanded')
+  expanded: boolean;
 
   branches$: Observable<Branch[]>;
   branchTags$: Observable<BranchTag[]>;

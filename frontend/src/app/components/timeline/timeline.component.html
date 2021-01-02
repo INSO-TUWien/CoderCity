@@ -1,4 +1,5 @@
-<div class="container d-flex flex-column">
+<div [class.expanded]="isExpanded" class="container d-flex flex-column">
+    <!--Title bar-->
     <div class="d-flex flex-row justify-content-between">
         <div class="timeline-header d-flex justify-content-between">
             <div class="d-flex flex-row">
@@ -8,10 +9,12 @@
             </div>
         </div>
         <button class="btn btn-light btn-xs" (click)="onToggleExpand()">
-            <fa-icon [icon]="faChevronUp"></fa-icon>
+            <fa-icon *ngIf="!isExpanded" [icon]="faChevronUp"></fa-icon>
+            <fa-icon *ngIf="isExpanded" [icon]="faChevronDown"></fa-icon>
         </button>
     </div>
+    <!--Commit messages-->
     <div class="d-flex flex-column">
-        <cc-commit-message-container></cc-commit-message-container>
+        <cc-commit-message-container [isExpanded]="isExpanded"></cc-commit-message-container>
     </div>
 </div>
