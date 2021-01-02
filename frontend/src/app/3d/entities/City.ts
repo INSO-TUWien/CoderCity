@@ -1,13 +1,13 @@
 import { Entity } from '../entity';
 import { District } from './district';
 import { Directory } from 'src/app/model/directory.model';
-import { CityOptions } from '../util/city-options';
+import { CodeCityConfig } from '../util/code-city-config';
 
 export class City extends Entity {
 
     rootDistrict: District;
 
-    constructor(private options: CityOptions){
+    constructor(private options: CodeCityConfig){
         super();
     }
 

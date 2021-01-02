@@ -1,6 +1,6 @@
-import { ValueMapper } from './value-mapper';
+import { BuildingSizeMapper } from './building-size-mapper';
 
-export class SquareRootValueMapper implements ValueMapper {
+export class SquareRootValueMapper implements BuildingSizeMapper {
 
     map(value: number): number {
         return Math.sqrt(value);

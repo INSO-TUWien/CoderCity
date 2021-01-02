@@ -7,7 +7,7 @@
                 <cc-time-interval-label [interval]="projectInterval$ | async"></cc-time-interval-label>
             </div>
         </div>
-        <button class="btn btn-light btn-xs">
+        <button class="btn btn-light btn-xs" (click)="onToggleExpand()">
             <fa-icon [icon]="faChevronUp"></fa-icon>
         </button>
     </div>

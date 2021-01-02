@@ -10,7 +10,7 @@ import { Building} from './building';
 import { DISTRICT_MARGIN } from '../constants';
 import { File } from '../../model/file.model';
 import { CityElement } from '../layout/city-element';
-import { CityOptions } from '../util/city-options';
+import { CodeCityConfig } from '../util/code-city-config';
 import { Directory } from 'src/app/model/directory.model';
 import { IntersectableDirectory } from 'src/app/model/intersectable/intersectable-directory';
 
@@ -59,7 +59,7 @@ export class District extends Entity implements Element {
 
     constructor(
         public directory: Directory,
-        private options: CityOptions) {
+        private options: CodeCityConfig) {
         super();
         this.setUserData(directory);
         this.computeDistrictLayout();

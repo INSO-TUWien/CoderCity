@@ -5,22 +5,22 @@ import { BUILDING_MARGIN } from '../constants';
 import { CityElement } from '../layout/city-element';
 import { Bounds } from '../layout/bounds';
 import { File } from '../../model/file.model';
-import { ValueMapper } from '../util/mapper/value-mapper';
+import { BuildingSizeMapper } from '../util/mapper/building-size-mapper';
 import { SquareRootValueMapper } from '../util/mapper/squareroot-value-mapper';
 import { BlameHunk } from 'src/app/model/blamehunk.model';
-import { CityOptions } from '../util/city-options';
+import { CodeCityConfig } from '../util/code-city-config';
 import { Author } from 'src/app/model/author.model';
 
 export class Building extends Entity implements CityElement {
     static DEFAULT_COLOR = new THREE.Color('#F9F9F9');
-    mapper: ValueMapper;
+    mapper: BuildingSizeMapper;
 
     /**
      * Creates an empty building slot width the width and height. (reserved for the building)
      */
-    constructor(public bounds: Bounds, private options: CityOptions) {
+    constructor(public bounds: Bounds, private options: CodeCityConfig) {
         super();
-        this.mapper = new SquareRootValueMapper();
+        this.mapper = (options.buildingSizeMapper == null) ? new SquareRootValueMapper() : options.buildingSizeMapper;
     }
 
     gridPosition: THREE.Vector2;
@@ -53,7 +53,7 @@ export class Building extends Entity implements CityElement {
         this.object.position.set(x, y, z);
     }
 
-    setValueMapper(mapper: ValueMapper): void {
+    setValueMapper(mapper: BuildingSizeMapper): void {
         this.mapper = mapper;
     }
 

@@ -7,7 +7,7 @@ import { VisualizationQuery } from 'src/app/store/visualization/visualization.qu
 import { Directory } from 'src/app/model/directory.model';
 import { BuildingAuthorColorMapper } from 'src/app/3d/util/color/building-author-color-mapper';
 import { SettingsQuery } from '../settings-panel/state/settings.query';
-import { Preferences, BuildingColorMapperPreference, DistrictColorMapperPreference } from '../settings-panel/state/preferences.model';
+import { Preferences, BuildingColorMapperPreference, DistrictColorMapperPreference, SizeMapperPreference } from '../settings-panel/state/preferences.model';
 import { BuildingRandomColorMapper } from 'src/app/3d/util/color/building-random-color-mapper';
 import { Author } from 'src/app/model/author.model';
 import { ActivatedRoute } from '@angular/router';
@@ -17,6 +17,9 @@ import { DistrictDepthColorMapper } from 'src/app/3d/util/color/district-depth-c
 import { DistrictRandomColorMapper } from 'src/app/3d/util/color/district-random-color-mapper';
 import { FilterQuery } from 'src/app/store/filter/filter.query';
 import { Entity } from 'src/app/3d/entity';
+import { OneToOneValueMapper } from 'src/app/3d/util/mapper/one-to-one-value-mapper';
+import { SquareRootScaleMapper } from 'src/app/3d/util/mapper/squareroot-scale-mapper';
+import { SquareRootValueMapper } from 'src/app/3d/util/mapper/squareroot-value-mapper';
 
 @Component({
   selector: 'cc-visualization',
@@ -151,6 +154,16 @@ export class VisualizationComponent implements OnInit {
     if (preferences == null) {
         console.error(`Visualization: setPreferences: preferences is null or undefined.`);
     }
+    // Handle size mapper
+    const sizeMapperHeightPreference = preferences.sizeMapping.height;
+    if (sizeMapperHeightPreference === SizeMapperPreference.number_lines_1on1) {
+      // 1:1 mapping
+      this.visualization.setBuildingSizeMapper(new OneToOneValueMapper());
+    } else if (sizeMapperHeightPreference === SizeMapperPreference.number_lines_sqrt) {
+      // Sqrt mapping
+      this.visualization.setBuildingSizeMapper(new SquareRootValueMapper());
+    }
+
     // Update BuildingColorMapper based on set preference
     const buildingColorPreference = preferences.colorMapping.buildingColor;
     if (buildingColorPreference === BuildingColorMapperPreference.author) {

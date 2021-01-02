@@ -9,6 +9,8 @@ import { BuildingColorMapper } from './util/color/building-color-mapper';
 import { BuildingRandomColorMapper } from './util/color/building-random-color-mapper';
 import { DistrictColorMapper } from './util/color/district-color-mapper';
 import { DistrictRandomColorMapper } from './util/color/district-random-color-mapper';
+import { BuildingSizeMapper } from './util/mapper/building-size-mapper';
+import { SquareRootValueMapper } from './util/mapper/squareroot-value-mapper';
 
 export class Visualization {
     private canvasElement: HTMLCanvasElement;
@@ -22,6 +24,7 @@ export class Visualization {
     private city: City;
     private buildingColorMapper: BuildingColorMapper = new BuildingRandomColorMapper();
     private districtColorMapper: DistrictColorMapper = new DistrictRandomColorMapper();
+    private buildingSizeMapper = new SquareRootValueMapper();
 
     private entities: Entity[] = [];
 
@@ -111,6 +114,7 @@ export class Visualization {
 
         this.city = new City(
             {
+                buildingSizeMapper: this.buildingSizeMapper,
                 buildingColorMapper: this.buildingColorMapper,
                 districtColorMapper: this.districtColorMapper,
                 excludedFiles: this.excludedFiles,
@@ -121,6 +125,12 @@ export class Visualization {
         );
         this.city.centerCityPosition();
         this.addEntity(this.city);
+    }
+
+    setBuildingSizeMapper(buildingSizeMapper: BuildingSizeMapper) {
+        if (buildingSizeMapper != null) {
+            this.buildingSizeMapper = buildingSizeMapper;
+        }
     }
 
     setBuildingColorMapper(buildingColorMapper: BuildingColorMapper) {

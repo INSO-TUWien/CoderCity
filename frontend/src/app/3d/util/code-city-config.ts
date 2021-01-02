@@ -1,11 +1,12 @@
 import { BuildingColorMapper } from './color/building-color-mapper';
 import { DistrictColorMapper } from './color/district-color-mapper';
-import { ValueMapper } from './mapper/value-mapper';
+import { BuildingSizeMapper } from './mapper/building-size-mapper';
 
-export interface CityOptions {
+export interface CodeCityConfig {
+    buildingSizeMapper: BuildingSizeMapper;
     buildingColorMapper: BuildingColorMapper;
     districtColorMapper: DistrictColorMapper;
-    valueMapper?: ValueMapper;
+    valueMapper?: BuildingSizeMapper;
     excludedFiles?: string[];
     excludedAuthors?: string[];
 }
