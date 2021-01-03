@@ -1,0 +1,45 @@
+<div class="side-panel container d-flex flex-column">
+    <div class="d-flex justify-content-between" style="text-align: center; vertical-align: auto;">
+        <h3>
+            <span style="font-weight: bolder">Code</span><span style="font-weight: 400">City</span>
+            <!-- <span class="project-label"> | </span>
+            <span class="project-label">moccapps</span> -->
+        </h3>
+        <button 
+            class="btn btn-xs"
+            (click)="openModal()"
+            ngbTooltip="Settings">
+            <fa-icon [icon]="faSlidersH" size="xs"></fa-icon>
+        </button>
+    </div>
+    <div class="mt-1">
+        <input class="bg-light cc-input form-control form-control-sm" placeholder="Search">
+    </div>
+    <div class="mt-2 d-flex flex-row justify-content-between">
+        <button class="btn btn-xs filter-btn" (click)="openProject()">
+            <div class="d-flex flex-row justify-content-between align-items-center">
+                <fa-icon [icon]="faFolder" size="xs"></fa-icon>
+                <span class="ml-1">Open Project</span>
+            </div>
+        </button>
+        <button class="btn btn-xs filter-btn" (click)="onTriggerFilter()">
+            <div class="d-flex flex-row justify-content-between align-items-center">
+                <fa-icon [icon]="faFilter" size="xs"></fa-icon>
+                <span class="ml-1">Filter</span>
+            </div>
+        </button>
+    </div>
+    <!-- <div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Menu 1</a></li>
+            <li><a href="#">Menu 2</a></li>
+            <li><a href="#">Menu 3</a></li>
+          </ul>
+    </div> -->
+</div>
+
+<div class="side-panel-detail">
+    <cc-filter-panel></cc-filter-panel>
+    <cc-information-panel></cc-information-panel>
+</div>

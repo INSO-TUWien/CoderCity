@@ -1,0 +1,111 @@
+<div class="information-panel" *ngIf="isViewActive$ | async">
+  <div class="d-flex flex-row justify-content-between">
+    <h3 class="font-weight-bold">Filter</h3>
+    <button class="btn btn-sm btn-light" (click)="onClose()">
+      <fa-icon [icon]="faTimes" size="sm"></fa-icon>
+    </button>
+  </div>
+  
+  <hr />
+  <div class="d-flex mt-2 flex-column selection-container">
+    <div class="d-flex flex-row justify-content-between">
+      <div class="font-weight-bold">Time Interval</div>
+      <button class="btn-light btn btn-xs" (click)="onDeleteTimeInterval()">
+        Reset Interval
+      </button>
+    </div>
+    <div class="d-flex mt-2 flex-column">
+      <div class="selected-commit-container">
+        <h3 
+        class="header"
+        [style.color]="darkenColor((selectedCommitTimeIntervalWithAuthorColor$ | async)?.start.authorColor)"
+        >Start</h3>
+        <div class="d-flex flex-row justify-content-between">
+          <div
+            class="d-flex"
+            *ngIf="(selectedCommitTimeIntervalWithAuthorColor$ | async) != null"
+          >
+            <cc-author-label
+              [name]="
+                (selectedCommitTimeIntervalWithAuthorColor$ | async)?.start
+                  .authorName
+              "
+              [color]="
+                (selectedCommitTimeIntervalWithAuthorColor$ | async)?.start
+                  .authorColor
+              "
+              size="xs"
+            ></cc-author-label>
+            <div
+              class="ml-2"
+              [style.color]="
+                (selectedCommitTimeIntervalWithAuthorColor$ | async)?.start
+                  .authorColor
+              "
+            >
+              {{
+                (selectedCommitTimeIntervalWithAuthorColor$ | async)?.start
+                  .authorName
+              }}
+            </div>
+          </div>
+          <span class="commit-date text-muted">{{
+            (selectedCommitTimeIntervalWithAuthorColor$ | async)?.start.date
+              | date: "short"
+          }}</span>
+        </div>
+        <div class="d-flex align-items-center flex-grow-1">
+          {{
+            (selectedCommitTimeIntervalWithAuthorColor$ | async)?.start.message
+          }}
+        </div>
+      </div>
+      <div class="mt-2 selected-commit-container">
+        <h3 
+          class="header"
+          [style.color]="darkenColor((selectedCommitTimeIntervalWithAuthorColor$ | async)?.end.authorColor)"
+        >End</h3>
+        <div class="d-flex flex-row justify-content-between">
+          <div
+            class="d-flex"
+            *ngIf="(selectedCommitTimeIntervalWithAuthorColor$ | async) != null"
+          >
+            <cc-author-label
+              [name]="
+                (selectedCommitTimeIntervalWithAuthorColor$ | async)?.end
+                  .authorName
+              "
+              [color]="
+                (selectedCommitTimeIntervalWithAuthorColor$ | async)?.end
+                  .authorColor
+              "
+              size="xs"
+            ></cc-author-label>
+            <div
+              class="ml-2"
+              [style.color]="
+                (selectedCommitTimeIntervalWithAuthorColor$ | async)?.end
+                  .authorColor
+              "
+            >
+              {{
+                (selectedCommitTimeIntervalWithAuthorColor$ | async)?.end
+                  .authorName
+              }}
+            </div>
+          </div>
+          <span class="commit-date text-muted">{{
+            (selectedCommitTimeIntervalWithAuthorColor$ | async)?.end.date
+              | date: "short"
+          }}</span>
+        </div>
+
+        <div class="d-flex align-items-center flex-grow-1">
+          {{
+            (selectedCommitTimeIntervalWithAuthorColor$ | async)?.end.message
+          }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
