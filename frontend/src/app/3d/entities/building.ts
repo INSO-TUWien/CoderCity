@@ -60,17 +60,17 @@ export class Building extends Entity implements CityElement {
     createBuildingSegment(start: number, end: number, hunk: BlameHunk) {
         let color = Building.DEFAULT_COLOR;
         let opacity = 1;
-   
+
         // Check whether author of hunk is in exlusion list.
         const author = Author.fromHunk(hunk);
         if (this.options?.excludedAuthors != null &&
-            this.options?.excludedAuthors.findIndex((excludedAuthor) => Author.hashCode(author) == excludedAuthor) === -1) 
+            this.options?.excludedAuthors.findIndex((excludedAuthor) => Author.hashCode(author) == excludedAuthor) === -1)
         {
             // Author is not in exlusion list.
             // Get mapped author color
             color = this.options.buildingColorMapper.mapValue(hunk);
         }
-        
+
         const segment = new BuildingSegment(
             this.bounds.x - BUILDING_MARGIN,
             (end - start),
