@@ -1,0 +1,44 @@
+$project-primary-color: #89A0CE;
+
+.side-panel {
+    position: absolute;
+    top: 20px;
+    left: 18px;
+
+    padding: 16px;
+    padding-bottom: 8px;
+    width: 280px;
+    border-radius: 4px;
+    box-shadow: 4px 4px 4px 0 #00000020;
+    background-color: white;
+}
+
+h3 {
+    font-size: 11pt;
+    color: #414141;
+}
+
+.project-label {
+    font-size: 10pt;
+    color: $project-primary-color;
+}
+
+.bg-light {
+    background-color: #f8f9fc!important;
+}
+
+.cc-input {
+    border: 0px;
+}
+
+.side-panel-detail {
+    position: absolute;
+    top: 140px;
+    left: 18px;
+    width: 280px;
+}
+
+.filter-btn {
+    font-size: 9pt;
+    color: #5A7CD5;
+}

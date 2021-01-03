@@ -1,6 +1,6 @@
 import * as chroma from 'chroma-js';
 
-const COLORS: string[] = [
+export const COLORS: string[] = [
     '#3BC4C7', // Teal
     '#3B89C7', // Blue
     '#663BC7', // Purple

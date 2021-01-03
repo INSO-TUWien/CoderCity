@@ -1,7 +1,7 @@
 import * as d3 from 'd3-scale';
-import { ValueMapper } from './value-mapper';
+import { BuildingSizeMapper } from './building-size-mapper';
 
-export class SquareRootScaleMapper implements ValueMapper {
+export class SquareRootScaleMapper implements BuildingSizeMapper {
 
     private scale: d3.ScalePower<number, number>;
 

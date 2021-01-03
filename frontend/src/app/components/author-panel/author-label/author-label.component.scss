@@ -1,5 +1,19 @@
 $author-circle-width: 32px;
 
+.author-text {
+    font-size: 9pt;
+}
+
+.author-label-container {
+    border-radius: px;
+    box-shadow: 4px 4px 4px 0 #E9E9E9;
+    background-color: white;
+    position: relative;
+    pointer-events: all;
+    font-size: 10pt;
+    padding: 8px;
+}
+
 .author-circle {
     width: $author-circle-width;
     height: $author-circle-width;
@@ -8,7 +22,7 @@ $author-circle-width: 32px;
     font-size: 10pt;
     cursor: default;
     color: #ffffff;
-    box-shadow: 4px 4px 4px 0 rgba(226,226,226,0.50);
+    box-shadow: 4px 4px 4px 0 rgba(234,234,234,1);
     border-bottom-width: calc(0.2 * $author-circle-width);
     border-bottom-style: solid;
 }

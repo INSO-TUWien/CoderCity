@@ -1,3 +1,5 @@
+import { BlameHunk } from './blamehunk.model';
+
 export class Author {
     name: string;
     email: string;
@@ -14,5 +16,11 @@ export class Author {
     static hashCode(a: Author): string {
         return '' + a.name + a.email;
     }
-}
 
+    static fromHunk(h: BlameHunk): Author {
+        return {
+            name: h?.signature?.name,
+            email: h?.signature?.email
+        }
+    }
+}

@@ -8,8 +8,13 @@
     bottom: 0;
 }
 
+.loading-banner{
+    background-color: white;
+}
+
 .timeline-container {
     position: absolute;
+    background-color: back;
     pointer-events: none;
     bottom: 0;
     margin-bottom: 20px;

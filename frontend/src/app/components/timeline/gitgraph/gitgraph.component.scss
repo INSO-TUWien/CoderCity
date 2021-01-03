@@ -1,10 +1,15 @@
 $GIT_GRAPH_HEIGHT: 120px;
+$GIT_GRAPH_EXPANDED_HEIGHT: 220px;
 $GIT_GRAPH_PADDING_LEFT: 20px;
 
 #gitgraph {
   position: relative;
   border-top: 1px solid rgb(243, 243, 243);
   height: $GIT_GRAPH_HEIGHT;
+}
+
+.expanded {
+  min-height: $GIT_GRAPH_EXPANDED_HEIGHT;
 }
 
 #tooltip {

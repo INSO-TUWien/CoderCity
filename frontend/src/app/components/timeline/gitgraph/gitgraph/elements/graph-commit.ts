@@ -3,7 +3,7 @@ import { Svg } from "@svgdotjs/svg.js";
 import { AbstractGraphCommit, GraphCommitState} from "./abstract-graph-commit";
 import { getBranchColor, getBranchHighlightColor } from "../graph-colors";
 import { GridPosition, computeCommitCirclePosition } from "../compute-position";
-import { GitGraphCallbacks } from '../callback/callback';
+import { Callbacks } from '../callback/callback';
 
 export const CIRCLE_WIDTH = 18;
 export const INNER_CIRCLE_WIDTH = CIRCLE_WIDTH / 2;
@@ -13,7 +13,7 @@ export class GraphCommit extends AbstractGraphCommit {
   state: GraphCommitState = GraphCommitState.Default;
 
   constructor(
-    public callbacks: GitGraphCallbacks,
+    public callbacks: Callbacks,
     public readonly gridPosition: GridPosition,
     public commit: Commit,
     public color: string = "#0AB6B9"

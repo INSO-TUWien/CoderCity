@@ -1,19 +1,20 @@
-// @ts-nocheck
-import { Repository as NodeGitRepository, Tree, Blame, Oid, Revwalk } from 'nodegit';
+
+import { Repository as NodeGitRepository, Tree, Blame, Oid, Revwalk, Commit } from 'nodegit';
 import { Logger } from '@nestjs/common';
 import { File, calculateLinecount } from "src/model/file.model";
 import { BlameHunk as BlameHunkModel } from "src/model/blamehunk.model";
 import { Directory } from 'src/model/directory.model';
-import { GitModel } from 'src/datastore/git-model';
+import { GitProject } from 'src/services/git/git-project';
 import { Signature } from 'src/model/signature.model';
-import { GitIndexer } from 'src/services/git/git-indexer';
+import { RepoIndexer } from 'src/services/git/repo-indexer';
+import { ProjectUtil } from 'src/model/project.model';
 
 export class Repository {
 
     private readonly logger = new Logger(Repository.name);
     private repository: NodeGitRepository;
-    public gitModel: GitModel;
-    private gitIndexer: GitIndexer;
+    public gitModel: GitProject;
+    private repoIndexer: RepoIndexer;
 
     constructor(
         public readonly folderPath: string,
@@ -24,10 +25,10 @@ export class Repository {
         this.repository = await NodeGitRepository.open(this.folderPath);
     }
 
-    async startIndexing(): void {
-        this.gitModel = new GitModel();
-        this.gitIndexer = new GitIndexer(this.folderPath, this.gitModel, this);
-        await this.gitIndexer.startIndexing();
+    async startIndexing(): Promise<void> {
+        this.gitModel = new GitProject();
+        this.repoIndexer = new RepoIndexer(this.folderPath, this.gitModel, this);
+        await this.repoIndexer.startIndexing();
     }
 
     isOpen(): boolean {
@@ -38,36 +39,6 @@ export class Repository {
         return this.repository;
     }
 
-    // /**
-    //  * Retrieves commits, which are reachable from endCommitId
-    //  * between a interval of startCommitId (inclusive), endCommitId (inclusive).
-    //  * See: https://libgit2.org/libgit2/#HEAD/group/revwalk/git_revwalk_push_range
-    //  * @param startCommitId
-    //  * @param endCommitId
-    //  */
-    // async getConnectedCommitsBetweenCommits(startCommitId: string, endCommitId: string) {
-    //     const walker = Revwalk.create(this.repository);
-    //     walker.reset();
-    //     const result = [];
-    //     walker.pushRange(`${startCommitId}..${endCommitId}`);
-    //     walker.sorting(Revwalk.SORT.TIME, Revwalk.SORT.REVERSE);
-    //     let hasNext = true;
-    //     while (hasNext) {
-    //         try {
-    //             const oid = await walker.next();
-    //             result.push(oid.tostrS());
-    //             this.logger.log(oid.tostrS());
-    //         } catch (err) {
-    //             hasNext = false;
-    //         }
-    //     }
-    //     // Add start commit id at index 0, since libgit interval is (exclusive, inclusive)
-    //     if (result.length > 0) {
-    //         result.splice(0, 0, startCommitId);
-    //     }
-    //     return result;
-    // }
-
     /**
      * Retrieves project files in directory folder structure (including directories) at a specified commit.
      * @param commitId
@@ -77,6 +48,36 @@ export class Repository {
         const tree = await commit.getTree();
         const directory = await this.buildProjectModel(tree, null, commitId);
         return directory;
+    }
+
+    /**
+     * Executes a provided function for each commit.
+     * @param operation the funciton that should be executed
+     */
+    async foreachCommit(operation: (commitData: { projectId: string; commitId: string }) => void ) {
+        const repo = this.repository;
+        const branchNames = await RepoIndexer.getAllBranchNames(repo);
+        const projectId = ProjectUtil.getProjectId(this.folderPath);
+        this.logger.log(`Starting execution of foreachCommit`);
+        const walker = Revwalk.create(repo);
+        const headCommit = await repo.getHeadCommit();
+        if (headCommit != null) {
+          walker.push(headCommit.id());
+          walker.sorting(Revwalk.SORT.TOPOLOGICAL);
+          await walker
+            .getCommitsUntil(() => true)
+            .then(async (commits: Commit[]) => {
+              // Get all commit ids (sha) and proceed with indexing all project files at that commit and saving result to the mongodb database
+              commits.forEach(commit => {
+                const commitId = commit.sha();
+                // Execute externally provided operation
+                operation({
+                  projectId: projectId,
+                  commitId: commitId
+                });
+              })
+            });
+        }
     }
 
     /**
@@ -106,7 +107,7 @@ export class Repository {
                 const file = await this.getFileWithBlameHunks(entry.path(), commitId);
                 file.name = entryName;
                 directory.files.push(file);
-                this.logger.log(`File entryName: ${entryName}`);
+                // this.logger.log(`File entryName: ${entryName}`);
             } else if (entry.isDirectory()) {
                 const entryDirectory = new Directory();
                 entryDirectory.name = entryName;
@@ -114,7 +115,7 @@ export class Repository {
                 directory.directories.push(entryDirectory);
                 // Build model recursively in sub folderes
                 const tree = await entry.getTree();
-                this.logger.log(`Folder entryName: ${entryName}`);
+                // this.logger.log(`Folder entryName: ${entryName}`);
                 await this.buildProjectModel(tree, entryDirectory, commitId);
             }
         }
@@ -192,17 +193,24 @@ export class Repository {
             // OrigLine number is the line number of the hunk at the state where the commit of the hunk was made.
             // Whereas finalLineNumber takes into account of other hunks (code segments) inserted in between.
             const hunkModel = new BlameHunkModel(
+                // @ts-ignore
                 hunk.finalStartLineNumber(),
+                // @ts-ignore
                 hunk.finalStartLineNumber() + hunk.linesInHunk() - 1,
+                // @ts-ignore
                 hunk.linesInHunk(),
+                // @ts-ignore
                 hunk.origCommitId().tostrS(),
+                // @ts-ignore
                 hunk.origPath(),
+                // @ts-ignore
                 new Signature(hunk.origSignature().name(), hunk.origSignature().email())
             );
             file.hunks.push(hunkModel);
             // this.logger.log(`file: ${JSON.stringify(file)}`);
         }
 
+        file.fullPath = filePath;
         // Calculate total length
         file.lineCount = calculateLinecount(file);
         return file;

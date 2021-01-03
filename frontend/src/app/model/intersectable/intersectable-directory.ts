@@ -12,7 +12,13 @@ export class IntersectableDirectory {
         const directory = new IntersectableDirectory();
         directory.name = object.name;
         directory.files = object.files.map((file: File) => {
-            return new File(file.name);
+            // Create new instance of file type. (Necessary since objects retrieved via http requests do not have typing, but raycaster performs a type check via instanceof)
+            const fileObject = new File();
+            fileObject.name = file.name;
+            fileObject.hunks = file.hunks;
+            fileObject.fullPath = file.fullPath;
+            fileObject.lineCount = file.lineCount;
+            return fileObject;
         });
         directory.fullPath = object.fullPath;
         directory.directories = object.directories.map(directory => {

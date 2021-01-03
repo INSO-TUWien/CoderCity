@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { GitService } from '../git/git.service';
+import { GitProjectService } from '../git/git-project.service';
 import { Signature } from 'src/model/signature.model';
 
 @Injectable()
 export class AuthorService {
-    constructor(private gitService: GitService) {}
+    constructor(private gitService: GitProjectService) {}
 
     async getAllAuthors(projectId: string): Promise<Signature[]> {
         const authors: Signature[] = [];

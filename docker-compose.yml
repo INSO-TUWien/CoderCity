@@ -1,23 +1,29 @@
 version: "3.7"
 services:
-  cc-mongodb:
-    container_name: cc-mongodb
+  # Connection string: mongodb://root:example@localhost:27017
+  cc_mongodb:
     image: mongo
-    environment: 
+    ports:
+      - 27017:27017
+    environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-  # cc-backend:
-  #   container_name: cc-backend
-  #   image: codecity-backend:latest
-  #   ports: 
-  #       - 3000:3000
-  #   volumes: 
-  #       - '/Users/yikaiyang/Projects/BA2/projects/ue2_github/:/.git'
-  # frontend:
-  #   image: cc-frontend
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: ./Dockerfile
-  #   ports:
-  #     - ${FRONTEND_PORT}:80
-  
+  cc_backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    image: codecity-backend:latest
+    ports:
+      - 3000:3000
+    environment:
+      GIT_PROJECTS_FOLDER: /projects
+      MONGODB_URI: mongodb://root:example@cc_mongodb:27017
+      INDEX_MODE: LAZY  # EAGER = Pre index files. LAZY = Indexes files on demand
+    volumes:
+      - "/Users/yikaiyang/Projects/Uni:/projects"
+  cc_frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:80

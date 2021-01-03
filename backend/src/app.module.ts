@@ -1,21 +1,32 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { GitService } from './services/git/git.service';
-import { CommitController } from './controller/commit/commit.controller';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GitProjectService } from './services/git/git-project.service';
+import { CommitController } from './controller/commit.controller';
 import { CommitService } from './services/commit/commit.service';
-import { ProjectController } from './controller/project/project.controller';
-import { ProjectService } from './services/project/project.service';
+import { ProjectController } from './controller/project.controller';
+import * as Joi from '@hapi/joi';
 import { AuthorService } from './services/author/author.service';
-import { AuthorController } from './controller/author/author.controller';
-import { BranchController } from './controller/branch/branch.controller';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    envFilePath: ['.env.development', '.env'],
-  })],
-  controllers: [AppController, AuthorController, BranchController, CommitController, ProjectController],
-  providers: [AppService, GitService, AuthorService, CommitService, ProjectService],
+  imports: [
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        GIT_PROJECTS_FOLDER: Joi.string().required(),
+        INDEX_MODE: Joi.string().default('LAZY').valid('LAZY', 'EAGER'),
+      }),
+      envFilePath: ['.env.development', '.env'],
+    }),
+    // MongooseModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: async(configService: ConfigService) => ({
+    //     uri: configService.get<string>('MONGODB_URI')
+    //   }),
+    //   inject: [ConfigService]
+    // }),
+    // ProjectSnapshotDataModule,
+    
+  ],
+  controllers: [CommitController, ProjectController],
+  providers: [GitProjectService, AuthorService, CommitService],
 })
-export class AppModule {}
+export class AppModule { }

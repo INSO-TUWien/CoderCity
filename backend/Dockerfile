@@ -26,7 +26,7 @@ COPY --from=builder /home/node/package*.json /home/node/
 COPY --from=builder /home/node/dist/ /home/node/dist/
 COPY --from=builder /home/node/.env /home/node/.env
 
-#RUN npm ci
+RUN npm install --only=production
 
 CMD ["node", "dist/main.js"]
 EXPOSE 3000

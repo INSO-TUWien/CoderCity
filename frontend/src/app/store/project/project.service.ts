@@ -10,6 +10,7 @@ import { Commit } from 'src/app/model/commit.model';
 import { TimelineService } from 'src/app/components/timeline/timeline.service';
 import { Author } from 'src/app/model/author.model';
 import { getAuthorColor } from 'src/app/util/color-scheme';
+import { VisualizationService } from "../visualization/visualization.service";
 
 @Injectable({ providedIn: "root" })
 export class ProjectService {
@@ -27,7 +28,25 @@ export class ProjectService {
     );
   }
 
-  async getProjectData(projectId: string) {
+  // Calculates and assigns individual color values of authors. 
+  // Authors with the same name or email  are given the same color.
+  private assignColors(authors: Author[]): Author[] {
+    let result: Author[] = [];
+    authors.forEach((a,i) => {
+      let color = result.find((existingAuthor) => existingAuthor.name == a.name || existingAuthor.email == a.email)?.color;
+      if (color == null) {
+        color = getAuthorColor(i);
+      }
+      result.push({
+        color: color,
+        email: a.email, 
+        name: a.name 
+      });
+    });
+    return result;
+  }
+
+  async loadProjectData(projectId: string) {
     this.http
       .get<ProjectData>(`${environment.apiUrl}/project/${projectId}`)
       .pipe(
@@ -45,7 +64,7 @@ export class ProjectService {
           const authors = val?.authors;
           return ({
             ...val,
-            authors: authors.map((a, index) => ({ color: getAuthorColor(index), email: a.email, name: a.name }))
+            authors: this.assignColors(authors)
           });
         }),
         tap((val) => {
@@ -112,9 +131,41 @@ export class ProjectService {
   }
 
   setActive(id: ID) {
+    this.projectStore.reset();
     this.projectStore.setActive(id);
     if (id !== null) {
-      this.getProjectData(id as string);
+      this.loadProjectData(id as string);
     }
+  }
+
+  updateAuthorColor(author: Author, color: string) {
+    this.projectStore.update(
+      (state) => {
+        const authorColorMap = state.authorColorMap;
+        const projectData = state.projectData;
+        const updatedProjectData = {
+          ...projectData,
+          authors:  projectData.authors.map((a, i) => {
+            if (Author.hashCode(a) === Author.hashCode(author)) {
+              // Update author item with color
+              return {
+                ...a,
+                color: color
+              };
+            } else {
+              // Do not change color
+              return a;
+            }
+          })
+        }
+
+        authorColorMap.set(Author.hashCode(author), color);
+        return ({
+          ...state,
+          projectData: updatedProjectData,
+          authorColorMap: authorColorMap
+        });
+      }
+    )
   }
 }
