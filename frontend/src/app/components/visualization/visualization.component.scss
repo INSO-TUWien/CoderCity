@@ -14,14 +14,9 @@
 
 .timeline-container {
     position: absolute;
+    background-color: back;
     pointer-events: none;
     bottom: 0;
     margin-bottom: 20px;
     width: 100%;
-}
-
-::ng-deep .text-label{
-    color: red;
-    font-size: 32pt;
-    z-index: 800;
 }

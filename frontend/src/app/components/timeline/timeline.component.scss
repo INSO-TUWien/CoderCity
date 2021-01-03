@@ -16,11 +16,11 @@ $TIMELINE_EXPANDED_HEIGHT: 680px;
     line-height: 1.2;
 }
 
-.container {
+.timeline {
     pointer-events: all;
     padding: 16px;
     min-height: $TIMELINE_HEIGHT;
-    min-width: 600px;
+    max-width: 1200px;
     border-radius: 4px;
     box-shadow: 4px 4px 4px 0 #00000020;
     background-color: white;
