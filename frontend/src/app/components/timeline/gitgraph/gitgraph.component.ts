@@ -1,11 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef, Input } from "@angular/core";
 import { Observable, combineLatest, Subscription } from "rxjs";
-import { GitModel } from "../../../model/git-model";
 import { Branch } from "src/app/model/branch.model";
 import { GitGraph } from "./gitgraph/gitgraph";
-import { CommitService } from "src/app/services/commit.service";
-import { VisualizationService } from "src/app/services/visualization.service";
-import { VisualizationQuery } from "src/app/state/visualization.query";
+import { VisualizationService } from "src/app/store/visualization/visualization.service";
+import { VisualizationQuery } from "src/app/store/visualization/visualization.query";
 import { GraphCommitState } from "./gitgraph/elements/abstract-graph-commit";
 import {
   TooltipComponent,
@@ -37,6 +35,9 @@ export class GitgraphComponent implements OnInit {
   @ViewChild("popover", { static: true })
   popover: ElementRef<HTMLElement>;
 
+  @Input('isExpanded')
+  expanded: boolean;
+
   branches$: Observable<Branch[]>;
   branchTags$: Observable<BranchTag[]>;
 
@@ -53,7 +54,6 @@ export class GitgraphComponent implements OnInit {
   private selectedCommit: Commit;
 
   constructor(
-    private commitService: CommitService,
     private projectQuery: ProjectQuery,
     private gitGraphService: GitgraphService,
     private gitGraphQuery: GitgraphQuery,
@@ -131,7 +131,7 @@ export class GitgraphComponent implements OnInit {
       });
   }
 
-  private deselectSelectedCommit() {
+  deselectSelectedCommit() {
     if (this.selectedCommit != null) {
       this.gitGraph.setCommitDisplayState(
         this.selectedCommit.commitId,
@@ -184,7 +184,7 @@ export class GitgraphComponent implements OnInit {
   private initGitGraph(): void {
     this.gitGraph = new GitGraph(this.graphElement.nativeElement, {
       onGraphCommitMouseOver: (commit) => {
-        this.commitService.setPreviewCommit(commit);
+        this.visualizationService.setCommitPreview(commit);
         const element = document.getElementById(commit.commitId);
         this.tooltip.anchorElement = element;
         this.tooltip.commit = commit;
@@ -250,12 +250,13 @@ export class GitgraphComponent implements OnInit {
     }
   }
 
-  private deselectPreviewCommit() {
-    this.commitService.setPreviewCommit(null);
+  deselectPreviewCommit() {
+    this.visualizationService.setCommitPreview(null);
   }
 
   private drawGraph(branches: Branch[], commits: Commit[], commitMap: Map<string, Commit>) {
+    this.gitGraph.clear();
     this.gitGraph.drawGraph(commits, commitMap, branches);
-    this.gitGraphService.setBranchTags(this.gitGraph);
+    //this.gitGraphService.setBranchTags(this.gitGraph);
   }
 }

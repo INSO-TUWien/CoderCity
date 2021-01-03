@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Commit } from 'src/app/model/commit.model';
 import { faPlay, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -19,6 +19,9 @@ export class CommitMessageContainerComponent implements OnInit {
 
   @ViewChild('messageContainer', {static: true})
   messageContainer: ElementRef<HTMLElement>;
+
+  @Input('isExpanded')
+  isExpanded: boolean;
 
   // Element is active when mouse is hovering above it.
   active: boolean;
@@ -45,6 +48,7 @@ export class CommitMessageContainerComponent implements OnInit {
   }
 
   private initEvents(): void {
+  
     this.messageContainer.nativeElement.onmouseenter = () => {
       this.active = true;
     };
@@ -59,7 +63,14 @@ export class CommitMessageContainerComponent implements OnInit {
         this.scroll(scrollLeft);
       }
     };
+
+    // Add mouse wheel scrolling
+    this.messageContainer.nativeElement.addEventListener("wheel", event => {
+      this.setScrollLeft(this.messageContainer.nativeElement.scrollLeft - event.deltaY);
+    })
   }
+
+  
 
   private setScrollLeft(value: number) {
     this.messageContainer.nativeElement.scrollLeft = value;

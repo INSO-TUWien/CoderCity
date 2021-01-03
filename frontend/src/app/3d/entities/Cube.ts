@@ -1,21 +1,20 @@
 import { Entity } from '../entity';
-import { BoxGeometry, MeshBasicMaterial, MeshLambertMaterial } from 'three';
+import { BoxBufferGeometry, MeshLambertMaterial } from 'three';
 import * as THREE from 'three';
-import { BlameHunk } from 'src/app/model/blamehunk.model';
 
 export class Cube extends Entity {
-    geometry: THREE.BoxGeometry;
+    geometry: THREE.BoxBufferGeometry;
     material: THREE.Material;
     mesh: THREE.Mesh;
 
-    constructor(width: number, height: number, depth: number, color: THREE.Color) {
+    constructor(width: number, height: number, depth: number, color: THREE.Color, opacity: number = 1) {
         super();
-        this.geometry = new BoxGeometry(width, height, depth);
+        this.geometry = new BoxBufferGeometry(width, height, depth);
         this.material = new MeshLambertMaterial(
             {
                 color,
                 transparent: true,
-                opacity: 0.90
+                opacity: opacity
             }
         );
         this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -23,9 +22,14 @@ export class Cube extends Entity {
 
     init() {
         this.object.add(this.mesh);
-        // // If data associated with the object exists: Copy data to mesh.
-        // const exampleHunk = new BlameHunk(1, 2, 2, "test", "test", "signature");
-        // this.mesh.userData.test = exampleHunk;
+    }
+
+    getUserData() {
+        return this.mesh.userData;
+    }
+
+    get userData() {
+        return this.mesh.userData;
     }
 
     setUserData(userData) {

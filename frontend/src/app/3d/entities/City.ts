@@ -1,14 +1,13 @@
 import { Entity } from '../entity';
-import { District } from './District';
+import { District } from './district';
 import { Directory } from 'src/app/model/directory.model';
-import { BuildingColorMapper } from '../util/color/building-color-mapper';
-import { CityOptions } from '../util/city-options';
+import { CodeCityConfig } from '../util/code-city-config';
 
 export class City extends Entity {
 
     rootDistrict: District;
 
-    constructor(private options: CityOptions){
+    constructor(private options: CodeCityConfig){
         super();
     }
 
@@ -24,20 +23,9 @@ export class City extends Entity {
         this.rootDistrict.setPosition(offsetX, 0, offsetZ);
     }
 
-    // generateExampleCity() {
-    //     this.rootDistrict = new District('Folder 1', this.options);
-    //     this.rootDistrict.generateRandomBuildings(2);
-    //     const district2 = new District('Folder 2', this.options);
-    //     district2.generateRandomBuildings(1);
-    //     const district3 = new District('Folder 2', this.options);
-    //     district3.generateRandomBuildings(3);
-    //     this.rootDistrict.addCityElement(district3);
-    //     this.rootDistrict.addCityElement(district2);
-    //     this.addEntity(this.rootDistrict);
-
-    //     // Call addtoscene in all sub city elements of the district.
-    //     this.rootDistrict.addToScene();
-    // }
+    searchEntity(matchingFunction: (userdata) => boolean, cancellationFunction?: (userData) => boolean): Entity {
+        return this.rootDistrict.searchEntity(matchingFunction, cancellationFunction);
+    }
 
     generateCity(projectFiles: Directory): void {
         if (this.rootDistrict != null) {
@@ -52,6 +40,9 @@ export class City extends Entity {
         this.generateCityElement(projectFiles, this.rootDistrict);
         this.addEntity(this.rootDistrict);
         this.rootDistrict.addToScene();
+        this.rootDistrict.setUserData({
+            fullPath: ''
+        })
     }
 
     /**
@@ -61,8 +52,14 @@ export class City extends Entity {
         district.depth = depth;
 
         directory.files.forEach(file => {
+            // Check if file is excluded in exclusion list and skip file if so
+            if (this.options.excludedFiles && this.options.excludedFiles.includes(`${file.fullPath}`)) {
+                // File is excluded
+                return;
+            }
+
             // Create building for each file
-            district.addBuilding(file);
+            district.addBuildingWithFile(file);
         });
 
         directory.directories.forEach(d => {

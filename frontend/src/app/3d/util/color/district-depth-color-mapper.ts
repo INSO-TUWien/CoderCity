@@ -1,5 +1,5 @@
 import { DistrictColorMapper } from './district-color-mapper';
-import { District } from '../../entities/District';
+import { District } from '../../entities/district';
 import * as THREE from 'three';
 import * as chroma from 'chroma-js';
 

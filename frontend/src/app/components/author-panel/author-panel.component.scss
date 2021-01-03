@@ -3,6 +3,9 @@
     top: 35%;
     bottom: 65%;
     right: 18px;
+    width: 280px;
+    max-height: 720px;
+    font-size: 10pt;
 }
 
 h3 {
@@ -11,3 +14,13 @@ h3 {
     color: rgb(92, 92, 92);
 }
 
+.author-label-container {
+    box-shadow: 4px 4px 4px 0 #00000020;
+    background-color: white;
+    position: relative;
+    pointer-events: all;
+    font-size: 10pt;
+    z-index: 500;
+}
+
+.item-overflow-wrap { word-wrap: break-word; word-break: break-all }

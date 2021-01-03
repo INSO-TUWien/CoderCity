@@ -1,20 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { Engine } from '../../3d/engine';
+import { Visualization } from '../../3d/visualization';
 import { EventBus } from 'src/app/3d/util/eventbus';
 import * as EventEmitter from 'eventemitter3';
-import { VisualizationService } from 'src/app/services/visualization.service';
-import { VisualizationQuery } from 'src/app/state/visualization.query';
+import { VisualizationService } from 'src/app/store/visualization/visualization.service';
+import { VisualizationQuery } from 'src/app/store/visualization/visualization.query';
 import { Directory } from 'src/app/model/directory.model';
 import { BuildingAuthorColorMapper } from 'src/app/3d/util/color/building-author-color-mapper';
 import { SettingsQuery } from '../settings-panel/state/settings.query';
-import { Preferences, BuildingColorMapperPreference, DistrictColorMapperPreference } from '../settings-panel/state/preferences.model';
+import { Preferences, BuildingColorMapperPreference, DistrictColorMapperPreference, SizeMapperPreference } from '../settings-panel/state/preferences.model';
 import { BuildingRandomColorMapper } from 'src/app/3d/util/color/building-random-color-mapper';
 import { Author } from 'src/app/model/author.model';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectQuery } from 'src/app/store/project/project.query';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription, combineLatest, Observable, of } from 'rxjs';
 import { DistrictDepthColorMapper } from 'src/app/3d/util/color/district-depth-color-mapper';
 import { DistrictRandomColorMapper } from 'src/app/3d/util/color/district-random-color-mapper';
+import { FilterQuery } from 'src/app/store/filter/filter.query';
+import { Entity } from 'src/app/3d/entity';
+import { OneToOneValueMapper } from 'src/app/3d/util/mapper/one-to-one-value-mapper';
+import { SquareRootScaleMapper } from 'src/app/3d/util/mapper/squareroot-scale-mapper';
+import { SquareRootValueMapper } from 'src/app/3d/util/mapper/squareroot-value-mapper';
 
 @Component({
   selector: 'cc-visualization',
@@ -23,7 +28,7 @@ import { DistrictRandomColorMapper } from 'src/app/3d/util/color/district-random
 })
 export class VisualizationComponent implements OnInit {
 
-  engine: Engine;
+  private visualization: Visualization;
   private eventBus: EventEmitter;
   private projectFiles: Directory;
   private authors: Author[];
@@ -31,36 +36,54 @@ export class VisualizationComponent implements OnInit {
   private settingsSubscription: Subscription;
   private projectSubscription: Subscription;
 
+  // Selected item
+  selectedItemX: number;
+  selectedItemY: number;
+  selectedItemTitle: string;
+  selectedItemEntity: Entity;
+  selectedItemHidden: boolean = true;
+
+  isLoading$: Observable<boolean>;
+
   constructor(
     private visualizationService: VisualizationService,
     private visualizationQuery: VisualizationQuery,
-    private projectQuery: ProjectQuery,
+    private projectQuery: ProjectQuery, 
     private settingsQuery: SettingsQuery,
-    private route: ActivatedRoute
+    private filterQuery: FilterQuery,
+    private activatedRoute: ActivatedRoute,
   ) {
+    this.isLoading$ = this.visualizationQuery.selectLoading();
   }
 
   ngOnInit() {
-    let id = this.route.snapshot.paramMap.get('id');
+    let id = this.activatedRoute.snapshot.paramMap.get('id');
+  
+    // Open selection dialog if no project is selected
     if (id == null || id.length <= 0) {
-      this.visualizationService.openProject();
+      this.visualizationService.openProjectSelectionModal();
     }
 
-    this.engine = new Engine();
-    this.engine.start();
+    this.visualization = new Visualization();
     this.initEventBus();
 
-    this.projectSubscription = this.projectQuery.selectActive().subscribe(project => {
-      if (project != null) {
-      } else {
-        this.visualizationService.openProject();
-      }
+    this.projectSubscription = this.projectQuery
+      .selectActive()
+      .subscribe(project => {
+        // Reset code city visualization
+        this.projectFiles = null;
+        
+        if (project == null) {
+          this.visualizationService.openProjectSelectionModal();
+        }
     });
 
     this.visualizationQuery.selectedCommit$.subscribe(
       (commit) => {
+        // A new commit was selected using the commit graph.
+        // Reset visualization.
         if (commit === null) {
-          this.engine.deleteCity();
+          this.visualization.deleteCity();
         }
       }
     );
@@ -70,17 +93,51 @@ export class VisualizationComponent implements OnInit {
         const directory = val;
         if (directory != null) {
           this.projectFiles = directory;
+          this.removeSelectedItem();
           this.renderCity();
         }
       }
     );
 
+    /**
+     * Add Selected Item modal when an item has been selected via search.
+     */
+    this.visualizationQuery.selectedSearchItem$.subscribe((searchItem) => {
+      if (searchItem === null) {
+        this.removeSelectedItem();
+      } else if (searchItem.length > 0) {
+        // Remove prior selected item
+        if (this.selectedItemEntity != null) {
+          this.selectedItemEntity.removeScreenSpaceCoordinatesListener();
+          
+        }
+        // Add selected item marker
+        this.selectedItemEntity = this.visualization.searchEntityByPath(searchItem)
+        this.selectedItemTitle = this.selectedItemEntity?.userData?.fullPath;
+        
+        if (this.selectedItemEntity != null) {
+          let camera = this.visualization.camera;
+          this.selectedItemEntity.addScreenSpaceCoordinatesListener(camera, (coords) => {
+            this.selectedItemX = coords.x;
+            this.selectedItemY = coords.y;
+          })
+          this.selectedItemHidden = false;
+        }
+        // alert(JSON.stringify(resultEntity))
+      }
+    });
+
     // Handle preference changes. Wait for author data before rendering.
-    combineLatest(this.projectQuery.authors$, this.settingsQuery.preferences$).subscribe(
-      ([authors, preferences]) => {
+    combineLatest(
+      this.projectQuery.authors$, 
+      this.settingsQuery.preferences$, 
+      this.filterQuery.excludedFiles$,
+      this.filterQuery.excludedAuthors$,
+    ).subscribe(
+      ([authors, preferences, excludedFiles, excludedAuthors]) => {
         this.authors = authors;
         if (authors != null && preferences != null) {
-            this.handlePreferences(preferences);
+            this.handleVisualizationOptions(preferences, excludedFiles, excludedAuthors);
             this.renderCity();
         }
       }
@@ -89,28 +146,46 @@ export class VisualizationComponent implements OnInit {
 
   private renderCity(): void {
     if (this.projectFiles != null) {
-      this.engine.generateCity(this.projectFiles);
+      this.visualization.generateCity(this.projectFiles);
     }
   }
 
-  private handlePreferences(preferences: Preferences) {
+  private handleVisualizationOptions(preferences: Preferences, excludedFiles: string[], excludedAuthors: string[]) {
     if (preferences == null) {
-        console.error(`Engine: setPreferences: preferences is null or undefined.`);
+        console.error(`Visualization: setPreferences: preferences is null or undefined.`);
     }
+    // Handle size mapper
+    const sizeMapperHeightPreference = preferences.sizeMapping.height;
+    if (sizeMapperHeightPreference === SizeMapperPreference.number_lines_1on1) {
+      // 1:1 mapping
+      this.visualization.setBuildingSizeMapper(new OneToOneValueMapper());
+    } else if (sizeMapperHeightPreference === SizeMapperPreference.number_lines_sqrt) {
+      // Sqrt mapping
+      this.visualization.setBuildingSizeMapper(new SquareRootValueMapper());
+    }
+
     // Update BuildingColorMapper based on set preference
     const buildingColorPreference = preferences.colorMapping.buildingColor;
     if (buildingColorPreference === BuildingColorMapperPreference.author) {
-        this.engine.setBuildingColorMapper(new BuildingAuthorColorMapper(this.authors));
+        this.visualization.setBuildingColorMapper(new BuildingAuthorColorMapper(this.authors));
     } else if (buildingColorPreference === BuildingColorMapperPreference.random) {
-        this.engine.setBuildingColorMapper(new BuildingRandomColorMapper());
+        this.visualization.setBuildingColorMapper(new BuildingRandomColorMapper());
     }
 
     // Handle district color mapper
     const districtColorPreference = preferences.colorMapping.districtColor;
     if (districtColorPreference === DistrictColorMapperPreference.depth) {
-      this.engine.setDistrictColorMapper(new DistrictDepthColorMapper());
+      this.visualization.setDistrictColorMapper(new DistrictDepthColorMapper());
     } else if (districtColorPreference === DistrictColorMapperPreference.random) {
-      this.engine.setDistrictColorMapper(new DistrictRandomColorMapper());
+      this.visualization.setDistrictColorMapper(new DistrictRandomColorMapper());
+    }
+
+    if (excludedFiles !== null) {
+      this.visualization.setExcludedFiles(excludedFiles);
+    }
+
+    if (excludedAuthors !== null) {
+      this.visualization.setExcludedAuthors(excludedAuthors);
     }
   }
 
@@ -120,15 +195,20 @@ export class VisualizationComponent implements OnInit {
     this.projectSubscription.unsubscribe();
   }
 
+  onCloseSelectedItemModal(): void {
+    this.removeSelectedItem();
+  }
+
+  private removeSelectedItem(): void {
+    this.visualizationService.setSelectedSearchItem(null);
+    this.selectedItemHidden = true;
+    this.selectedItemEntity?.removeScreenSpaceCoordinatesListener();
+  }
+
   private initEventBus(): void {
     this.eventBus = EventBus.instance;
     this.eventBus.on('intersectObject', (intersectedObject) => {
       this.visualizationService.setSelectedObject(intersectedObject);
-      // if (intersectedObject != null) {
-      //   if (intersectedObject instanceof BlameHunk) {
-      //     this.visualizationService.setSelectedObject(intersectedObject);
-      //   }
-      // }
     });
   }
 }

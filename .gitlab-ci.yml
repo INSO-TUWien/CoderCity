@@ -1,7 +1,7 @@
 stages:
     - build-frontend
     - build-backend
-build-frontend:amd64:
+build-frontend:latest:
     stage: build-frontend
     when: on_success
     only:
@@ -11,8 +11,9 @@ build-frontend:amd64:
       - docker:dind
     script:
       - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-      - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/$CI_PROJECT_PATH/frontend:amd64 ./frontend
-      - docker push $CI_REGISTRY/$CI_PROJECT_PATH/frontend:amd64
+      - docker build -f "frontend/Dockerfile" -t $CI_REGISTRY/$CI_PROJECT_PATH/frontend:latest ./frontend
+      - docker push $CI_REGISTRY/$CI_PROJECT_PATH/frontend:latest
+build-backend:latest:
     stage: build-backend
     when: on_success
     only:
@@ -22,5 +23,5 @@ build-frontend:amd64:
       - docker:dind
     script:
       - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-      - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/$CI_PROJECT_PATH/backend:amd64 ./backend
-      - docker push $CI_REGISTRY/$CI_PROJECT_PATH/backend:amd64
+      - docker build -f "backend/Dockerfile" -t $CI_REGISTRY/$CI_PROJECT_PATH/backend:latest ./backend
+      - docker push $CI_REGISTRY/$CI_PROJECT_PATH/backend:latest

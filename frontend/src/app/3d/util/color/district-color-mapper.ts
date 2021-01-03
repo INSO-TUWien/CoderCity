@@ -1,4 +1,4 @@
-import { District } from '../../entities/District';
+import { District } from '../../entities/district';
 
 export interface DistrictColorMapper {
     mapValue(district: District): THREE.Color;
