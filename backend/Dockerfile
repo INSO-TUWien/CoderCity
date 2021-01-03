@@ -9,7 +9,7 @@ COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "tsconfig.bu
 COPY ./src/ /home/node/src
 
 USER root
-# If you have native dependencies, you'll need extra tools
+# Dependencies for nodegit (python)
 RUN apk add --no-cache make gcc g++ python krb5-dev
 RUN npm ci && npm run build
 
