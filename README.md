@@ -6,6 +6,8 @@ Each building (block) represents a file in the visualization, while the height o
 
 Information of the code ownership is derived using the metadata of each git hunk (See: git blame). Each hunk (visually represented as in the buildings) is then colored. 
 
+For optimal performance, please use Google Chrome.
+
 ## Configuration
 
 TODO
