@@ -4,17 +4,17 @@ services:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
-    #image: registry.gitlab.com/yikaiyang/codecity/backend:latest
+    image: registry.gitlab.com/yikaiyang/codecity/backend:latest
     ports:
       - 3000:3000
     environment:
       GIT_PROJECTS_FOLDER: /projects
     volumes:
-      - "/Users/yikaiyang/Projects/Uni:/projects"
+      - "./:/projects"
   cc_frontend:
     build:
       context: ./frontend
       dockerfile: ./Dockerfile
-    #image:  registry.gitlab.com/yikaiyang/codecity/frontend:latest
+    image:  registry.gitlab.com/yikaiyang/codecity/frontend:latest
     ports:
       - 80:80

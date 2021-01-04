@@ -1,4 +1,4 @@
 export const environment = {
-  apiUrl: 'https://yikaiyang.com/codecity/api',
+  apiUrl: '88.99.184.182:3000/api',
   production: true
 };
