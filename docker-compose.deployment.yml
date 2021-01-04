@@ -4,7 +4,7 @@ services:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
-    image: registry.gitlab.com/yikaiyang/codecity/backend:latest
+    image: registry.gitlab.com/yikaiyang/codecity/backend
     ports:
       - 3000:3000
     environment:
@@ -15,6 +15,6 @@ services:
     build:
       context: ./frontend
       dockerfile: ./Dockerfile
-    image:  registry.gitlab.com/yikaiyang/codecity/frontend:latest
+    image:  registry.gitlab.com/yikaiyang/codecity/frontend
     ports:
       - 80:80
