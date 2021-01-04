@@ -13,7 +13,7 @@ COPY . /app/
 ARG build_configuration=production
 
 # BUILD PROJECT with either "production" configuration or not.
-RUN npm run build --configuration=${build_configuration} --output-path=./dist/out
+RUN npm run build -- --configuration=${build_configuration} --output-path=./dist/out
 
 # STAGE 2: NGINX - Copying build files from angular build image
 FROM nginx
