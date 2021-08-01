@@ -1,5 +1,5 @@
 import { Bounds } from './bounds';
-import { CityElement } from './city-element';
+import { Element } from './element';
 import { Vector2 } from 'three';
 
 export class KDTreeNode {
@@ -8,7 +8,7 @@ export class KDTreeNode {
     position: THREE.Vector2,
     bounds: Bounds,
     depth: number = 0,
-    element?: CityElement
+    element?: Element
   ) {
     this.position = position;
     this.bounds = bounds;
@@ -32,7 +32,7 @@ export class KDTreeNode {
   splitCoordinate?: number;
 
   // Contains element in tree
-  element?: CityElement;
+  element?: Element;
 
   depth: number;
   /**
@@ -87,7 +87,7 @@ export class KDTreeNode {
    * @param element the element to be inserted.
    * @returns true if element
    */
-  insertElement(node: KDTreeNode, element: CityElement): boolean {
+  insertElement(node: KDTreeNode, element: Element): boolean {
     if (node == null || element === undefined || element === null) {
       return;
     }

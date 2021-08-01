@@ -2,14 +2,13 @@ import { Entity } from '../entity';
 import { Vector2 } from 'three';
 import { Bounds } from '../layout/bounds';
 import { KDTree } from '../layout/kd-tree';
-import { Element } from '../layout/element';
 import { Cube } from './cube';
 import { KDTreeNode } from '../layout/kd-treenode';
 import { Area } from '../layout/area';
 import { Building} from './building';
 import { DISTRICT_MARGIN } from '../constants';
 import { File } from '../../model/file.model';
-import { CityElement } from '../layout/city-element';
+import { Element } from '../layout/element';
 import { CodeCityConfig } from '../util/code-city-config';
 import { Directory } from 'src/app/model/directory.model';
 import { IntersectableDirectory } from 'src/app/model/intersectable/intersectable-directory';
@@ -27,7 +26,7 @@ export interface ExpanderNode {
 /**
  * Calculates the largest possible area taken up by the elements (represented as bounds array).
  */
-export function calculcateMaxAreaForElements(elements: CityElement[]): Bounds {
+export function calculcateMaxAreaForElements(elements: Element[]): Bounds {
     let x = 0;
     let y = 0;
     for (let element of elements) {
@@ -41,7 +40,7 @@ export class District extends Entity implements Element {
 
     /** Depth level of the current district. With the root district node being 0. */
     depth: number = 0;
-    districtElements: CityElement[] = [];
+    districtElements: Element[] = [];
     gridPosition: Vector2 = new Vector2(0, 0);
 
     get bounds(): Bounds {
@@ -74,7 +73,7 @@ export class District extends Entity implements Element {
         // const element = new Element(new Bounds(width, height));
         const building = new Building(new Bounds(width, height), this.options);
         building.createWithFile(file);
-        this.addCityElement(building);
+        this.addElement(building);
     }
 
     /**
@@ -82,31 +81,31 @@ export class District extends Entity implements Element {
      * @param building 
      */
     addBuilding(building: Building) {
-        this.addCityElement(building);
+        this.addElement(building);
     }
 
     /**
      * Adds a city element to district
-     * @param cityElement 
+     * @param element 
      */
-    addCityElement(cityElement: CityElement) {
-        this.districtElements.push(cityElement);
+    addElement(element: Element) {
+        this.districtElements.push(element);
         this.computeDistrictLayout();
     }
 
     /**
      * Adds multiple city elements to district
-     * @param cityElements 
+     * @param elements 
      */
-    addCityElements(cityElements: CityElement[]) {
-        cityElements.forEach(element  => {
+    addElements(elements: Element[]) {
+        elements.forEach(element  => {
             this.districtElements.push(element);
         });
         this.computeDistrictLayout();
     }
 
     // Sort elements by surface area descending. (Largest first)
-    private sortCityElements() {
+    private sortElements() {
         this.districtElements.sort((a, b) => b.bounds.x * b.bounds.y - a.bounds.x * a.bounds.y);
         //console.log(`Sorted city elements: ${JSON.stringify(this.districtElements)}`);
     }
@@ -115,20 +114,20 @@ export class District extends Entity implements Element {
      * Computes the coordinates of the city elemenets positioned in this district. 
      */
     private computeDistrictLayout(): void {
-        this.sortCityElements();
+        this.sortElements();
         // Determine largest area that can be taken up if all elements are placed.
         const maxArea = calculcateMaxAreaForElements(this.districtElements);
         this.tree = new KDTree(new Vector2(0, 0), maxArea);
         this.coveredArea = new Area(new Vector2(0, 0), new Bounds(0, 0));
         this.districtElements.forEach(element => {
-            this.computePositionForCityElement(element);
+            this.computePositionForElement(element);
         });
     }
 
     /**
      * Adds city element to kd tree and assigns positions.
      */
-    private computePositionForCityElement(element: CityElement): void {
+    private computePositionForElement(element: Element): void {
         let emptyLeafNodes = this.tree.getEmptyLeafNodes();
         // Filter nodes which are large enough to fit the element.
         emptyLeafNodes = emptyLeafNodes.filter((node) => node.bounds.fits(element.bounds));

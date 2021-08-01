@@ -66,7 +66,7 @@ export class City extends Entity {
             // Create district for each sub district
             const subDistrict = new District(d, this.options);
             this.generateCityElement(d, subDistrict, depth + 1);
-            district.addCityElement(subDistrict);
+            district.addElement(subDistrict);
         });
     }
 }

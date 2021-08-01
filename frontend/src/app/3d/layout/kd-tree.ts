@@ -1,6 +1,6 @@
 import { Bounds } from './bounds';
-import { KDTreeNode } from './kd-treenode';
 import { Element } from './element';
+import { KDTreeNode } from './kd-treenode';
 
 export class KDTree {
     position: THREE.Vector2;

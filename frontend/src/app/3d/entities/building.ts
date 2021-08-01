@@ -2,7 +2,7 @@ import { Entity } from '../entity';
 import * as THREE from 'three';
 import { BuildingSegment } from './building-segment';
 import { BUILDING_MARGIN } from '../constants';
-import { CityElement } from '../layout/city-element';
+import { Element } from '../layout/element';
 import { Bounds } from '../layout/bounds';
 import { File } from '../../model/file.model';
 import { BuildingSizeMapper } from '../util/mapper/building-size-mapper';
@@ -11,7 +11,7 @@ import { BlameHunk } from 'src/app/model/blamehunk.model';
 import { CodeCityConfig } from '../util/code-city-config';
 import { Author } from 'src/app/model/author.model';
 
-export class Building extends Entity implements CityElement {
+export class Building extends Entity implements Element {
     static DEFAULT_COLOR = new THREE.Color('#F9F9F9');
     mapper: BuildingSizeMapper;
 
