@@ -1,4 +1,4 @@
-# CodeCity
+# CoderCity
 
 This project is a three dimensional proof of concept visualization, which aims to visualize code ownership using the code city metapher, originally developed by Richard Wettel. https://wettel.github.io/codecity.html
 

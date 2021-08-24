@@ -439,6 +439,6 @@ export class GitGraph {
     // TODO: Reenable resizeSVG and renderBranchtTagLines
     this.resizeSVG();
     this.renderElements.forEach((e) => e.render(this.svg));
-    //this.renderBranchTagLines();
+    this.renderBranchTagLines();
   }
 }

@@ -41,6 +41,15 @@ export class FilterService {
       }))
   }
 
+  setSelectedTimeIntervalCommits(selectedCommitIDs: string[]) {
+    this.filterStore.update(
+      (state) => ({
+        ...state,
+        selectedCommitIntervalCommits: selectedCommitIDs
+      })
+    );
+  }
+
   excludeAuthor(author: Author) {
     this.filterStore.update(
       state => {

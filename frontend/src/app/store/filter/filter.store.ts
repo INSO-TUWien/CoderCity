@@ -5,6 +5,7 @@ export interface FilterState {
   excludedFiles: string[];
   excludedAuthors: string[];
   fileSearchString: string;
+  selectedCommitIntervalCommits: string[];
 }
 
 export function createInitialState(): FilterState {
@@ -12,6 +13,7 @@ export function createInitialState(): FilterState {
     excludedFiles: [],
     excludedAuthors: [],
     fileSearchString: '',
+    selectedCommitIntervalCommits: []
   };
 }
 

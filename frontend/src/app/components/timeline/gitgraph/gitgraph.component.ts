@@ -17,6 +17,8 @@ import { ProjectQuery } from "src/app/store/project/project.query";
 import { Commit } from 'src/app/model/commit.model';
 import { GitgraphService } from './state/gitgraph.service';
 import { GitgraphQuery, BranchTag } from './state/gitgraph.query';
+import { ProjectService } from "src/app/store/project/project.service";
+import { FilterService } from "src/app/store/filter";
 
 @Component({
   selector: "cc-gitgraph",
@@ -58,7 +60,8 @@ export class GitgraphComponent implements OnInit {
     private gitGraphService: GitgraphService,
     private gitGraphQuery: GitgraphQuery,
     private visualizationQuery: VisualizationQuery,
-    private visualizationService: VisualizationService
+    private visualizationService: VisualizationService,
+    private filterService: FilterService
   ) {
     // Retrieve commits and sort them by time. (Oldest first)
     this.commitMap$ = this.projectQuery.commitMap$;
@@ -106,6 +109,9 @@ export class GitgraphComponent implements OnInit {
             commits
           );
 
+          this.filterService.setSelectedTimeIntervalCommits(result.commitIds);
+
+          // Update gitgraph state after interval was selected by user
           result.lineCommitKeys.forEach((lineKey) => {
             this.gitGraph.setGraphLineState(lineKey, GraphCommitState.Selected);
           });
@@ -257,6 +263,6 @@ export class GitgraphComponent implements OnInit {
   private drawGraph(branches: Branch[], commits: Commit[], commitMap: Map<string, Commit>) {
     this.gitGraph.clear();
     this.gitGraph.drawGraph(commits, commitMap, branches);
-    //this.gitGraphService.setBranchTags(this.gitGraph);
+    this.gitGraphService.setBranchTags(this.gitGraph);
   }
 }

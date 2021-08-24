@@ -50,6 +50,12 @@ export class Repository {
         return directory;
     }
 
+    // async getCommitsBetween(startCommitId:string, endCommitId) {
+    //     const commit = await this.repository.getCommit(endCommitId);
+    //     const tree = await commit.getTree();
+    //     tree.
+    // }
+
     /**
      * Executes a provided function for each commit.
      * @param operation the funciton that should be executed

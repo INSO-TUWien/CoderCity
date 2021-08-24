@@ -14,7 +14,7 @@ const initialState = {
   active: null,
   projectData: null,
   commitMap: null,
-  authorColorMap: null
+  authorColorMap: null,
 };
 
 @Injectable({ providedIn: 'root' })

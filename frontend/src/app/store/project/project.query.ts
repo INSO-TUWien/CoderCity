@@ -11,7 +11,7 @@ export class ProjectQuery extends QueryEntity<ProjectState> {
   commits$ = this.select((state) => state.projectData?.commits);
   commitMap$ = this.select((state) => state.commitMap);
   authorColorMap$ = this.select((state) => state.authorColorMap);
-
+  
   sortedCommits$ = this.commits$.pipe(
     map((val) =>
       val != null

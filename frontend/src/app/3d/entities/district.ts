@@ -76,13 +76,6 @@ export class District extends Entity implements Element {
         this.addElement(building);
     }
 
-    /**
-     * Adds a building to district
-     * @param building 
-     */
-    addBuilding(building: Building) {
-        this.addElement(building);
-    }
 
     /**
      * Adds a city element to district
@@ -111,7 +104,7 @@ export class District extends Entity implements Element {
     }
 
     /**
-     * Computes the coordinates of the city elemenets positioned in this district. 
+     * Computes the coordinates of the elemenets positioned in this district. 
      */
     private computeDistrictLayout(): void {
         this.sortElements();

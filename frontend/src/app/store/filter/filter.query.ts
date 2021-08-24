@@ -13,4 +13,6 @@ export class FilterQuery extends Query<FilterState> {
   excludedAuthors$ = this.select(store => store.excludedAuthors);
   excludedFiles$ = this.select(store => store.excludedFiles);
   fileSearchTerm$ = this.select(store => store.fileSearchString);
+  selectedCommitIntervalCommits$ = this.select(state => state.selectedCommitIntervalCommits);
+
 }

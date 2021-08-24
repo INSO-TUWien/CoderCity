@@ -17,7 +17,7 @@ import { DistrictDepthColorMapper } from 'src/app/3d/util/color/district-depth-c
 import { DistrictRandomColorMapper } from 'src/app/3d/util/color/district-random-color-mapper';
 import { FilterQuery } from 'src/app/store/filter/filter.query';
 import { Entity } from 'src/app/3d/entity';
-import { OneToOneValueMapper } from 'src/app/3d/util/mapper/one-to-one-value-mapper';
+import { LineNumberValueMapper } from 'src/app/3d/util/mapper/line-number-value-mapper';
 import { SquareRootScaleMapper } from 'src/app/3d/util/mapper/squareroot-scale-mapper';
 import { SquareRootValueMapper } from 'src/app/3d/util/mapper/squareroot-value-mapper';
 
@@ -133,11 +133,12 @@ export class VisualizationComponent implements OnInit {
       this.settingsQuery.preferences$, 
       this.filterQuery.excludedFiles$,
       this.filterQuery.excludedAuthors$,
+      this.filterQuery.selectedCommitIntervalCommits$
     ).subscribe(
-      ([authors, preferences, excludedFiles, excludedAuthors]) => {
+      ([authors, preferences, excludedFiles, excludedAuthors, intervalCommits]) => {
         this.authors = authors;
         if (authors != null && preferences != null) {
-            this.handleVisualizationOptions(preferences, excludedFiles, excludedAuthors);
+            this.handleVisualizationOptions(preferences, excludedFiles, excludedAuthors, intervalCommits);
             this.renderCity();
         }
       }
@@ -150,7 +151,7 @@ export class VisualizationComponent implements OnInit {
     }
   }
 
-  private handleVisualizationOptions(preferences: Preferences, excludedFiles: string[], excludedAuthors: string[]) {
+  private handleVisualizationOptions(preferences: Preferences, excludedFiles: string[], excludedAuthors: string[], includedCommits: string[]) {
     if (preferences == null) {
         console.error(`Visualization: setPreferences: preferences is null or undefined.`);
     }
@@ -158,7 +159,7 @@ export class VisualizationComponent implements OnInit {
     const sizeMapperHeightPreference = preferences.sizeMapping.height;
     if (sizeMapperHeightPreference === SizeMapperPreference.number_lines_1on1) {
       // 1:1 mapping
-      this.visualization.setBuildingSizeMapper(new OneToOneValueMapper());
+      this.visualization.setBuildingSizeMapper(new LineNumberValueMapper());
     } else if (sizeMapperHeightPreference === SizeMapperPreference.number_lines_sqrt) {
       // Sqrt mapping
       this.visualization.setBuildingSizeMapper(new SquareRootValueMapper());
@@ -187,6 +188,8 @@ export class VisualizationComponent implements OnInit {
     if (excludedAuthors !== null) {
       this.visualization.setExcludedAuthors(excludedAuthors);
     }
+
+    this.visualization.setIncludedCommits(includedCommits);
   }
 
   ngOnDestroy(): void {

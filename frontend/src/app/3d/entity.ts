@@ -59,6 +59,11 @@ export class Entity {
         this.listener = null;
     }
 
+    /**
+     * Projects world coordinates to screen space coordinates.
+     * @param camera 
+     * @returns 
+     */
     get2DCoordinates(camera: THREE.Camera): THREE.Vector2 {
         let projectedCoords = new THREE.Vector3();
         this.object.getWorldPosition(projectedCoords);

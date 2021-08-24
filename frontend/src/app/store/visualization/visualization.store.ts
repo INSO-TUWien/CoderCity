@@ -16,6 +16,7 @@ export interface VisualizationState {
   selectedCommitInterval: CommitTimeInterval;
   selectedSearchItem: string;
   isFilterViewActive: boolean;
+
 }
 
 export function createInitialState(): VisualizationState {

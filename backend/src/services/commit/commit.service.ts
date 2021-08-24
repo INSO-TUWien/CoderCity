@@ -33,4 +33,13 @@ export class CommitService {
     const result = await repo.getFilesWithDirectoriesOfCommit(commitId);
     return result;
   }
+
+  async getCommitsBetween(
+    projectId: string,
+    startId: string,
+    endId: string
+  ) {
+    const repo = this.gitService.getRepoByProjectId(projectId);
+    
+  }
 }

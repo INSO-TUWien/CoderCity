@@ -30,6 +30,7 @@ export class Visualization {
 
     private excludedFiles: string[] = [];
     private excludedAuthors: string[] = [];
+    private includedCommits?: string[] = [];
 
     private stats = new Stats();
 
@@ -117,6 +118,7 @@ export class Visualization {
                 buildingSizeMapper: this.buildingSizeMapper,
                 buildingColorMapper: this.buildingColorMapper,
                 districtColorMapper: this.districtColorMapper,
+                includedCommits: this.includedCommits,
                 excludedFiles: this.excludedFiles,
                 excludedAuthors: this.excludedAuthors
             });
@@ -143,6 +145,13 @@ export class Visualization {
         if (districtColorMapper != null) {
             this.districtColorMapper = districtColorMapper;
         }
+    }
+
+    /**
+     * Sets a list all commits which shall be displayed in the visualization
+     */
+    setIncludedCommits(commits: string[]) {
+        this.includedCommits = commits;
     }
 
     /**

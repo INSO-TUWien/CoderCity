@@ -34,13 +34,13 @@ export class Building extends Entity implements Element {
 
             if (this.mapper == null) {
                 startLineNumber = hunk.startLineNumber - 1; // Line numbers in hunks start at 1. However we do not want to render at position 1, but at position 0.
-                endLineNumber = hunk.startLineNumber - 1  + hunk.linesInHunk;
+                endLineNumber = hunk.startLineNumber - 1 + hunk.linesInHunk;
             } else {
                 // Mapper exists
                 const lineCount = file.lineCount;
                 const mappedLineCount = this.mapper.map(lineCount);
                 startLineNumber = this.mapper.map((hunk.startLineNumber - 1) / lineCount * mappedLineCount); // Use correct relational ration between line number after applying mapper
-                endLineNumber = this.mapper.map(((hunk.startLineNumber - 1  + hunk.linesInHunk))/ lineCount * mappedLineCount);
+                endLineNumber = this.mapper.map(((hunk.startLineNumber - 1 + hunk.linesInHunk)) / lineCount * mappedLineCount);
             }
 
             this.createBuildingSegment(startLineNumber, endLineNumber, hunkData);
@@ -49,7 +49,7 @@ export class Building extends Entity implements Element {
         this.setUserData(file);
     }
 
-    setPosition(x: number, y: number, z: number) {
+    setPosition(x: number, y: number, z: number) {
         this.object.position.set(x, y, z);
     }
 
@@ -63,13 +63,29 @@ export class Building extends Entity implements Element {
 
         // Check whether author of hunk is in exlusion list.
         const author = Author.fromHunk(hunk);
-        if (this.options?.excludedAuthors != null &&
-            this.options?.excludedAuthors.findIndex((excludedAuthor) => Author.hashCode(author) == excludedAuthor) === -1)
-        {
-            // Author is not in exlusion list.
-            // Get mapped author color
-            color = this.options.buildingColorMapper.mapValue(hunk);
-        }
+        if (this.options?.includedCommits)
+
+            if (this.options?.excludedAuthors != null &&
+                this.options?.excludedAuthors.findIndex((excludedAuthor) => Author.hashCode(author) == excludedAuthor) === -1
+            ) {
+                // Check whether the current commit is current inclusion list if existing. 
+                if (
+                    Array.isArray(this.options?.includedCommits) &&
+                    this.options.includedCommits.length >= 1 &&
+                    // If the current commit is not in inclusion list, skip color mapping.
+                    this.options
+                        .includedCommits
+                        .findIndex((commit) => hunk.commitId === commit) === -1) 
+                {
+                    //return;
+                } else {
+                    // Author is not in exlusion list.
+                    // Get mapped author color
+                    color = this.options.buildingColorMapper.mapValue(hunk);
+                }
+
+             
+            }
 
         const segment = new BuildingSegment(
             this.bounds.x - BUILDING_MARGIN,
@@ -82,7 +98,7 @@ export class Building extends Entity implements Element {
         segment.setPosition(
             0 + BUILDING_MARGIN / 2,
             // Add y axis offset
-            start  + segment.calculateBoundingBoxCenterOffset().y,
+            start + segment.calculateBoundingBoxCenterOffset().y,
             0 + BUILDING_MARGIN / 2
         );
         segment.setUserData(hunk);

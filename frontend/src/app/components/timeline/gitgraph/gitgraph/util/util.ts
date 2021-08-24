@@ -16,7 +16,11 @@ export class Util {
         const parentResult = Util.getCommitsBetweenByParent(startCommitId, endCommitId, commits);
         const childrenResult = Util.getCommitsBetweenByChildren(endCommitId, startCommitId, commits);
         const result = { commitIds: [], lineCommitKeys: []};
+
         result.commitIds = parentResult.commitIds.filter(parentCommitId => childrenResult.commitIds.includes(parentCommitId));
+        result.commitIds.push(startCommitId);
+        result.commitIds.push(endCommitId);
+
         result.lineCommitKeys =
           parentResult
             .lineCommitKeys

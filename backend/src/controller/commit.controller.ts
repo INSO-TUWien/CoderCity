@@ -49,6 +49,15 @@ export class CommitController {
     }
   }
 
+  @Get(':id')
+  async getCommitIdsBetween(
+    @Param('start') startCommitId,
+    @Param('end') endCommitId) {
+    let result = [];
+    
+    return ""; 
+  }
+
   @Get(':id/files')
   async getFilesByCommitId(
     @Param('projectId') projectId,

@@ -20,21 +20,21 @@ export class GitgraphService {
   setBranchTags(gitgraph: GitGraph) {
     this.projectQuery.branches$.pipe(
       tap(branches => {
-        // const branchTags = branches.map((branch) => {
-        //   if (branch != null) {
-        //     const graphCommit = gitgraph?.graphCommits?.get(branch?.commit?.commitId);
-        //     return {
-        //       ...branch,
-        //       x: graphCommit.x + graphCommit.shape.width() / 2,
-        //       y: gitgraph.getHeight(),
-        //       color: graphCommit.color
-        //     };
-        //   }
-        // });
-        // this.gitgraphStore.update(state => ({
-        //   ...state,
-        //   branchTags
-        // }));
+        const branchTags = branches.map((branch) => {
+          if (branch != null) {
+            const graphCommit = gitgraph?.graphCommits?.get(branch?.commit?.commitId);
+            return {
+              ...branch,
+              x: graphCommit.x + graphCommit.shape.width() / 2,
+              y: gitgraph.getHeight(),
+              color: graphCommit.color
+            };
+          }
+        });
+        this.gitgraphStore.update(state => ({
+          ...state,
+          branchTags
+        }));
       }),
       // tap(branchtags => {
       //   console.log(`Branchtags: ${JSON.stringify(branchtags)}`);

@@ -9,4 +9,5 @@ export interface CodeCityConfig {
     valueMapper?: BuildingSizeMapper;
     excludedFiles?: string[];
     excludedAuthors?: string[];
+    includedCommits?: string[];
 }
