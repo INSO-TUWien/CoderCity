@@ -1,6 +1,7 @@
 # CoderCity
 
 ![ScreenShot](codercity.png)
+*Exemplary visualization of log4j project*
 
 This project is a three-dimensional proof of concept visualization, which aims to visualize the Code Ownership metric using the code city metapher, originally developed by Richard Wettel. https://wettel.github.io/codecity.html
 
