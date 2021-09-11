@@ -83,8 +83,6 @@ export class Building extends Entity implements Element {
                     // Get mapped author color
                     color = this.options.buildingColorMapper.mapValue(hunk);
                 }
-
-             
             }
 
         const segment = new BuildingSegment(
