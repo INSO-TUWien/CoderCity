@@ -1,13 +1,13 @@
 # CoderCity
 
 ![ScreenShot](codercity.png)
-*Exemplary visualization of log4j project*
+<sub><sup>*Exemplary visualization of log4j project*</sub></sup>
 
 This project is a three-dimensional proof of concept visualization, which aims to visualize the Code Ownership metric using the code city metapher, originally developed by Richard Wettel. https://wettel.github.io/codecity.html
 
-Each building represents a file in the visualization, while the height of the building corresponds to the line count of the file. Each folder of the software project is visually represented as a district (platform) and can contain multiple buildings (files). Multiple districts can be stacked on top of each other if a folder contains another folder.
+Each building (cuboid) represents a file in the visualization, while the height of the building corresponds to the total line count of the file. Each folder of the software project is visually represented as a district (platform) and can contain multiple buildings (files). Multiple districts can be stacked on top of each other if a folder contains another folder.
 
-Information of the code ownership is derived using the metadata of each git hunk (See: git blame). Each hunk (visually represented as building segments) is then colored in the representative color of each author. 
+Information about the code ownership is derived using the metadata of each git hunk (See: git blame). Each hunk (visually represented as building segments) is then colored in the representative color of each author.
 
 For optimal performance, please use Google Chrome.
 
